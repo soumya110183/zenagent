@@ -14,7 +14,11 @@ const upload = multer({
     fileSize: 50 * 1024 * 1024, // 50MB limit
   },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/zip' || file.originalname.endsWith('.zip')) {
+    const isZip = file.mimetype === 'application/zip' || 
+                  file.originalname.endsWith('.zip') ||
+                  file.mimetype === 'application/x-zip-compressed';
+    
+    if (isZip) {
       cb(null, true);
     } else {
       cb(new Error('Only ZIP files are allowed'));
@@ -52,6 +56,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Upload and analyze Java project
   app.post("/api/projects/upload", upload.single('zipFile'), async (req, res) => {
     try {
+      console.log('Upload request received:', {
+        file: req.file ? req.file.originalname : 'No file',
+        size: req.file ? req.file.size : 'N/A',
+        mimetype: req.file ? req.file.mimetype : 'N/A'
+      });
+      
       if (!req.file) {
         return res.status(400).json({ message: "No ZIP file provided" });
       }

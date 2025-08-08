@@ -67,11 +67,30 @@ async function cloneAndAnalyzeRepository(projectId: string, githubUrl: string, b
     // Create temporary directory
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'github-analyzer-'));
     
-    // Clone repository
+    // Clone repository with fallback branch logic
     const cloneUrl = githubUrl.endsWith('.git') ? githubUrl : `${githubUrl}.git`;
-    await execAsync(`git clone --depth 1 --branch ${branch} ${cloneUrl} ${tempDir}/repo`, {
-      timeout: 60000, // 1 minute timeout
-    });
+    
+    try {
+      // Try with specified branch first
+      await execAsync(`git clone --depth 1 --branch ${branch} ${cloneUrl} ${tempDir}/repo`, {
+        timeout: 60000, // 1 minute timeout
+      });
+    } catch (branchError) {
+      console.log(`Branch ${branch} not found, trying to clone without branch specification`);
+      
+      // If branch doesn't exist, clone without branch specification and use default
+      await execAsync(`git clone --depth 1 ${cloneUrl} ${tempDir}/repo`, {
+        timeout: 60000,
+      });
+      
+      // Get the actual default branch
+      const { stdout: branchOutput } = await execAsync(`cd ${tempDir}/repo && git branch --show-current`);
+      const actualBranch = branchOutput.trim();
+      console.log(`Using default branch: ${actualBranch}`);
+      
+      // Update project with actual branch used
+      await storage.updateProject(projectId, { githubBranch: actualBranch });
+    }
     
     const repoPath = path.join(tempDir, 'repo');
     

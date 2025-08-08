@@ -20,10 +20,21 @@ export default function UploadSection({ onFileUploaded }: UploadSectionProps) {
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
+      console.log('Uploading file:', file.name, file.size, file.type);
       const formData = new FormData();
       formData.append('zipFile', file);
       
-      const response = await apiRequest('POST', '/api/projects/upload', formData);
+      // Use fetch directly to avoid JSON content-type header issues with FormData
+      const response = await fetch('/api/projects/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Upload failed');
+      }
+      
       return response.json();
     },
     onSuccess: (project: Project) => {
