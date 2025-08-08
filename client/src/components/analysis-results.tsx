@@ -1,0 +1,316 @@
+import { useState } from "react";
+import { type Project, type AnalysisData } from "@shared/schema";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DiagramCanvas from "./diagram-canvas";
+import { 
+  FolderOpen, 
+  Download, 
+  Share2, 
+  Settings,
+  Podcast,
+  Boxes,
+  ListOrdered,
+  Network,
+  Database,
+  Search,
+  Code,
+  FolderTree,
+  Tags,
+  FileCode,
+  Image,
+  FileText,
+  Shield,
+  Leaf,
+  Cog
+} from "lucide-react";
+import type { DiagramType } from "@/types/analysis";
+
+interface AnalysisResultsProps {
+  project: Project;
+  onNewAnalysis: () => void;
+}
+
+export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResultsProps) {
+  const [activeDiagram, setActiveDiagram] = useState<DiagramType>('flow');
+  const analysisData = project.analysisData as AnalysisData | null;
+
+  if (!analysisData) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-muted-foreground">No analysis data available</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const controllers = analysisData.classes.filter(c => c.type === 'controller');
+  const services = analysisData.classes.filter(c => c.type === 'service');
+  const repositories = analysisData.classes.filter(c => c.type === 'repository');
+  const entities = analysisData.classes.filter(c => c.type === 'entity');
+
+  return (
+    <div>
+      {/* Project Summary */}
+      <Card className="mb-6">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <FolderOpen className="text-primary text-xl w-6 h-6" />
+              <div>
+                <h2 className="text-xl font-medium">{project.name}</h2>
+                <p className="text-muted-foreground text-sm">
+                  Analyzed {analysisData.structure.sourceFiles.length} Java files • 
+                  Found {controllers.length} controllers, {services.length} services, {repositories.length} repositories
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm">
+                <Download className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="sm">
+                <Share2 className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="sm">
+                <Settings className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-muted rounded-lg">
+              <div className="text-2xl font-bold text-primary">{controllers.length}</div>
+              <div className="text-sm text-muted-foreground">Controllers</div>
+            </div>
+            <div className="text-center p-4 bg-muted rounded-lg">
+              <div className="text-2xl font-bold text-accent">{services.length}</div>
+              <div className="text-sm text-muted-foreground">Services</div>
+            </div>
+            <div className="text-center p-4 bg-muted rounded-lg">
+              <div className="text-2xl font-bold text-purple-600">{repositories.length}</div>
+              <div className="text-sm text-muted-foreground">Repositories</div>
+            </div>
+            <div className="text-center p-4 bg-muted rounded-lg">
+              <div className="text-2xl font-bold text-orange-600">{entities.length}</div>
+              <div className="text-sm text-muted-foreground">JPA Entities</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Diagram Section */}
+      <Card className="mb-6">
+        <Tabs value={activeDiagram} onValueChange={(value) => setActiveDiagram(value as DiagramType)}>
+          <div className="border-b border-border">
+            <TabsList className="h-auto p-0 bg-transparent w-full justify-start">
+              <TabsTrigger value="flow" className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                <Podcast className="w-4 h-4" />
+                <span>Flow Chart</span>
+              </TabsTrigger>
+              <TabsTrigger value="component" className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                <Boxes className="w-4 h-4" />
+                <span>Component Diagram</span>
+              </TabsTrigger>
+              <TabsTrigger value="sequence" className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                <ListOrdered className="w-4 h-4" />
+                <span>Sequence Diagram</span>
+              </TabsTrigger>
+              <TabsTrigger value="class" className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                <Network className="w-4 h-4" />
+                <span>Class Diagram</span>
+              </TabsTrigger>
+              <TabsTrigger value="er" className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                <Database className="w-4 h-4" />
+                <span>ER Diagram</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          {/* Diagram Controls */}
+          <div className="p-4 border-b border-border bg-muted">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Button variant="ghost" size="sm">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg>
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                    </svg>
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                  </Button>
+                  <div className="text-sm text-muted-foreground px-2">
+                    Zoom: 100%
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button variant="ghost" size="sm">
+                  <Download className="mr-1 w-4 h-4" />
+                  Export PNG
+                </Button>
+                <Button variant="ghost" size="sm">
+                  <Code className="mr-1 w-4 h-4" />
+                  Export SVG
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <TabsContent value={activeDiagram} className="mt-0">
+            <DiagramCanvas 
+              type={activeDiagram} 
+              analysisData={analysisData} 
+            />
+          </TabsContent>
+        </Tabs>
+      </Card>
+
+      {/* Analysis Details */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        
+        {/* Main Content Area */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          {/* Detected Patterns Card */}
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-medium flex items-center mb-4">
+                <Search className="text-primary mr-2 w-5 h-5" />
+                Detected Patterns
+              </h3>
+              <div className="space-y-4">
+                {analysisData.patterns.map((pattern, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      {pattern.name.includes('Spring') && <Shield className="text-primary w-5 h-5" />}
+                      {pattern.name.includes('JPA') && <Database className="text-purple-600 w-5 h-5" />}
+                      {pattern.name.includes('Dependency') && <Leaf className="text-accent w-5 h-5" />}
+                      <div>
+                        <div className="font-medium text-sm">{pattern.name}</div>
+                        <div className="text-xs text-muted-foreground">{pattern.description}</div>
+                      </div>
+                    </div>
+                    <Badge variant="secondary">{pattern.classes.length} classes</Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Method Analysis Card */}
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-medium flex items-center mb-4">
+                <Code className="text-primary mr-2 w-5 h-5" />
+                Method Call Analysis
+              </h3>
+              <div className="space-y-3">
+                {analysisData.relationships
+                  .filter(rel => rel.type === 'calls' && rel.method)
+                  .slice(0, 5)
+                  .map((rel, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <div className="font-mono text-sm">
+                        {rel.from} → {rel.to}.{rel.method}()
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {rel.type}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          
+          {/* Project Structure */}
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium flex items-center text-sm mb-4">
+                <FolderTree className="text-primary mr-2 w-4 h-4" />
+                Project Structure
+              </h3>
+              <div className="space-y-2 text-sm">
+                {analysisData.structure.packages.slice(0, 6).map((pkg, index) => (
+                  <div key={index} className="flex items-center text-muted-foreground">
+                    <svg className="mr-2 w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                    </svg>
+                    <span className="truncate">{pkg}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Annotations Summary */}
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium flex items-center text-sm mb-4">
+                <Tags className="text-primary mr-2 w-4 h-4" />
+                Annotations Found
+              </h3>
+              <div className="space-y-3">
+                {Object.entries(
+                  analysisData.classes.reduce((acc, cls) => {
+                    cls.annotations.forEach(annotation => {
+                      acc[annotation] = (acc[annotation] || 0) + 1;
+                    });
+                    return acc;
+                  }, {} as Record<string, number>)
+                ).slice(0, 5).map(([annotation, count]) => (
+                  <div key={annotation} className="flex items-center justify-between">
+                    <span className="text-sm font-mono text-primary">{annotation}</span>
+                    <span className="text-xs text-muted-foreground">{count}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Actions */}
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium flex items-center text-sm mb-4">
+                <Download className="text-primary mr-2 w-4 h-4" />
+                Export Options
+              </h3>
+              <div className="space-y-3">
+                <Button variant="ghost" className="w-full justify-start p-3 h-auto">
+                  <FileCode className="text-blue-500 mr-2 w-4 h-4" />
+                  Export as JSON
+                </Button>
+                <Button variant="ghost" className="w-full justify-start p-3 h-auto">
+                  <Image className="text-green-500 mr-2 w-4 h-4" />
+                  Export All Diagrams
+                </Button>
+                <Button variant="ghost" className="w-full justify-start p-3 h-auto">
+                  <FileText className="text-red-500 mr-2 w-4 h-4" />
+                  Generate Report
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
