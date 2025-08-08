@@ -4,6 +4,7 @@ import { type Project } from "@shared/schema";
 import UploadSection from "@/components/upload-section";
 import ProcessingSection from "@/components/processing-section";
 import AnalysisResults from "@/components/analysis-results";
+import Dashboard from "@/components/dashboard";
 import { GitBranch, HelpCircle, Settings } from "lucide-react";
 
 type AppState = 'upload' | 'processing' | 'results';
@@ -75,11 +76,14 @@ export default function Home() {
           <ProcessingSection project={currentProject} />
         )}
         
-        {appState === 'results' && currentProject && (
-          <AnalysisResults 
-            project={currentProject} 
-            onNewAnalysis={handleNewAnalysis}
-          />
+        {appState === 'results' && currentProject && currentProject.analysisData && (
+          <div className="space-y-8">
+            <Dashboard analysisData={currentProject.analysisData} />
+            <AnalysisResults 
+              project={currentProject} 
+              onNewAnalysis={handleNewAnalysis}
+            />
+          </div>
         )}
       </div>
 

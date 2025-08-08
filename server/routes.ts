@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertProjectSchema, githubProjectSchema } from "@shared/schema";
 import { analyzeJavaProject } from "./services/javaAnalyzer";
 import { analyzeGithubRepository, isValidGithubUrl } from "./services/githubService";
+import { aiAnalysisService } from "./services/aiAnalysisService";
 import multer from "multer";
 import { z } from "zod";
 
@@ -127,6 +128,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.status(500).json({ message: "Failed to analyze GitHub repository" });
+    }
+  });
+
+  // Generate AI analysis for project
+  app.post("/api/projects/ai-analysis", async (req, res) => {
+    try {
+      const analysisData = req.body;
+      console.log("Generating AI analysis for project...");
+      
+      const aiAnalysis = await aiAnalysisService.analyzeProject(analysisData);
+      
+      res.json(aiAnalysis);
+    } catch (error) {
+      console.error("Error generating AI analysis:", error);
+      res.status(500).json({ message: "Failed to generate AI analysis" });
     }
   });
 

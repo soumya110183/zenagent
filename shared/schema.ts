@@ -49,6 +49,25 @@ export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type Project = typeof projects.$inferSelect;
 export type GithubProject = z.infer<typeof githubProjectSchema>;
 
+// AI Analysis types
+export interface AIInsight {
+  id: string;
+  type: 'overview' | 'module_description' | 'function_description' | 'architecture_suggestion';
+  title: string;
+  content: string;
+  confidence: number;
+  tags: string[];
+  relatedComponents: string[];
+}
+
+export interface AIAnalysisResult {
+  projectOverview: string;
+  architectureInsights: string[];
+  moduleInsights: Record<string, AIInsight>;
+  suggestions: string[];
+  qualityScore: number;
+}
+
 // Analysis result types
 export const AnalysisDataSchema = z.object({
   classes: z.array(z.object({
@@ -97,6 +116,21 @@ export const AnalysisDataSchema = z.object({
     packages: z.array(z.string()),
     sourceFiles: z.array(z.string()),
   }),
+  aiAnalysis: z.object({
+    projectOverview: z.string(),
+    architectureInsights: z.array(z.string()),
+    moduleInsights: z.record(z.object({
+      id: z.string(),
+      type: z.enum(['overview', 'module_description', 'function_description', 'architecture_suggestion']),
+      title: z.string(),
+      content: z.string(),
+      confidence: z.number(),
+      tags: z.array(z.string()),
+      relatedComponents: z.array(z.string()),
+    })),
+    suggestions: z.array(z.string()),
+    qualityScore: z.number(),
+  }).optional(),
 });
 
 export type AnalysisData = z.infer<typeof AnalysisDataSchema>;
