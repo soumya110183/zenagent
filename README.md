@@ -1,4 +1,4 @@
-# Java Project Architecture Analyzer
+# Zengent - Java Project Architecture Analyzer
 
 A full-stack web application that analyzes Java projects and generates interactive architectural diagrams. Upload ZIP files or analyze GitHub repositories to visualize Spring Boot applications, JPA entities, and architectural patterns.
 

@@ -51,8 +51,8 @@ export default function Home() {
             <div className="flex items-center space-x-3">
               <GitBranch className="text-2xl" />
               <div>
-                <h1 className="text-xl font-medium">Java Project Analyzer</h1>
-                <p className="text-blue-200 text-sm">Architectural Insights & Visualization</p>
+                <h1 className="text-xl font-medium">Zengent</h1>
+                <p className="text-blue-200 text-sm">Java Project Architecture Analyzer</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">

@@ -1,4 +1,4 @@
-# Java Project Architecture Analyzer
+# Zengent - Java Project Architecture Analyzer
 
 ## Overview
 
