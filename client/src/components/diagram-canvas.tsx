@@ -244,19 +244,18 @@ function generateFlowDiagram(analysisData: AnalysisData, nodes: Node[], edges: E
     });
   });
 
-  // Add edges based on relationships
+  // Add edges based on relationships with better validation
   analysisData.relationships.forEach((rel, index) => {
     if (rel.type === 'injects' || rel.type === 'calls') {
-      const sourceExists = nodes.some(n => n.id === rel.from);
-      const targetExists = nodes.some(n => n.id === rel.to);
+      const sourceNode = nodes.find(n => n.id === rel.from);
+      const targetNode = nodes.find(n => n.id === rel.to);
       
-      if (sourceExists && targetExists) {
+      if (sourceNode && targetNode) {
         edges.push({
           id: `${rel.from}-${rel.to}-${index}`,
           source: rel.from,
           target: rel.to,
-          sourceHandle: 'source',
-          targetHandle: 'target',
+          // Remove specific handle IDs to allow React Flow to auto-connect
           type: 'smoothstep',
           animated: rel.type === 'calls',
           label: rel.method || rel.type,
@@ -300,10 +299,10 @@ function generateComponentDiagram(analysisData: AnalysisData, nodes: Node[], edg
   
   // Add edges with better styling based on relationship types
   analysisData.relationships.forEach((rel, index) => {
-    const sourceExists = nodes.some(n => n.id === rel.from);
-    const targetExists = nodes.some(n => n.id === rel.to);
+    const sourceNode = nodes.find(n => n.id === rel.from);
+    const targetNode = nodes.find(n => n.id === rel.to);
     
-    if (sourceExists && targetExists) {
+    if (sourceNode && targetNode) {
       const getEdgeStyle = (relType: string) => {
         switch (relType) {
           case 'injects':
@@ -323,8 +322,7 @@ function generateComponentDiagram(analysisData: AnalysisData, nodes: Node[], edg
         id: `${rel.from}-${rel.to}-${index}`,
         source: rel.from,
         target: rel.to,
-        sourceHandle: 'source',
-        targetHandle: 'target',
+        // Remove specific handle IDs to allow React Flow to auto-connect
         type: rel.type === 'extends' || rel.type === 'implements' ? 'straight' : 'smoothstep',
         animated: rel.type === 'calls',
         label: rel.type,
@@ -499,6 +497,70 @@ export default function DiagramCanvas({ type, analysisData }: DiagramCanvasProps
     setNodes(diagramNodes);
     setEdges(diagramEdges);
   }, [diagramNodes, diagramEdges, setNodes, setEdges]);
+
+  useEffect(() => {
+    const handleExport = (event: CustomEvent) => {
+      const { format } = event.detail;
+      if (format === 'png') {
+        exportToPNG();
+      } else if (format === 'svg') {
+        exportToSVG();
+      }
+    };
+
+    window.addEventListener('exportDiagram', handleExport as EventListener);
+    return () => {
+      window.removeEventListener('exportDiagram', handleExport as EventListener);
+    };
+  }, [type]);
+
+  const exportToPNG = async () => {
+    const reactFlowElement = document.querySelector('.react-flow') as HTMLElement;
+    if (reactFlowElement) {
+      try {
+        const html2canvas = await import('html2canvas');
+        const canvas = await html2canvas.default(reactFlowElement, {
+          backgroundColor: '#ffffff',
+          scale: 2
+        });
+        const link = document.createElement('a');
+        link.download = `${type}-diagram.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (error) {
+        console.error('PNG export failed:', error);
+        // Fallback: try to export using browser's built-in screenshot
+        alert('PNG export is not available. Please use browser screenshot instead.');
+      }
+    }
+  };
+
+  const exportToSVG = () => {
+    const svgElement = document.querySelector('.react-flow__renderer svg') as SVGElement;
+    if (svgElement) {
+      // Clone the SVG to avoid modifying the original
+      const clonedSvg = svgElement.cloneNode(true) as SVGElement;
+      
+      // Add proper SVG namespace and styling
+      clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      clonedSvg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+      
+      // Get the SVG's current viewBox or set a default
+      const rect = svgElement.getBoundingClientRect();
+      clonedSvg.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`);
+      clonedSvg.setAttribute('width', rect.width.toString());
+      clonedSvg.setAttribute('height', rect.height.toString());
+      
+      const svgData = new XMLSerializer().serializeToString(clonedSvg);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl = URL.createObjectURL(svgBlob);
+      const link = document.createElement('a');
+      link.download = `${type}-diagram.svg`;
+      link.href = svgUrl;
+      link.click();
+      URL.revokeObjectURL(svgUrl);
+    }
+  };
 
   return (
     <div className="w-full h-[600px] border border-gray-200 rounded-lg overflow-hidden">

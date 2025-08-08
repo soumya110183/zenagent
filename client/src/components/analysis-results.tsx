@@ -54,6 +54,10 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
   const repositories = analysisData.classes.filter(c => c.type === 'repository');
   const entities = analysisData.classes.filter(c => c.type === 'entity');
 
+  // Extract AI insights if available
+  const aiInsights = analysisData.aiAnalysis;
+  const projectDetails = aiInsights?.projectDetails;
+
   return (
     <div>
       {/* Project Summary */}
@@ -104,6 +108,85 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
           </div>
         </CardContent>
       </Card>
+
+      {/* Project Details Section */}
+      {projectDetails && (
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-2 mb-4">
+                <FileText className="w-5 h-5 text-blue-600" />
+                <h3 className="text-lg font-semibold">Project Description</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">{projectDetails.projectDescription}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-2 mb-4">
+                <Shield className="w-5 h-5 text-red-600" />
+                <h3 className="text-lg font-semibold">Business Problem Addressed</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">{projectDetails.businessProblem}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-2 mb-4">
+                <Leaf className="w-5 h-5 text-green-600" />
+                <h3 className="text-lg font-semibold">Key Objective</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">{projectDetails.keyObjective}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-2 mb-4">
+                <Cog className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold">Summary of Functionality</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">{projectDetails.functionalitySummary}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-2 mb-4">
+                <Tags className="w-5 h-5 text-orange-600" />
+                <h3 className="text-lg font-semibold">List of Implemented Features</h3>
+              </div>
+              <div className="space-y-2">
+                {projectDetails.implementedFeatures.map((feature, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-orange-600 rounded-full" />
+                    <span className="text-sm text-muted-foreground">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-2 mb-4">
+                <Boxes className="w-5 h-5 text-indigo-600" />
+                <h3 className="text-lg font-semibold">Modules or Services Covered</h3>
+              </div>
+              <div className="space-y-2">
+                {projectDetails.modulesServices.map((module, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-indigo-600 rounded-full" />
+                    <span className="text-sm text-muted-foreground">{module}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Diagram Section */}
       <Card className="mb-6">
@@ -159,11 +242,25 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => {
+                    const event = new CustomEvent('exportDiagram', { detail: { format: 'png' } });
+                    window.dispatchEvent(event);
+                  }}
+                >
                   <Download className="mr-1 w-4 h-4" />
                   Export PNG
                 </Button>
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => {
+                    const event = new CustomEvent('exportDiagram', { detail: { format: 'svg' } });
+                    window.dispatchEvent(event);
+                  }}
+                >
                   <Code className="mr-1 w-4 h-4" />
                   Export SVG
                 </Button>

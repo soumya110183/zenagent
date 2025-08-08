@@ -35,8 +35,18 @@ interface AIInsight {
   relatedComponents: string[];
 }
 
+interface ProjectDetails {
+  projectDescription: string;
+  businessProblem: string;
+  keyObjective: string;
+  functionalitySummary: string;
+  implementedFeatures: string[];
+  modulesServices: string[];
+}
+
 interface AIAnalysisResult {
   projectOverview: string;
+  projectDetails: ProjectDetails;
   architectureInsights: string[];
   moduleInsights: Record<string, AIInsight>;
   suggestions: string[];
@@ -56,6 +66,9 @@ export class AIAnalysisService {
     console.log('Starting AI analysis with OpenAI...');
     
     const moduleInsights: Record<string, AIInsight> = {};
+    
+    // Generate comprehensive project details
+    const projectDetails = await this.generateProjectDetails(analysisData);
     
     // Generate project overview
     const projectOverview = await this.generateProjectOverview(analysisData);
@@ -78,11 +91,48 @@ export class AIAnalysisService {
     
     return {
       projectOverview,
+      projectDetails,
       architectureInsights,
       moduleInsights,
       suggestions,
       qualityScore
     };
+  }
+
+  private async generateProjectDetails(analysisData: AnalysisData): Promise<ProjectDetails> {
+    const prompt = this.buildProjectDetailsPrompt(analysisData);
+    
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [
+          {
+            role: "system",
+            content: "You are an expert software architect analyzing project code. Analyze the project structure and provide comprehensive project details in JSON format. Focus on business context, functionality, and technical scope."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        max_tokens: 800,
+        temperature: 0.3,
+        response_format: { type: "json_object" },
+      });
+
+      const result = JSON.parse(response.choices[0].message.content || '{}');
+      return {
+        projectDescription: result.projectDescription || this.generateRuleBasedDescription(analysisData),
+        businessProblem: result.businessProblem || this.generateRuleBasedBusinessProblem(analysisData),
+        keyObjective: result.keyObjective || this.generateRuleBasedObjective(analysisData),
+        functionalitySummary: result.functionalitySummary || this.generateRuleBasedFunctionality(analysisData),
+        implementedFeatures: result.implementedFeatures || this.generateRuleBasedFeatures(analysisData),
+        modulesServices: result.modulesServices || this.generateRuleBasedModules(analysisData)
+      };
+    } catch (error) {
+      console.error('OpenAI API error for project details:', error);
+      return this.generateRuleBasedProjectDetails(analysisData);
+    }
   }
 
   private async generateProjectOverview(analysisData: AnalysisData): Promise<string> {
@@ -430,6 +480,137 @@ Please provide specific insights about this class's role, responsibilities, desi
     }
     
     return Math.min(100, Math.max(0, score));
+  }
+
+  private buildProjectDetailsPrompt(analysisData: AnalysisData): string {
+    const classes = analysisData.classes;
+    const controllers = classes.filter(c => c.type === 'controller');
+    const services = classes.filter(c => c.type === 'service');
+    const repositories = classes.filter(c => c.type === 'repository');
+    const entities = classes.filter(c => c.type === 'entity');
+
+    return `Analyze this Java project and provide comprehensive details in JSON format:
+
+Classes found:
+- Controllers: ${controllers.map(c => c.name).join(', ')}
+- Services: ${services.map(c => c.name).join(', ')}
+- Repositories: ${repositories.map(c => c.name).join(', ')}
+- Entities: ${entities.map(c => c.name).join(', ')}
+
+Key relationships: ${analysisData.relationships.map(r => `${r.from} ${r.type} ${r.to}`).slice(0, 10).join(', ')}
+
+Provide a JSON response with these exact fields:
+{
+  "projectDescription": "Detailed description of what this project does",
+  "businessProblem": "What business problem this application solves",
+  "keyObjective": "Primary goal or purpose of the system",
+  "functionalitySummary": "Summary of core functionality and capabilities",
+  "implementedFeatures": ["List", "of", "key", "features", "implemented"],
+  "modulesServices": ["List", "of", "main", "modules", "or", "services"]
+}`;
+  }
+
+  private generateRuleBasedProjectDetails(analysisData: AnalysisData): ProjectDetails {
+    return {
+      projectDescription: this.generateRuleBasedDescription(analysisData),
+      businessProblem: this.generateRuleBasedBusinessProblem(analysisData),
+      keyObjective: this.generateRuleBasedObjective(analysisData),
+      functionalitySummary: this.generateRuleBasedFunctionality(analysisData),
+      implementedFeatures: this.generateRuleBasedFeatures(analysisData),
+      modulesServices: this.generateRuleBasedModules(analysisData)
+    };
+  }
+
+  private generateRuleBasedDescription(analysisData: AnalysisData): string {
+    const controllers = analysisData.classes.filter(c => c.type === 'controller');
+    const services = analysisData.classes.filter(c => c.type === 'service');
+    const entities = analysisData.classes.filter(c => c.type === 'entity');
+    
+    return `This is a Java-based application with ${controllers.length} REST controllers, ${services.length} business services, and ${entities.length} data entities. The project follows Spring Boot architecture patterns with clear separation of concerns between presentation, business logic, and data access layers.`;
+  }
+
+  private generateRuleBasedBusinessProblem(analysisData: AnalysisData): string {
+    const entityNames = analysisData.classes.filter(c => c.type === 'entity').map(c => c.name.replace(/Entity$/, ''));
+    
+    if (entityNames.includes('User') || entityNames.includes('Account')) {
+      return "User management and authentication system requiring secure access control and data management";
+    } else if (entityNames.includes('Order') || entityNames.includes('Product')) {
+      return "E-commerce or order management system requiring transaction processing and inventory management";
+    } else if (entityNames.includes('Employee') || entityNames.includes('Department')) {
+      return "Enterprise resource management requiring organizational data handling and workflow automation";
+    }
+    
+    return "Business process automation requiring reliable data management and secure API endpoints";
+  }
+
+  private generateRuleBasedObjective(analysisData: AnalysisData): string {
+    const controllers = analysisData.classes.filter(c => c.type === 'controller');
+    const hasRestAnnotations = controllers.some(c => c.annotations.some(a => a.includes('@RestController')));
+    
+    if (hasRestAnnotations) {
+      return "Provide robust REST API services with reliable data processing and secure access control";
+    }
+    
+    return "Deliver scalable backend services with efficient data management and business logic processing";
+  }
+
+  private generateRuleBasedFunctionality(analysisData: AnalysisData): string {
+    const features = [];
+    const controllers = analysisData.classes.filter(c => c.type === 'controller');
+    const services = analysisData.classes.filter(c => c.type === 'service');
+    
+    if (controllers.length > 0) features.push("REST API endpoints for external integration");
+    if (services.length > 0) features.push("Business logic processing and validation");
+    if (analysisData.classes.some(c => c.annotations.some(a => a.includes('@Entity')))) {
+      features.push("Database operations with JPA/Hibernate");
+    }
+    if (analysisData.classes.some(c => c.annotations.some(a => a.includes('@Service')))) {
+      features.push("Dependency injection and service orchestration");
+    }
+    
+    return features.join(', ') || "Core application functionality with modular architecture";
+  }
+
+  private generateRuleBasedFeatures(analysisData: AnalysisData): string[] {
+    const features = [];
+    const controllers = analysisData.classes.filter(c => c.type === 'controller');
+    const entities = analysisData.classes.filter(c => c.type === 'entity');
+    
+    controllers.forEach(controller => {
+      const name = controller.name.replace(/Controller$/, '');
+      features.push(`${name} Management API`);
+    });
+    
+    entities.forEach(entity => {
+      const name = entity.name.replace(/Entity$/, '');
+      features.push(`${name} Data Model`);
+    });
+    
+    if (analysisData.classes.some(c => c.annotations.some(a => a.includes('@Security')))) {
+      features.push("Security and Authentication");
+    }
+    
+    return features.length > 0 ? features : ["Core Application Features", "Data Management", "API Services"];
+  }
+
+  private generateRuleBasedModules(analysisData: AnalysisData): string[] {
+    const modules = new Set<string>();
+    
+    analysisData.classes.forEach(cls => {
+      const packageParts = cls.package.split('.');
+      if (packageParts.length > 2) {
+        modules.add(packageParts[packageParts.length - 1]);
+      }
+    });
+    
+    const controllers = analysisData.classes.filter(c => c.type === 'controller');
+    const services = analysisData.classes.filter(c => c.type === 'service');
+    
+    if (controllers.length > 0) modules.add("Web Layer");
+    if (services.length > 0) modules.add("Service Layer");
+    if (analysisData.classes.some(c => c.type === 'repository')) modules.add("Data Access Layer");
+    
+    return Array.from(modules);
   }
 }
 
