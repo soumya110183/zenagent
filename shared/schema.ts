@@ -50,6 +50,15 @@ export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type Project = typeof projects.$inferSelect;
 export type GithubProject = z.infer<typeof githubProjectSchema>;
 
+// AI Model Configuration Schema
+export const aiModelConfigSchema = z.object({
+  type: z.enum(['openai', 'local']),
+  localEndpoint: z.string().optional(),
+  modelName: z.string().optional(),
+});
+
+export type AIModelConfig = z.infer<typeof aiModelConfigSchema>;
+
 // AI Analysis types
 export interface AIInsight {
   id: string;

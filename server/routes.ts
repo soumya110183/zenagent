@@ -8,6 +8,20 @@ import { aiAnalysisService } from "./services/aiAnalysisService";
 import multer from "multer";
 import { z } from "zod";
 
+interface AIModelConfig {
+  type: 'openai' | 'local';
+  openaiApiKey?: string;
+  localEndpoint?: string;
+  modelName?: string;
+}
+
+const aiModelConfigSchema = z.object({
+  type: z.enum(['openai', 'local']),
+  openaiApiKey: z.string().optional(),
+  localEndpoint: z.string().optional(),
+  modelName: z.string().optional(),
+});
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
@@ -172,6 +186,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting project:", error);
       res.status(500).json({ message: "Failed to delete project" });
+    }
+  });
+
+  // AI Model Configuration endpoint
+  app.post("/api/ai-config", async (req, res) => {
+    try {
+      const config = aiModelConfigSchema.parse(req.body);
+      
+      // Update the AI service configuration
+      aiAnalysisService.setModelConfig(config);
+      
+      res.json({ 
+        success: true, 
+        message: `AI model configured to use ${config.type === 'openai' ? 'OpenAI GPT-4o' : 'Local LLM'}`,
+        config: {
+          type: config.type,
+          ...(config.type === 'local' && { 
+            endpoint: config.localEndpoint,
+            model: config.modelName 
+          })
+        }
+      });
+    } catch (error) {
+      console.error('AI configuration error:', error);
+      res.status(400).json({ 
+        error: error instanceof z.ZodError ? error.errors : 'Invalid AI configuration' 
+      });
+    }
+  });
+
+  // Get current AI configuration
+  app.get("/api/ai-config", async (req, res) => {
+    try {
+      res.json({
+        type: 'openai', // Default configuration
+        message: 'Current AI configuration'
+      });
+    } catch (error) {
+      console.error('Error getting AI config:', error);
+      res.status(500).json({ error: 'Failed to get AI configuration' });
     }
   });
 

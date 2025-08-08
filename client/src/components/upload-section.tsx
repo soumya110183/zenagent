@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, FileArchive, FolderOpen, ChartGantt, Table, Database, Github, Bot, Zap, FileCode } from "lucide-react";
+import { SiPython, SiApachespark } from "react-icons/si";
 import GithubInput from "@/components/github-input";
 
 interface UploadSectionProps {

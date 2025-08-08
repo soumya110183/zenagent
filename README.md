@@ -1,119 +1,190 @@
-# Zengent - Java Project Architecture Analyzer
+# Zengent - Multi-Language Architecture Analyzer
 
-A full-stack web application that analyzes Java projects and generates interactive architectural diagrams. Upload ZIP files or analyze GitHub repositories to visualize Spring Boot applications, JPA entities, and architectural patterns.
+A comprehensive AI-powered project architecture analysis platform that transforms source code into interactive, intelligent visualizations and detailed insights.
 
-## Features
+## Overview
 
-- **Multiple Input Methods**
-  - Upload ZIP files containing Java source code (up to 50MB)
-  - Analyze public GitHub repositories directly
+Zengent is a full-stack web application designed to analyze multi-language project architectures through multiple input methods: ZIP file uploads and GitHub repository analysis. The system supports **Java**, **Python**, **PySpark**, and **Mainframe** codebases, extracting and parsing source files to identify architectural patterns, dependencies, and relationships between components.
 
-- **Comprehensive Analysis**
-  - Detects Spring Boot annotations (@Controller, @Service, @Repository, @Entity)
-  - Identifies architectural patterns (MVC, JPA/Hibernate, Dependency Injection)
-  - Extracts class relationships and method calls
-  - Analyzes JPA entity relationships
+## Key Features
 
-- **Interactive Visualizations**
-  - **Flow Chart**: Controller → Service → Repository flow visualization
-  - **Component Diagram**: Complete system architecture overview
-  - **Sequence Diagram**: Method call sequences (coming soon)
-  - **Class Diagram**: UML-style class representations with fields and methods
-  - **ER Diagram**: JPA entity relationship visualization
+### Multi-Language Support
+- **Java Projects**: Spring Boot patterns, JPA entities, MVC architecture, Maven/Gradle dependencies
+- **Python Applications**: Django/Flask frameworks, module dependencies, API endpoint mapping  
+- **PySpark Workflows**: DataFrame analysis, job flow visualization, performance metrics
+- **Mainframe Systems**: COBOL program flow, JCL job dependencies, database connections
 
-- **Export Options**
-  - PNG/SVG diagram export
-  - JSON analysis data export
-  - Comprehensive analysis reports
+### AI-Powered Analysis
+Choose between two powerful AI analysis options:
 
-## Technical Stack
+#### 🌐 Online AI (OpenAI GPT-4o)
+- **Technology**: OpenAI GPT-4o API
+- **Features**: 
+  - Advanced natural language understanding
+  - Sophisticated code pattern recognition
+  - Business context analysis
+  - High-quality architectural insights
+- **Best For**: Production environments, detailed analysis, professional reports
+- **Requirements**: OpenAI API key
+
+#### 🖥️ Local AI (Privacy-Focused)
+- **Technology**: Local LLM via Ollama
+- **Supported Models**:
+  - **Llama 2** - General purpose code analysis
+  - **Code Llama** - Specialized for code understanding
+  - **Mistral** - Efficient multi-language analysis
+  - **Deepseek Coder** - Advanced code comprehension
+  - **StarCoder** - Programming language specialist
+- **Features**:
+  - Complete data privacy (no external API calls)
+  - Customizable model selection
+  - Local inference processing
+  - No internet dependency for analysis
+- **Best For**: Sensitive codebases, air-gapped environments, privacy-first organizations
+- **Requirements**: Local Ollama installation
+
+### Interactive Visualizations
+- **React Flow Diagrams**: Interactive UML-style visualizations
+- **5 Diagram Types**: Flow Chart, Component, Class, Sequence, and ER diagrams
+- **Export Capabilities**: PNG and SVG format exports
+- **Real-time Interaction**: Zoom, pan, and explore architectural relationships
+
+### Comprehensive Analysis Reports
+- **Project Description**: Detailed overview of application purpose
+- **Business Problem Analysis**: What business challenge the system solves
+- **Technical Architecture**: Code structure, patterns, and dependencies
+- **Quality Metrics**: AI-powered quality scoring and recommendations
+- **PDF Export**: Professional reports with all analysis details and diagrams
+
+## Technology Stack
 
 ### Frontend
-- **Framework**: React 18 with TypeScript
-- **UI Library**: shadcn/ui components built on Radix UI
-- **Styling**: Tailwind CSS with custom design system
-- **State Management**: TanStack Query for server state
-- **Routing**: Wouter for lightweight client-side routing
-- **Diagrams**: React Flow for interactive visualizations
-- **Build Tool**: Vite with hot module replacement
-- **Icons**: Lucide React icon library
+- **React** with TypeScript for type safety
+- **Tailwind CSS** + **shadcn/ui** for modern UI components
+- **React Flow** for interactive diagram rendering
+- **TanStack Query** for efficient server state management
+- **Vite** for fast development and optimized builds
 
 ### Backend
-- **Runtime**: Node.js with TypeScript
-- **Framework**: Express.js with REST API design
-- **File Processing**: Multer for multipart uploads
-- **Archive Handling**: JSZip for ZIP file extraction
-- **Git Integration**: Native git commands for GitHub repository cloning
-- **Java Analysis**: Custom Java source code parser
-- **Session Management**: Express sessions with PostgreSQL store
+- **Express.js** with TypeScript
+- **Multer** for file upload handling (50MB ZIP limit)
+- **JSZip** for ZIP file extraction and processing
+- **Custom parsers** for multi-language code analysis
 
-### Database & ORM
-- **Database**: PostgreSQL (configured with Neon serverless)
-- **ORM**: Drizzle ORM with type-safe queries
-- **Schema Management**: Drizzle Kit for migrations
-- **Validation**: Zod for runtime type validation
+### AI & Analysis
+- **OpenAI GPT-4o** for online AI insights
+- **Ollama Integration** for local LLM processing
+- **Custom analysis engines** for each supported language
+- **Pattern recognition algorithms** for architectural insights
 
-### Development Tools
-- **Language**: TypeScript throughout the stack
-- **Package Manager**: npm
-- **Bundling**: ESBuild for production builds
-- **Linting**: TypeScript compiler for type checking
-- **Development Server**: Vite dev server with Express integration
+### Database & Storage
+- **PostgreSQL** with Drizzle ORM (configured)
+- **In-memory storage** for development
+- **Session management** with connect-pg-simple
 
-### Cloud & Deployment
-- **Platform**: Replit cloud development environment
-- **Database**: Neon PostgreSQL serverless
-- **Storage**: In-memory storage with database fallback
-- **Version Control**: Git integration for repository analysis
+## Local LLM Setup
 
-### Java Analysis Engine
-- **Parser**: Custom regex-based Java source code parser
-- **Pattern Detection**: Spring Framework architectural patterns
-- **Annotation Processing**: @Controller, @Service, @Repository, @Entity, etc.
-- **Relationship Mapping**: Class inheritance, method calls, dependency injection
-- **JPA Analysis**: Entity relationships, table mappings, column annotations
+### Installing Ollama
+```bash
+# Linux/macOS
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Windows
+# Download from https://ollama.ai/download
+```
+
+### Recommended Models for Code Analysis
+```bash
+# Install code-specialized models
+ollama pull codellama:7b
+ollama pull codellama:13b
+ollama pull deepseek-coder:6.7b
+ollama pull starcoder:7b
+
+# General purpose models
+ollama pull llama2:7b
+ollama pull mistral:7b
+```
+
+### Local LLM Configuration
+1. Start Ollama server: `ollama serve`
+2. Choose "Local LLM" in Zengent AI configuration
+3. Configure endpoint (default: `http://localhost:11434`)
+4. Select your preferred model (e.g., `codellama:7b`)
 
 ## Getting Started
 
-1. **Upload a Java Project**
-   - Drag and drop a ZIP file containing Java source code
-   - Or enter a GitHub repository URL
+### Prerequisites
+- Node.js 18+ and npm
+- For Local LLM: Ollama installation
+- For Online AI: OpenAI API key
 
-2. **Wait for Analysis**
-   - The system extracts and parses Java files
-   - Identifies architectural patterns and relationships
-   - Generates interactive diagrams
+### Installation
+```bash
+# Clone the repository
+git clone <repository-url>
+cd zengent
 
-3. **Explore Results**
-   - Navigate between different diagram types
-   - Interact with nodes and relationships
-   - Export diagrams and analysis data
+# Install dependencies
+npm install
 
-## Supported Java Frameworks
+# Start development server
+npm run dev
+```
 
-- **Spring Boot**: Controllers, Services, Repositories
-- **Spring Framework**: Component scanning, dependency injection
-- **JPA/Hibernate**: Entity mappings, relationships
-- **Standard Java**: Classes, interfaces, inheritance
+### Configuration
+1. **AI Model Selection**: Choose between OpenAI or Local LLM in the application
+2. **API Keys**: Provide OpenAI API key if using online AI
+3. **Local Setup**: Ensure Ollama is running for local AI analysis
 
-## API Endpoints
+## Supported Project Types
 
-- `GET /api/projects` - List all analyzed projects
-- `GET /api/projects/:id` - Get specific project details
-- `POST /api/projects/upload` - Upload and analyze ZIP file
-- `POST /api/projects/github` - Analyze GitHub repository
-- `DELETE /api/projects/:id` - Delete project
+| Language | Frameworks | Analysis Features |
+|----------|------------|-------------------|
+| **Java** | Spring Boot, Spring MVC, JPA | Controllers, Services, Repositories, Entities |
+| **Python** | Django, Flask, FastAPI | Modules, Views, Models, API endpoints |
+| **PySpark** | Apache Spark | DataFrames, Jobs, Transformations |
+| **Mainframe** | COBOL, JCL | Program flow, Job dependencies |
 
-## Architecture
+## Privacy & Security
 
-The application follows a modern full-stack architecture:
+### Local LLM Benefits
+- **Zero Data Transmission**: All analysis happens locally
+- **Model Customization**: Choose models best suited for your codebase
+- **Compliance Ready**: Perfect for regulated industries
+- **Cost Effective**: No per-request API charges
 
-- **Frontend**: React SPA with TypeScript and modern UI components
-- **Backend**: Express.js REST API with TypeScript
-- **Database**: PostgreSQL with type-safe ORM
-- **Processing**: Custom Java parser with pattern recognition
-- **Visualization**: React Flow for interactive diagrams
+### Online AI Benefits
+- **State-of-the-art Analysis**: Latest GPT-4o capabilities
+- **No Local Resources**: No need for powerful local hardware
+- **Always Updated**: Access to latest model improvements
+- **Scalable**: Handles large codebases efficiently
+
+## Export & Reporting
+
+- **PDF Reports**: Professional documents with cover page, index, and detailed analysis
+- **Diagram Export**: High-quality PNG/SVG exports of all visualizations
+- **Comprehensive Data**: Project details, architecture insights, and recommendations
+- **Professional Format**: Headers, footers, and proper document structure
+
+## Architecture Patterns Detected
+
+- Layered Architecture (MVC, MVP, MVVM)
+- Microservices patterns
+- Repository pattern
+- Dependency Injection
+- Factory patterns
+- Observer patterns
+- And many more...
+
+## Contributing
+
+This project follows modern development practices with TypeScript, comprehensive error handling, and modular architecture. Contributions are welcome!
 
 ## License
 
-This project is open source and available under the MIT License.
+[License information here]
+
+---
+
+**Zengent** - Transforming code into insights with the power of AI, whether online or local.

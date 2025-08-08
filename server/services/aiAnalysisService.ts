@@ -1,6 +1,13 @@
 import { type AnalysisData } from '@shared/schema';
 import OpenAI from 'openai';
 
+interface AIModelConfig {
+  type: 'openai' | 'local';
+  openaiApiKey?: string;
+  localEndpoint?: string;
+  modelName?: string;
+}
+
 interface JavaClass {
   name: string;
   package: string;
@@ -54,12 +61,32 @@ interface AIAnalysisResult {
 }
 
 export class AIAnalysisService {
-  private openai: OpenAI;
+  private openai: OpenAI | null = null;
+  private modelConfig: AIModelConfig;
 
-  constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+  constructor(config?: AIModelConfig) {
+    this.modelConfig = config || {
+      type: 'openai',
+      openaiApiKey: process.env.OPENAI_API_KEY
+    };
+    
+    if (this.modelConfig.type === 'openai' && this.modelConfig.openaiApiKey) {
+      this.openai = new OpenAI({
+        apiKey: this.modelConfig.openaiApiKey,
+      });
+    }
+  }
+
+  setModelConfig(config: AIModelConfig) {
+    this.modelConfig = config;
+    
+    if (config.type === 'openai' && config.openaiApiKey) {
+      this.openai = new OpenAI({
+        apiKey: config.openaiApiKey,
+      });
+    } else {
+      this.openai = null;
+    }
   }
 
   async analyzeProject(analysisData: AnalysisData): Promise<AIAnalysisResult> {
@@ -102,35 +129,46 @@ export class AIAnalysisService {
   private async generateProjectDetails(analysisData: AnalysisData): Promise<ProjectDetails> {
     const prompt = this.buildProjectDetailsPrompt(analysisData);
     
-    try {
-      const response = await this.openai.chat.completions.create({
-        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-        messages: [
-          {
-            role: "system",
-            content: "You are an expert software architect analyzing project code. Analyze the project structure and provide comprehensive project details in JSON format. Focus on business context, functionality, and technical scope."
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
-        max_tokens: 800,
-        temperature: 0.3,
-        response_format: { type: "json_object" },
-      });
+    if (this.modelConfig.type === 'openai' && this.openai) {
+      try {
+        const response = await this.openai.chat.completions.create({
+          model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert software architect analyzing project code. Analyze the project structure and provide comprehensive project details in JSON format. Focus on business context, functionality, and technical scope."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          max_tokens: 800,
+          temperature: 0.3,
+          response_format: { type: "json_object" },
+        });
 
-      const result = JSON.parse(response.choices[0].message.content || '{}');
-      return {
-        projectDescription: result.projectDescription || this.generateRuleBasedDescription(analysisData),
-        businessProblem: result.businessProblem || this.generateRuleBasedBusinessProblem(analysisData),
-        keyObjective: result.keyObjective || this.generateRuleBasedObjective(analysisData),
-        functionalitySummary: result.functionalitySummary || this.generateRuleBasedFunctionality(analysisData),
-        implementedFeatures: result.implementedFeatures || this.generateRuleBasedFeatures(analysisData),
-        modulesServices: result.modulesServices || this.generateRuleBasedModules(analysisData)
-      };
-    } catch (error) {
-      console.error('OpenAI API error for project details:', error);
+        const result = JSON.parse(response.choices[0].message.content || '{}');
+        return {
+          projectDescription: result.projectDescription || this.generateRuleBasedDescription(analysisData),
+          businessProblem: result.businessProblem || this.generateRuleBasedBusinessProblem(analysisData),
+          keyObjective: result.keyObjective || this.generateRuleBasedObjective(analysisData),
+          functionalitySummary: result.functionalitySummary || this.generateRuleBasedFunctionality(analysisData),
+          implementedFeatures: result.implementedFeatures || this.generateRuleBasedFeatures(analysisData),
+          modulesServices: result.modulesServices || this.generateRuleBasedModules(analysisData)
+        };
+      } catch (error) {
+        console.error('OpenAI API error for project details:', error);
+        return this.generateRuleBasedProjectDetails(analysisData);
+      }
+    } else if (this.modelConfig.type === 'local') {
+      try {
+        return await this.generateLocalLLMProjectDetails(analysisData, prompt);
+      } catch (error) {
+        console.error('Local LLM error for project details:', error);
+        return this.generateRuleBasedProjectDetails(analysisData);
+      }
+    } else {
       return this.generateRuleBasedProjectDetails(analysisData);
     }
   }
@@ -138,26 +176,37 @@ export class AIAnalysisService {
   private async generateProjectOverview(analysisData: AnalysisData): Promise<string> {
     const prompt = this.buildProjectOverviewPrompt(analysisData);
     
-    try {
-      const response = await this.openai.chat.completions.create({
-        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-        messages: [
-          {
-            role: "system",
-            content: "You are an expert Java architect analyzing project structure. Provide clear, concise insights about the project's architecture, patterns, and overall design."
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
-        max_tokens: 500,
-        temperature: 0.7,
-      });
+    if (this.modelConfig.type === 'openai' && this.openai) {
+      try {
+        const response = await this.openai.chat.completions.create({
+          model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert Java architect analyzing project structure. Provide clear, concise insights about the project's architecture, patterns, and overall design."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          max_tokens: 500,
+          temperature: 0.7,
+        });
 
-      return response.choices[0].message.content || this.generateRuleBasedOverview(analysisData);
-    } catch (error) {
-      console.error('OpenAI API error:', error);
+        return response.choices[0].message.content || this.generateRuleBasedOverview(analysisData);
+      } catch (error) {
+        console.error('OpenAI API error:', error);
+        return this.generateRuleBasedOverview(analysisData);
+      }
+    } else if (this.modelConfig.type === 'local') {
+      try {
+        return await this.generateLocalLLMOverview(analysisData, prompt);
+      } catch (error) {
+        console.error('Local LLM error:', error);
+        return this.generateRuleBasedOverview(analysisData);
+      }
+    } else {
       return this.generateRuleBasedOverview(analysisData);
     }
   }
@@ -611,6 +660,63 @@ Provide a JSON response with these exact fields:
     if (analysisData.classes.some(c => c.type === 'repository')) modules.add("Data Access Layer");
     
     return Array.from(modules);
+  }
+
+  private async generateLocalLLMProjectDetails(analysisData: AnalysisData, prompt: string): Promise<ProjectDetails> {
+    const response = await this.callLocalLLM(prompt + "\n\nRespond in JSON format with the exact fields specified.");
+    
+    try {
+      const result = JSON.parse(response);
+      return {
+        projectDescription: result.projectDescription || this.generateRuleBasedDescription(analysisData),
+        businessProblem: result.businessProblem || this.generateRuleBasedBusinessProblem(analysisData),
+        keyObjective: result.keyObjective || this.generateRuleBasedObjective(analysisData),
+        functionalitySummary: result.functionalitySummary || this.generateRuleBasedFunctionality(analysisData),
+        implementedFeatures: result.implementedFeatures || this.generateRuleBasedFeatures(analysisData),
+        modulesServices: result.modulesServices || this.generateRuleBasedModules(analysisData)
+      };
+    } catch (error) {
+      console.error('Failed to parse local LLM JSON response:', error);
+      return this.generateRuleBasedProjectDetails(analysisData);
+    }
+  }
+
+  private async generateLocalLLMOverview(analysisData: AnalysisData, prompt: string): Promise<string> {
+    try {
+      return await this.callLocalLLM(prompt);
+    } catch (error) {
+      console.error('Local LLM overview generation failed:', error);
+      return this.generateRuleBasedOverview(analysisData);
+    }
+  }
+
+  private async callLocalLLM(prompt: string): Promise<string> {
+    const endpoint = this.modelConfig.localEndpoint || 'http://localhost:11434';
+    const modelName = this.modelConfig.modelName || 'llama2';
+    
+    try {
+      const response = await fetch(`${endpoint}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: modelName,
+          prompt: prompt,
+          stream: false,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Local LLM request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.response || '';
+    } catch (error) {
+      console.error('Local LLM API call failed:', error);
+      throw error;
+    }
   }
 }
 

@@ -10,10 +10,14 @@ The application features a modern React frontend with an agent-like interface su
 
 - **Multi-Language Support**: Expanded from Java-only to support Java, Python, PySpark, and Mainframe codebases
 - **AI Agent Interface**: Redesigned with professional agent-like UI featuring language selection blocks
-- **OpenAI Integration**: Fully migrated to OpenAI GPT-4o for advanced AI-powered code analysis
+- **Dual AI Integration**: Added both OpenAI GPT-4o and Local LLM (Ollama) options for AI analysis
+- **Programming Language Icons**: Integrated proper icons (Java, Python, PySpark/Apache Spark, IBM) using react-icons
+- **AI Model Selector**: Added configuration interface for choosing between online and local AI models
+- **Local LLM Support**: Full integration with Ollama for privacy-focused, offline AI analysis
+- **Comprehensive PDF Export**: Professional documents with proper structure, diagrams, and branding
+- **README Enhancement**: Detailed documentation of Local LLM technologies and setup instructions
 - **Zensar Branding**: Integrated corporate branding with Zensar logo and banner
 - **GitHub Integration**: Enhanced GitHub repository analysis with multi-language detection
-- **Agent-Style Design**: Professional interface with language-specific analysis features
 
 ## User Preferences
 
@@ -72,9 +76,12 @@ The core analysis functionality processes multiple programming languages:
 - **PySpark Workflows**: DataFrame analysis, job flow visualization, performance metrics
 - **Mainframe Systems**: COBOL program flow, JCL job dependencies, database connections
 - **ZIP Extraction**: Automatic extraction and validation of source files across all supported languages
-- **AI-Powered Insights**: OpenAI GPT-4o integration for intelligent pattern recognition and recommendations
+- **Dual AI Options**: Choose between OpenAI GPT-4o (online) or Local LLM via Ollama (offline)
+- **Local LLM Models**: Support for Code Llama, Deepseek Coder, StarCoder, Llama 2, Mistral
+- **Privacy-First Analysis**: Complete offline analysis capability with no external data transmission
 - **Relationship Mapping**: Builds dependency graphs and architectural relationships
 - **Interactive Diagrams**: UML-style visualizations with language-specific representations
+- **Professional Reporting**: Comprehensive PDF exports with all analysis and diagrams
 
 ## External Dependencies
 
@@ -93,6 +100,12 @@ The core analysis functionality processes multiple programming languages:
 ### File Processing
 - **Multer**: Express middleware for handling multipart/form-data file uploads
 - **JSZip**: JavaScript library for reading and extracting ZIP files
+
+### AI & Analysis Integration  
+- **OpenAI API**: GPT-4o integration for advanced online AI analysis
+- **Ollama Integration**: Local LLM server support for offline, privacy-focused analysis
+- **Model Flexibility**: Support for multiple specialized code analysis models
+- **AI Configuration Interface**: User-selectable AI model configuration with real-time switching
 
 ### Development Tools
 - **Vite**: Frontend build tool with hot module replacement

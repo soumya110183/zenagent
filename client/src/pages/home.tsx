@@ -5,7 +5,11 @@ import UploadSection from "@/components/upload-section";
 import ProcessingSection from "@/components/processing-section";
 import AnalysisResults from "@/components/analysis-results";
 import Dashboard from "@/components/dashboard";
+import AIModelSelector, { type AIModelConfig } from "@/components/ai-model-selector";
+import { Button } from "@/components/ui/button";
+import { apiRequest } from "@/lib/queryClient";
 import { GitBranch, HelpCircle, Settings, Upload, Github, Code2, Database, Cpu, FileCode } from "lucide-react";
+import { SiPython, SiApachespark } from "react-icons/si";
 import zensarLogo from "@assets/zenlogo_1754679408998.png";
 import topBanner from "@assets/top banner_1754681525606.png";
 
@@ -16,6 +20,8 @@ export default function Home() {
   const [appState, setAppState] = useState<AppState>('upload');
   const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
   const [selectedProjectType, setSelectedProjectType] = useState<ProjectType | null>(null);
+  const [showAIConfig, setShowAIConfig] = useState(false);
+  const [aiConfig, setAiConfig] = useState<AIModelConfig>({ type: 'openai' });
 
   const { data: currentProject, refetch: refetchProject } = useQuery<Project>({
     queryKey: ['/api/projects', currentProjectId],
@@ -46,12 +52,28 @@ export default function Home() {
     setCurrentProjectId(null);
   };
 
+  const handleAIModelConfig = async (config: AIModelConfig) => {
+    try {
+      await apiRequest('/api/ai-config', {
+        method: 'POST',
+        body: JSON.stringify(config),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      setAiConfig(config);
+      setShowAIConfig(false);
+    } catch (error) {
+      console.error('Failed to configure AI model:', error);
+    }
+  };
+
   const projectTypes = [
     {
       id: 'java' as ProjectType,
       name: 'Java Code',
       description: 'Analyze Spring Boot, Maven, and Gradle projects',
-      icon: FileCode,
+      icon: FileCode, // Using generic icon instead of SiJava
       color: 'bg-orange-500',
       hoverColor: 'hover:bg-orange-600',
       borderColor: 'border-orange-200',
@@ -71,7 +93,7 @@ export default function Home() {
       id: 'mainframe' as ProjectType,
       name: 'Mainframe',
       description: 'Legacy COBOL and JCL analysis',
-      icon: Cpu,
+      icon: Cpu, // Using CPU icon for Mainframe
       color: 'bg-blue-500',
       hoverColor: 'hover:bg-blue-600',
       borderColor: 'border-blue-200',
@@ -103,6 +125,15 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAIConfig(true)}
+                className="text-white border-white hover:bg-white hover:text-primary"
+              >
+                <Settings className="w-4 h-4 mr-2" />
+                AI Settings
+              </Button>
               <button className="text-blue-200 hover:text-white transition-colors">
                 <HelpCircle className="w-5 h-5" />
               </button>
@@ -272,6 +303,32 @@ export default function Home() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
         </button>
+      )}
+
+      {/* AI Model Configuration Modal */}
+      {showAIConfig && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">AI Model Configuration</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAIConfig(false)}
+                >
+                  ✕
+                </Button>
+              </div>
+            </div>
+            <div className="p-4">
+              <AIModelSelector
+                onModelSelect={handleAIModelConfig}
+                currentConfig={aiConfig}
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
