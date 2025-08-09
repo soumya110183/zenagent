@@ -76,42 +76,70 @@ export default function Home() {
     {
       id: 'java' as ProjectType,
       name: 'Java Code',
-      description: 'Analyze Spring Boot, Maven, and Gradle projects',
+      description: 'Comprehensive analysis of Java applications including Spring Boot frameworks, Maven/Gradle builds, and enterprise patterns',
       logoSrc: javaLogo,
       color: 'bg-orange-500',
       hoverColor: 'hover:bg-orange-600',
       borderColor: 'border-orange-200',
-      features: ['Spring Boot Analysis', 'JPA Entity Mapping', 'MVC Pattern Detection']
+      features: [
+        'Spring Boot & Spring Framework analysis',
+        'JPA/Hibernate entity relationship mapping', 
+        'MVC architecture pattern detection',
+        'Maven/Gradle dependency analysis',
+        'RESTful API endpoint documentation',
+        'Database connection and configuration review'
+      ]
     },
     {
       id: 'pyspark' as ProjectType,
       name: 'PySpark',
-      description: 'Big data processing and analytics workflows',
+      description: 'Advanced big data processing pipeline analysis with Apache Spark ecosystem integration and performance optimization insights',
       logoSrc: pysparkLogo,
       color: 'bg-yellow-500',
       hoverColor: 'hover:bg-yellow-600',
       borderColor: 'border-yellow-200',
-      features: ['DataFrame Analysis', 'Job Flow Visualization', 'Performance Metrics']
+      features: [
+        'DataFrame operations and transformations',
+        'Spark job execution flow visualization',
+        'Performance bottleneck identification',
+        'Data pipeline architecture mapping',
+        'Cluster resource utilization analysis',
+        'SQL query optimization recommendations'
+      ]
     },
     {
       id: 'mainframe' as ProjectType,
       name: 'Mainframe',
-      description: 'Legacy COBOL and JCL analysis',
+      description: 'Legacy system analysis for COBOL programs, JCL job scheduling, and mainframe database integrations with modernization insights',
       logoSrc: ibmLogo,
       color: 'bg-blue-500',
       hoverColor: 'hover:bg-blue-600',
       borderColor: 'border-blue-200',
-      features: ['COBOL Program Flow', 'JCL Job Dependencies', 'Database Connections']
+      features: [
+        'COBOL program structure and flow analysis',
+        'JCL job dependency mapping',
+        'DB2/IMS database connection analysis',
+        'CICS transaction processing review',
+        'Copybook and include file relationships',
+        'Modernization readiness assessment'
+      ]
     },
     {
       id: 'python' as ProjectType,
       name: 'Python',
-      description: 'Django, Flask, and general Python applications',
+      description: 'Full-stack Python application analysis covering Django/Flask frameworks, API architectures, and dependency management',
       logoSrc: pythonLogo,
       color: 'bg-green-500',
       hoverColor: 'hover:bg-green-600',
       borderColor: 'border-green-200',
-      features: ['Framework Detection', 'Module Dependencies', 'API Endpoint Mapping']
+      features: [
+        'Django/Flask framework pattern detection',
+        'Python package and module dependencies',
+        'REST/GraphQL API endpoint mapping',
+        'Database ORM relationship analysis',
+        'Virtual environment and requirements review',
+        'Code quality and security assessment'
+      ]
     }
   ];
 
@@ -211,9 +239,17 @@ export default function Home() {
                       
                       {/* Second line - Description text */}
                       <div>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
                           {type.description}
                         </p>
+                        <ul className="space-y-1">
+                          {type.features.map((feature, index) => (
+                            <li key={index} className="text-xs text-gray-500 dark:text-gray-400 flex items-start">
+                              <div className="w-1 h-1 bg-gray-400 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                     
