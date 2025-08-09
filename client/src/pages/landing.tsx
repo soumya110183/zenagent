@@ -1,4 +1,4 @@
-import zenagentAgents from "@assets/zenagentw_1754760754148.png";
+import zenagentAgents from "@assets/zenagentw_1754761061005.png";
 import zensarLogo from "@assets/Zensar_composite_logo_whit_ai_1754732936523.png";
 import { LoginForm } from "@/components/login-form";
 
@@ -7,39 +7,39 @@ export default function Landing() {
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 flex">
       {/* Left Panel - Hero Content */}
       <div className="flex-1 flex flex-col justify-center items-center p-12 text-white relative overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 opacity-30">
+        {/* Zenagent AI Agents Image - Top Section */}
+        <div className="flex-1 flex items-end justify-center pb-8">
           <img 
             src={zenagentAgents} 
             alt="Zengent AI Agents" 
-            className="w-full h-full object-contain"
+            className="max-w-2xl w-full h-auto object-contain"
           />
         </div>
         
-        {/* Content */}
-        <div className="relative z-10 text-center max-w-lg">
-          {/* Logo */}
-          <div className="mb-8">
+        {/* Content - Bottom Section */}
+        <div className="text-center max-w-lg">
+          {/* Zensar Logo */}
+          <div className="mb-6">
             <img 
               src={zensarLogo} 
               alt="Zensar Logo" 
-              className="h-20 w-auto object-contain mx-auto filter brightness-0 invert"
+              className="h-16 w-auto object-contain mx-auto filter brightness-0 invert"
             />
           </div>
 
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-3xl font-bold mb-3">
             ENTERPRISE APPLICATION INTELLIGENCE
           </h1>
-          <h2 className="text-xl font-medium mb-6 opacity-90">
+          <h2 className="text-lg font-medium mb-4 opacity-90">
             PLATFORM POWERED BY AI AGENTS
           </h2>
-          <p className="text-lg opacity-80 leading-relaxed">
+          <p className="text-base opacity-80 leading-relaxed">
             Analyze your enterprise applications with powerful AI-driven insights and comprehensive 
             project intelligence for better decision making.
           </p>
           
           {/* Dots indicator */}
-          <div className="flex justify-center space-x-2 mt-8">
+          <div className="flex justify-center space-x-2 mt-6">
             <div className="w-3 h-3 bg-white rounded-full opacity-80"></div>
             <div className="w-3 h-3 bg-white rounded-full opacity-50"></div>
             <div className="w-3 h-3 bg-white rounded-full opacity-30"></div>
