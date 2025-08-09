@@ -1,84 +1,112 @@
-import { type User, type InsertUser, type Project, type InsertProject } from "@shared/schema";
-import { randomUUID } from "crypto";
+import {
+  users,
+  projects,
+  type User,
+  type UpsertUser,
+  type Project,
+  type InsertProject,
+  type GithubProject,
+  type AIModelConfig,
+} from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
+// Interface for storage operations
 export interface IStorage {
+  // User operations
+  // (IMPORTANT) these user operations are mandatory for Replit Auth.
   getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
-  getProject(id: string): Promise<Project | undefined>;
+  // Project operations
   createProject(project: InsertProject): Promise<Project>;
-  updateProject(id: string, project: Partial<Project>): Promise<Project | undefined>;
-  listProjects(): Promise<Project[]>;
+  getProject(id: string): Promise<Project | undefined>;
+  getProjects(): Promise<Project[]>;
+  updateProject(id: string, updates: Partial<Project>): Promise<Project | undefined>;
+  deleteProject(id: string): Promise<boolean>;
+  
+  // GitHub operations
+  createGithubProject(githubData: GithubProject): Promise<Project>;
+  
+  // AI Configuration
+  getAIConfig(): Promise<AIModelConfig>;
+  setAIConfig(config: AIModelConfig): Promise<void>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private projects: Map<string, Project>;
-
-  constructor() {
-    this.users = new Map();
-    this.projects = new Map();
-  }
+export class DatabaseStorage implements IStorage {
+  // User operations
+  // (IMPORTANT) these user operations are mandatory for Replit Auth.
 
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
 
-  async getProject(id: string): Promise<Project | undefined> {
-    return this.projects.get(id);
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
   }
 
-  async createProject(insertProject: InsertProject): Promise<Project> {
-    const id = randomUUID();
-    const project: Project = {
-      ...insertProject,
-      id,
-      uploadedAt: new Date(),
-      status: insertProject.status || 'processing',
-      analysisData: insertProject.analysisData || null,
-      fileCount: insertProject.fileCount || 0,
-      controllerCount: insertProject.controllerCount || 0,
-      serviceCount: insertProject.serviceCount || 0,
-      repositoryCount: insertProject.repositoryCount || 0,
-      entityCount: insertProject.entityCount || 0,
-      originalFileName: insertProject.originalFileName || null,
-      githubUrl: insertProject.githubUrl || null,
-      githubRepo: insertProject.githubRepo || null,
-      githubBranch: insertProject.githubBranch || null,
-      sourceType: insertProject.sourceType || 'upload',
-    };
-    this.projects.set(id, project);
+  // Project operations
+  async createProject(project: InsertProject): Promise<Project> {
+    const [newProject] = await db.insert(projects).values(project).returning();
+    return newProject;
+  }
+
+  async getProject(id: string): Promise<Project | undefined> {
+    const [project] = await db.select().from(projects).where(eq(projects.id, id));
     return project;
   }
 
-  async updateProject(id: string, updates: Partial<Project>): Promise<Project | undefined> {
-    const project = this.projects.get(id);
-    if (!project) return undefined;
-    
-    const updatedProject = { ...project, ...updates };
-    this.projects.set(id, updatedProject);
-    return updatedProject;
+  async getProjects(): Promise<Project[]> {
+    return await db.select().from(projects);
   }
 
-  async listProjects(): Promise<Project[]> {
-    return Array.from(this.projects.values()).sort(
-      (a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime()
-    );
+  async updateProject(id: string, updates: Partial<Project>): Promise<Project | undefined> {
+    const [project] = await db.update(projects).set(updates).where(eq(projects.id, id)).returning();
+    return project;
+  }
+
+  async deleteProject(id: string): Promise<boolean> {
+    const result = await db.delete(projects).where(eq(projects.id, id));
+    return result.rowCount > 0;
+  }
+
+  // GitHub operations
+  async createGithubProject(githubData: GithubProject): Promise<Project> {
+    const projectData = {
+      name: githubData.name || githubData.githubUrl.split('/').pop() || 'Unnamed Project',
+      githubUrl: githubData.githubUrl,
+      githubRepo: githubData.githubUrl.replace('https://github.com/', ''),
+      githubBranch: githubData.githubBranch,
+      sourceType: 'github' as const,
+      projectType: 'java' as const,
+      status: 'processing' as const,
+    };
+    
+    return this.createProject(projectData);
+  }
+
+  // AI Configuration
+  private aiConfig: AIModelConfig = { type: 'openai' };
+
+  async getAIConfig(): Promise<AIModelConfig> {
+    return this.aiConfig;
+  }
+
+  async setAIConfig(config: AIModelConfig): Promise<void> {
+    this.aiConfig = config;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
