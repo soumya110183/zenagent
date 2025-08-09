@@ -17,7 +17,9 @@ import {
   Shield,
   User as UserIcon,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  Info,
+  FileText
 } from "lucide-react";
 import zensarLogo from "@assets/Zensar_composite_logo_whit_ai_1754732936523.png";
 
@@ -87,6 +89,18 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
       href: '/admin-dashboard',
       icon: Shield,
       current: location === '/admin-dashboard'
+    },
+    {
+      name: 'About',
+      href: '/about',
+      icon: Info,
+      current: location === '/about'
+    },
+    {
+      name: 'Documentation',
+      href: '/readme',
+      icon: FileText,
+      current: location === '/readme'
     }
   ];
 

@@ -13,6 +13,8 @@ import PrivacyPolicy from "@/pages/privacy-policy";
 import UsageStatistics from "@/pages/usage-statistics";
 import AdminDashboard from "@/pages/admin-dashboard";
 import Profile from "@/pages/profile";
+import About from "@/pages/about";
+import ReadmePage from "@/pages/readme";
 import Layout from "@/components/layout";
 
 function Router() {
@@ -43,6 +45,8 @@ function Router() {
             )}
           </Route>
           <Route path="/profile" component={Profile} />
+          <Route path="/about" component={About} />
+          <Route path="/readme" component={ReadmePage} />
           <Route path="/" component={Home} />
         </>
       )}
