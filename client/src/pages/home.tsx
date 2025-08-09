@@ -194,23 +194,23 @@ export default function Home() {
                     onClick={() => setSelectedProjectType(type.id)}
                     className={`relative group cursor-pointer bg-white dark:bg-gray-800 rounded-xl border-2 ${type.borderColor} hover:border-opacity-60 shadow-lg hover:shadow-xl transition-all duration-300 p-6`}
                   >
-                    <div className="text-center">
-                      {/* Top - Logo */}
-                      <div className="flex justify-center mb-4">
-                        <div className={`inline-flex items-center justify-center bg-white rounded-lg p-2 ${type.id === 'pyspark' ? 'w-24 h-16' : 'w-16 h-16'}`}>
+                    <div>
+                      {/* First line - Logo and Heading name */}
+                      <div className="flex items-center space-x-3 mb-3">
+                        <div className={`inline-flex items-center justify-center bg-white rounded-lg p-2 ${type.id === 'pyspark' ? 'w-20 h-12' : 'w-12 h-12'}`}>
                           <img 
                             src={type.logoSrc} 
                             alt={`${type.name} logo`}
                             className="w-full h-full object-contain"
                           />
                         </div>
-                      </div>
-                      
-                      {/* Bottom - Content stacked vertically and centered */}
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white leading-tight mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white leading-tight">
                           {type.name}
                         </h3>
+                      </div>
+                      
+                      {/* Second line - Description text */}
+                      <div>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
                           {type.description}
                         </p>
