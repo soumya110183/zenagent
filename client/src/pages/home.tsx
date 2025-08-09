@@ -155,20 +155,17 @@ export default function Home() {
       <div className="bg-background font-sans text-foreground min-h-screen">
 
       {/* Main Heading */}
-      <div className="bg-gradient-to-b from-background to-muted py-12">
+      <div className="bg-gradient-to-b from-background to-muted py-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
+          <h1 className="text-2xl font-bold text-foreground mb-4">
             Ready to Explore our Agents
           </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Select a project type to get started with intelligent project analysis
-          </p>
         </div>
       </div>
 
       {/* Zenagent Banner */}
       <div className="flex justify-center py-4 bg-muted">
-        <div className="w-[80%] h-[50vw] max-h-80">
+        <div className="w-[60%] h-[30vw] max-h-60">
           <img 
             src={zenagentBanner} 
             alt="Zengent AI Agents" 
