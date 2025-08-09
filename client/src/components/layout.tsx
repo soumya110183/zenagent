@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
+
 import { useAuth } from "@/hooks/useAuth";
 import type { User } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
@@ -181,9 +181,6 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
                 </div>
               )}
               
-              <div className="text-white">
-                <ThemeToggle />
-              </div>
               <button className="text-blue-200 hover:text-white transition-colors">
                 <HelpCircle className="w-5 h-5" />
               </button>
