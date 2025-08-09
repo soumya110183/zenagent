@@ -19,7 +19,7 @@ import pysparkLogo from "@assets/pyspark-lang_1754703714412.png";
 import ibmLogo from "@assets/ibm_1754703124415.png";
 
 type AppState = 'upload' | 'processing' | 'results';
-type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'code-lens' | 'match-lens' | 'validator';
+type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'code-lens' | 'match-lens' | 'validator' | 'responsible';
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>('upload');
@@ -185,6 +185,23 @@ export default function Home() {
         'Performance bottleneck identification',
         'Regulatory compliance verification (GDPR, CCPA)',
         'Security risk scoring and remediation guidance'
+      ]
+    },
+    {
+      id: 'responsible' as ProjectType,
+      name: 'Responsible Agent',
+      description: 'AI/ML Safety, Fairness, and Governance framework implementation with comprehensive ethical AI assessment',
+      logoSrc: agentLogo,
+      borderColor: 'border-chart-1', // Myrtle Green
+      bgColor: 'bg-chart-1/5',
+      hoverBgColor: 'hover:bg-chart-1/10',
+      features: [
+        'AI/ML model fairness and bias detection',
+        'Algorithmic transparency and explainability analysis',
+        'Ethical AI governance framework implementation',
+        'Data privacy and consent management validation',
+        'Model safety and robustness assessment',
+        'Regulatory compliance for AI systems (EU AI Act, etc.)'
       ]
     }
   ];
