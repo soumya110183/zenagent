@@ -117,13 +117,22 @@ export default function Home() {
       <header className="bg-primary text-white shadow-lg">
         <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
+            {/* Left side - Zensar Logo */}
             <div className="flex items-center space-x-3">
-              <GitBranch className="text-xl" />
-              <div>
-                <h2 className="text-lg font-medium">Zengent AI - Enterprise Application Intelligence Platform</h2>
-                <p className="text-blue-200 text-sm">Comprehensive enterprise application analysis and intelligence platform</p>
-              </div>
+              <img 
+                src={zensarLogo} 
+                alt="Zensar Logo" 
+                className="h-8 w-auto"
+              />
             </div>
+            
+            {/* Center - Zengent AI Text */}
+            <div className="flex-1 text-center">
+              <h2 className="text-lg font-medium">Zengent AI - Enterprise Application Intelligence Platform</h2>
+              <p className="text-blue-200 text-sm">Comprehensive enterprise application analysis and intelligence platform</p>
+            </div>
+            
+            {/* Right side - AI Settings */}
             <div className="flex items-center space-x-4">
               <Button
                 variant="outline"
