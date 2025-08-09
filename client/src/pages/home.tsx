@@ -14,7 +14,7 @@ import zensarLogo from "@assets/zenlogo_1754679408998.png";
 import topBanner from "@assets/top banner_1754681525606.png";
 import javaLogo from "@assets/226777_1754703124416.png";
 import pythonLogo from "@assets/pyth_1754703124415.png";
-import pysparkLogo from "@assets/pyspark-lang_1754703124414.png";
+import pysparkLogo from "@assets/pyspark-lang_1754703714412.png";
 import ibmLogo from "@assets/ibm_1754703124415.png";
 
 type AppState = 'upload' | 'processing' | 'results';
