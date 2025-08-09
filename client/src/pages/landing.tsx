@@ -12,10 +12,13 @@ export default function Landing() {
           <h1 className="text-2xl font-bold mb-2 tracking-wide">
             ENTERPRISE APPLICATION INTELLIGENCE
           </h1>
+          <h2 className="text-base font-medium mb-4 opacity-90">
+            PLATFORM POWERED BY AI AGENTS
+          </h2>
         </div>
         
-        {/* Middle Section - Zenagent AI Agents Image - Moved Up */}
-        <div className="flex-1 flex items-start justify-center pt-4">
+        {/* Middle Section - Zenagent AI Agents Image */}
+        <div className="flex-1 flex items-start justify-center pt-2">
           <img 
             src={zenagentAgents} 
             alt="Zengent AI Agents" 
@@ -25,10 +28,7 @@ export default function Landing() {
         
         {/* Text below image */}
         <div className="text-center mb-12">
-          <h2 className="text-lg font-medium mb-6 opacity-90">
-            PLATFORM POWERED BY AI AGENTS
-          </h2>
-          <p className="text-sm opacity-70 leading-relaxed max-w-md mx-auto mt-8">
+          <p className="text-sm opacity-70 leading-relaxed max-w-md mx-auto">
             Analyze your enterprise applications with powerful AI-driven insights 
             and comprehensive project intelligence for better decision making.
           </p>
