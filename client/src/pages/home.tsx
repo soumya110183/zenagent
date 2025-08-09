@@ -129,7 +129,7 @@ export default function Home() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowAIConfig(true)}
-                className="text-white border-white hover:bg-white hover:text-primary"
+                className="text-yellow-200 border-white hover:bg-white hover:text-primary font-medium"
               >
                 <Settings className="w-4 h-4 mr-2" />
                 AI Settings
