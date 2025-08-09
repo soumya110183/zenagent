@@ -194,27 +194,37 @@ export default function Home() {
                     onClick={() => setSelectedProjectType(type.id)}
                     className={`relative group cursor-pointer bg-white dark:bg-gray-800 rounded-xl border-2 ${type.borderColor} hover:border-opacity-60 shadow-lg hover:shadow-xl transition-all duration-300 p-6`}
                   >
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-lg mb-4 p-3">
-                      <img 
-                        src={type.logoSrc} 
-                        alt={`${type.name} logo`}
-                        className="w-full h-full object-contain"
-                      />
+                    <div className="flex items-start space-x-4">
+                      {/* Left side - Logo */}
+                      <div className="flex-shrink-0">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-lg p-2">
+                          <img 
+                            src={type.logoSrc} 
+                            alt={`${type.name} logo`}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Right side - Content */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                          {type.name}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
+                          {type.description}
+                        </p>
+                        <ul className="space-y-1">
+                          {type.features.map((feature, index) => (
+                            <li key={index} className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
+                              <div className="w-1 h-1 bg-gray-400 rounded-full mr-2 flex-shrink-0"></div>
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                      {type.name}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                      {type.description}
-                    </p>
-                    <ul className="space-y-1">
-                      {type.features.map((feature, index) => (
-                        <li key={index} className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                          <div className="w-1 h-1 bg-gray-400 rounded-full mr-2"></div>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
+                    
                     <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     </div>
