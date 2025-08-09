@@ -37,13 +37,6 @@ export default function Landing() {
             Analyze your enterprise applications with powerful AI-driven insights and comprehensive 
             project intelligence for better decision making.
           </p>
-          
-          {/* Dots indicator */}
-          <div className="flex justify-center space-x-2 mt-6">
-            <div className="w-3 h-3 bg-white rounded-full opacity-80"></div>
-            <div className="w-3 h-3 bg-white rounded-full opacity-50"></div>
-            <div className="w-3 h-3 bg-white rounded-full opacity-30"></div>
-          </div>
         </div>
       </div>
 
