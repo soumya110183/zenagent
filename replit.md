@@ -11,16 +11,19 @@ The platform features a modern React frontend with an agent-like interface suppo
 - **Enterprise Application Intelligence Platform**: Renamed to "Zengent AI - Enterprise Application Intelligence Platform" to reflect comprehensive enterprise capabilities
 - **Multi-Language Support**: Expanded from Java-only to support Java, Python, PySpark, and Mainframe codebases
 - **AI Agent Interface**: Redesigned with professional agent-like UI featuring language selection blocks
-- **Dual AI Integration**: Added both OpenAI GPT-4o and Local LLM (Ollama) options for AI analysis
+- **Four AI Model Options**: Complete integration of OpenAI GPT-4o, AWS Claude 3.5, Google Gemini Pro, and Local LLM (Ollama)
+- **Custom Prompt Feature**: Added custom prompt input fields below analysis blocks for enhanced AI context
+- **Enhanced Flow Chart**: Redesigned flow diagrams with connected nodes showing complete project architecture flow
 - **Programming Language Icons**: Integrated proper icons (Java, Python, PySpark/Apache Spark, IBM) using react-icons
 - **AI Model Selector**: Added configuration interface for choosing between online and local AI models
-- **Local LLM Support**: Full integration with Ollama for privacy-focused, offline AI analysis
+- **Local LLM Support**: Full integration with Ollama supporting Code Llama, Deepseek Coder, StarCoder, Llama 3, Mistral
 - **SonarQube Integration**: Added comprehensive static code quality analysis with metrics and issue tracking
 - **Swagger API Documentation**: Integrated API documentation with request mapping overviews
 - **Project Structure Analysis**: Detailed module analysis with business logic descriptions and responsibilities
 - **Enhanced PDF Export**: Professional "Project Analysis Document" with revision history, corporate branding, and comprehensive sections
 - **Zensar Corporate Branding**: Integrated Zensar logos, colors, and "Prepared by Diamond Zensar Team" footer
 - **GitHub Integration**: Enhanced GitHub repository analysis with multi-language detection
+- **Local LLM Setup Guide**: Created comprehensive setup documentation for offline AI analysis
 
 ## User Preferences
 
