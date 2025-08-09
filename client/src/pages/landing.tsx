@@ -5,8 +5,17 @@ import { LoginForm } from "@/components/login-form";
 export default function Landing() {
   return (
     <div className="min-h-screen bg-black flex flex-col relative">
-      {/* Background Image - Centered in upper portion */}
-      <div className="absolute top-0 left-0 right-0 h-2/3 flex items-center justify-center">
+      {/* Zensar Logo - Top of page */}
+      <div className="relative z-10 text-center pt-8 pb-4">
+        <img 
+          src={zensarLogo} 
+          alt="Zensar Logo" 
+          className="h-16 w-auto object-contain mx-auto filter brightness-0 invert"
+        />
+      </div>
+      
+      {/* Background Image - Centered in middle portion */}
+      <div className="absolute top-24 left-0 right-0 h-2/3 flex items-center justify-center">
         <img 
           src={zenagentAgents} 
           alt="Zengent AI Agents" 
@@ -19,13 +28,8 @@ export default function Landing() {
       
       {/* Content Container - Positioned in lower portion */}
       <div className="relative z-10 w-full max-w-md mx-auto px-6 pb-16">
-        {/* Logo and Title */}
+        {/* Title */}
         <div className="text-center mb-8">
-          <img 
-            src={zensarLogo} 
-            alt="Zensar Logo" 
-            className="h-14 w-auto object-contain mx-auto filter brightness-0 invert mb-4"
-          />
           <h1 className="text-2xl font-bold text-white mb-2">ZENGENT AI</h1>
           <p className="text-blue-300 text-sm">Enterprise Application Intelligence Platform</p>
         </div>
