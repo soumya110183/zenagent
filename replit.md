@@ -1,22 +1,25 @@
-# Zengent - Multi-Language Project Architecture Analyzer
+# Zengent AI - Enterprise Application Intelligence Platform
 
 ## Overview
 
-This is a full-stack web application designed to analyze multi-language project architectures through multiple input methods: ZIP file uploads and GitHub repository analysis. The system supports Java, Python, PySpark, and Mainframe codebases, extracting and parsing source files to identify architectural patterns, dependencies, and relationships between components. It provides interactive visual diagrams and AI-powered analysis using OpenAI GPT-4o for intelligent insights.
+This is a comprehensive enterprise application intelligence platform designed to analyze multi-language project architectures through multiple input methods: ZIP file uploads and GitHub repository analysis. The system supports Java, Python, PySpark, and Mainframe codebases, extracting and parsing source files to identify architectural patterns, dependencies, and relationships between components. It provides interactive visual diagrams and AI-powered analysis using OpenAI GPT-4o for intelligent insights.
 
-The application features a modern React frontend with an agent-like interface supporting multiple programming languages, backed by an Express.js server that handles file processing, GitHub integration, and intelligent code analysis with UML-style diagrams and AI-generated recommendations.
+The platform features a modern React frontend with an agent-like interface supporting multiple programming languages, backed by an Express.js server that handles file processing, GitHub integration, and intelligent code analysis with UML-style diagrams and AI-generated recommendations. The system now includes comprehensive enterprise features including SonarQube integration, Swagger API documentation, and professional PDF report generation with corporate branding.
 
 ## Recent Changes (August 2025)
 
+- **Enterprise Application Intelligence Platform**: Renamed to "Zengent AI - Enterprise Application Intelligence Platform" to reflect comprehensive enterprise capabilities
 - **Multi-Language Support**: Expanded from Java-only to support Java, Python, PySpark, and Mainframe codebases
 - **AI Agent Interface**: Redesigned with professional agent-like UI featuring language selection blocks
 - **Dual AI Integration**: Added both OpenAI GPT-4o and Local LLM (Ollama) options for AI analysis
 - **Programming Language Icons**: Integrated proper icons (Java, Python, PySpark/Apache Spark, IBM) using react-icons
 - **AI Model Selector**: Added configuration interface for choosing between online and local AI models
 - **Local LLM Support**: Full integration with Ollama for privacy-focused, offline AI analysis
-- **Comprehensive PDF Export**: Professional documents with proper structure, diagrams, and branding
-- **README Enhancement**: Detailed documentation of Local LLM technologies and setup instructions
-- **Zensar Branding**: Integrated corporate branding with Zensar logo and banner
+- **SonarQube Integration**: Added comprehensive static code quality analysis with metrics and issue tracking
+- **Swagger API Documentation**: Integrated API documentation with request mapping overviews
+- **Project Structure Analysis**: Detailed module analysis with business logic descriptions and responsibilities
+- **Enhanced PDF Export**: Professional "Project Analysis Document" with revision history, corporate branding, and comprehensive sections
+- **Zensar Corporate Branding**: Integrated Zensar logos, colors, and "Prepared by Diamond Zensar Team" footer
 - **GitHub Integration**: Enhanced GitHub repository analysis with multi-language detection
 
 ## User Preferences
