@@ -12,6 +12,10 @@ import { GitBranch, HelpCircle, Settings, Upload, Github, Code2, Database, Cpu, 
 import { SiPython, SiApachespark } from "react-icons/si";
 import zensarLogo from "@assets/zenlogo_1754679408998.png";
 import topBanner from "@assets/top banner_1754681525606.png";
+import javaLogo from "@assets/226777_1754703124416.png";
+import pythonLogo from "@assets/pyth_1754703124415.png";
+import pysparkLogo from "@assets/pyspark-lang_1754703124414.png";
+import ibmLogo from "@assets/ibm_1754703124415.png";
 
 type AppState = 'upload' | 'processing' | 'results';
 type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python';
@@ -73,7 +77,7 @@ export default function Home() {
       id: 'java' as ProjectType,
       name: 'Java Code',
       description: 'Analyze Spring Boot, Maven, and Gradle projects',
-      icon: FileCode, // Using generic icon instead of SiJava
+      logoSrc: javaLogo,
       color: 'bg-orange-500',
       hoverColor: 'hover:bg-orange-600',
       borderColor: 'border-orange-200',
@@ -83,7 +87,7 @@ export default function Home() {
       id: 'pyspark' as ProjectType,
       name: 'PySpark',
       description: 'Big data processing and analytics workflows',
-      icon: Database,
+      logoSrc: pysparkLogo,
       color: 'bg-yellow-500',
       hoverColor: 'hover:bg-yellow-600',
       borderColor: 'border-yellow-200',
@@ -93,7 +97,7 @@ export default function Home() {
       id: 'mainframe' as ProjectType,
       name: 'Mainframe',
       description: 'Legacy COBOL and JCL analysis',
-      icon: Cpu, // Using CPU icon for Mainframe
+      logoSrc: ibmLogo,
       color: 'bg-blue-500',
       hoverColor: 'hover:bg-blue-600',
       borderColor: 'border-blue-200',
@@ -103,7 +107,7 @@ export default function Home() {
       id: 'python' as ProjectType,
       name: 'Python',
       description: 'Django, Flask, and general Python applications',
-      icon: Code2,
+      logoSrc: pythonLogo,
       color: 'bg-green-500',
       hoverColor: 'hover:bg-green-600',
       borderColor: 'border-green-200',
@@ -184,15 +188,18 @@ export default function Home() {
             {/* Project Type Selection */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {projectTypes.map((type) => {
-                const IconComponent = type.icon;
                 return (
                   <div
                     key={type.id}
                     onClick={() => setSelectedProjectType(type.id)}
                     className={`relative group cursor-pointer bg-white dark:bg-gray-800 rounded-xl border-2 ${type.borderColor} hover:border-opacity-60 shadow-lg hover:shadow-xl transition-all duration-300 p-6`}
                   >
-                    <div className={`inline-flex items-center justify-center w-12 h-12 ${type.color} ${type.hoverColor} rounded-lg mb-4 transition-colors`}>
-                      <IconComponent className="w-6 h-6 text-white" />
+                    <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-lg mb-4 p-2">
+                      <img 
+                        src={type.logoSrc} 
+                        alt={`${type.name} logo`}
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                       {type.name}
@@ -253,11 +260,14 @@ export default function Home() {
                 {(() => {
                   const selectedType = projectTypes.find(t => t.id === selectedProjectType);
                   if (!selectedType) return null;
-                  const IconComponent = selectedType.icon;
                   return (
                     <>
-                      <div className={`inline-flex items-center justify-center w-12 h-12 ${selectedType.color} rounded-lg`}>
-                        <IconComponent className="w-6 h-6 text-white" />
+                      <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-lg p-2">
+                        <img 
+                          src={selectedType.logoSrc} 
+                          alt={`${selectedType.name} logo`}
+                          className="w-full h-full object-contain"
+                        />
                       </div>
                       <div>
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
