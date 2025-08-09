@@ -1,4 +1,4 @@
-import zenagentAgents from "@assets/zenagentw_1754761061005.png";
+import zenagentAgents from "@assets/zenagentw_1754761892455.png";
 import zensarLogo from "@assets/Zensar_composite_logo_whit_ai_1754732936523.png";
 import { LoginForm } from "@/components/login-form";
 
@@ -8,14 +8,14 @@ export default function Landing() {
       {/* Left Panel - Hero Content */}
       <div className="flex-1 flex flex-col p-12 text-white relative overflow-hidden">
         {/* Top Section - Title Text */}
-        <div className="text-center pt-8 pb-4">
-          <h1 className="text-4xl font-bold mb-4 tracking-wide">
+        <div className="text-center pt-4 pb-2">
+          <h1 className="text-2xl font-bold mb-2 tracking-wide">
             ENTERPRISE APPLICATION INTELLIGENCE
           </h1>
         </div>
         
-        {/* Middle Section - Zenagent AI Agents Image */}
-        <div className="flex-1 flex items-center justify-center">
+        {/* Middle Section - Zenagent AI Agents Image - Moved Up */}
+        <div className="flex-1 flex items-start justify-center pt-4">
           <img 
             src={zenagentAgents} 
             alt="Zengent AI Agents" 
