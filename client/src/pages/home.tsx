@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { GitBranch, HelpCircle, Settings, Upload, Github, Code2, Database, Cpu, FileCode } from "lucide-react";
 import { SiPython, SiApachespark } from "react-icons/si";
-import zensarLogo from "@assets/zenlogo_1754679408998.png";
+import zensarLogo from "@assets/Zensar_composite_logo_whit_ai_1754732936523.png";
 import topBanner from "@assets/top banner_1754681525606.png";
 import javaLogo from "@assets/226777_1754703124416.png";
 import pythonLogo from "@assets/pyth_1754703124415.png";
