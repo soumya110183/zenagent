@@ -163,10 +163,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate AI analysis for project
   app.post("/api/projects/ai-analysis", async (req, res) => {
     try {
-      const analysisData = req.body;
+      const { customPrompt, ...analysisData } = req.body;
       console.log("Generating AI analysis for project...");
+      if (customPrompt) {
+        console.log("Custom prompt provided:", customPrompt.substring(0, 100) + (customPrompt.length > 100 ? '...' : ''));
+      }
       
-      const aiAnalysis = await aiAnalysisService.analyzeProject(analysisData);
+      const aiAnalysis = await aiAnalysisService.analyzeProject(analysisData, customPrompt);
       
       res.json(aiAnalysis);
     } catch (error) {

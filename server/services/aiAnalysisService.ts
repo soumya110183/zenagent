@@ -89,16 +89,16 @@ export class AIAnalysisService {
     }
   }
 
-  async analyzeProject(analysisData: AnalysisData): Promise<AIAnalysisResult> {
+  async analyzeProject(analysisData: AnalysisData, customPrompt?: string): Promise<AIAnalysisResult> {
     console.log('Starting AI analysis with OpenAI...');
     
     const moduleInsights: Record<string, AIInsight> = {};
     
     // Generate comprehensive project details
-    const projectDetails = await this.generateProjectDetails(analysisData);
+    const projectDetails = await this.generateProjectDetails(analysisData, customPrompt);
     
     // Generate project overview
-    const projectOverview = await this.generateProjectOverview(analysisData);
+    const projectOverview = await this.generateProjectOverview(analysisData, customPrompt);
     
     // Analyze key modules (limit to first 5 to manage API costs)
     const keyClasses = analysisData.classes.slice(0, 5);
@@ -108,10 +108,10 @@ export class AIAnalysisService {
     }
     
     // Generate architecture insights
-    const architectureInsights = await this.generateArchitectureInsights(analysisData);
+    const architectureInsights = await this.generateArchitectureInsights(analysisData, customPrompt);
     
     // Generate improvement suggestions
-    const suggestions = await this.generateSuggestions(analysisData);
+    const suggestions = await this.generateSuggestions(analysisData, customPrompt);
     
     // Calculate quality score
     const qualityScore = this.calculateQualityScore(analysisData);
@@ -126,8 +126,8 @@ export class AIAnalysisService {
     };
   }
 
-  private async generateProjectDetails(analysisData: AnalysisData): Promise<ProjectDetails> {
-    const prompt = this.buildProjectDetailsPrompt(analysisData);
+  private async generateProjectDetails(analysisData: AnalysisData, customPrompt?: string): Promise<ProjectDetails> {
+    const prompt = this.buildProjectDetailsPrompt(analysisData, customPrompt);
     
     if (this.modelConfig.type === 'openai' && this.openai) {
       try {
@@ -173,8 +173,8 @@ export class AIAnalysisService {
     }
   }
 
-  private async generateProjectOverview(analysisData: AnalysisData): Promise<string> {
-    const prompt = this.buildProjectOverviewPrompt(analysisData);
+  private async generateProjectOverview(analysisData: AnalysisData, customPrompt?: string): Promise<string> {
+    const prompt = this.buildProjectOverviewPrompt(analysisData, customPrompt);
     
     if (this.modelConfig.type === 'openai' && this.openai) {
       try {
@@ -248,9 +248,9 @@ export class AIAnalysisService {
     }
   }
 
-  private async generateArchitectureInsights(analysisData: AnalysisData): Promise<string[]> {
+  private async generateArchitectureInsights(analysisData: AnalysisData, customPrompt?: string): Promise<string[]> {
     try {
-      const prompt = `Analyze this Java project architecture and provide 3-5 key architectural insights:
+      let prompt = `Analyze this Java project architecture and provide 3-5 key architectural insights:
 
 Classes breakdown:
 - Controllers: ${analysisData.classes.filter(c => c.type === 'controller').length}
@@ -259,6 +259,10 @@ Classes breakdown:
 - Entities: ${analysisData.entities.length}
 
 Please provide specific insights about architecture patterns, design quality, and structural observations.`;
+
+      if (customPrompt) {
+        prompt += `\n\nAdditional Focus Areas:\n${customPrompt}`;
+      }
 
       const response = await this.openai.chat.completions.create({
         model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
@@ -284,9 +288,9 @@ Please provide specific insights about architecture patterns, design quality, an
     }
   }
 
-  private async generateSuggestions(analysisData: AnalysisData): Promise<string[]> {
+  private async generateSuggestions(analysisData: AnalysisData, customPrompt?: string): Promise<string[]> {
     try {
-      const prompt = `Review this Java project and provide 3-5 specific improvement suggestions:
+      let prompt = `Review this Java project and provide 3-5 specific improvement suggestions:
 
 Project structure:
 - Total classes: ${analysisData.classes.length}
@@ -296,6 +300,10 @@ Project structure:
 - Entities: ${analysisData.entities.length}
 
 Provide actionable suggestions for code quality, architecture, and best practices.`;
+
+      if (customPrompt) {
+        prompt += `\n\nSpecial Requirements:\n${customPrompt}`;
+      }
 
       const response = await this.openai.chat.completions.create({
         model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
@@ -321,14 +329,14 @@ Provide actionable suggestions for code quality, architecture, and best practice
     }
   }
 
-  private buildProjectOverviewPrompt(analysisData: AnalysisData): string {
+  private buildProjectOverviewPrompt(analysisData: AnalysisData, customPrompt?: string): string {
     const classCount = analysisData.classes.length;
     const controllerCount = analysisData.classes.filter(c => c.type === 'controller').length;
     const serviceCount = analysisData.classes.filter(c => c.type === 'service').length;
     const repositoryCount = analysisData.classes.filter(c => c.type === 'repository').length;
     const entityCount = analysisData.entities.length;
     
-    return `Analyze this Java project and provide a comprehensive overview:
+    let basePrompt = `Analyze this Java project and provide a comprehensive overview:
 
 Project Statistics:
 - Total Classes: ${classCount}
@@ -342,6 +350,12 @@ Key Classes:
 ${analysisData.classes.slice(0, 5).map(c => `- ${c.name} (${c.type}): ${c.methods.length} methods`).join('\n')}
 
 Please provide a detailed overview of the project's architecture, main patterns used, and overall design quality.`;
+
+    if (customPrompt) {
+      basePrompt += `\n\nAdditional Analysis Requirements:\n${customPrompt}`;
+    }
+    
+    return basePrompt;
   }
 
   private buildModuleAnalysisPrompt(javaClass: JavaClass, context: AnalysisData): string {
@@ -531,14 +545,14 @@ Please provide specific insights about this class's role, responsibilities, desi
     return Math.min(100, Math.max(0, score));
   }
 
-  private buildProjectDetailsPrompt(analysisData: AnalysisData): string {
+  private buildProjectDetailsPrompt(analysisData: AnalysisData, customPrompt?: string): string {
     const classes = analysisData.classes;
     const controllers = classes.filter(c => c.type === 'controller');
     const services = classes.filter(c => c.type === 'service');
     const repositories = classes.filter(c => c.type === 'repository');
     const entities = classes.filter(c => c.type === 'entity');
 
-    return `Analyze this Java project and provide comprehensive details in JSON format:
+    let basePrompt = `Analyze this Java project and provide comprehensive details in JSON format:
 
 Classes found:
 - Controllers: ${controllers.map(c => c.name).join(', ')}
@@ -546,9 +560,13 @@ Classes found:
 - Repositories: ${repositories.map(c => c.name).join(', ')}
 - Entities: ${entities.map(c => c.name).join(', ')}
 
-Key relationships: ${analysisData.relationships.map(r => `${r.from} ${r.type} ${r.to}`).slice(0, 10).join(', ')}
+Key relationships: ${analysisData.relationships.map(r => `${r.from} ${r.type} ${r.to}`).slice(0, 10).join(', ')}`;
 
-Provide a JSON response with these exact fields:
+    if (customPrompt) {
+      basePrompt += `\n\nAdditional Analysis Requirements:\n${customPrompt}\n`;
+    }
+
+    basePrompt += `\nProvide a JSON response with these exact fields:
 {
   "projectDescription": "Detailed description of what this project does",
   "businessProblem": "What business problem this application solves",
@@ -557,6 +575,8 @@ Provide a JSON response with these exact fields:
   "implementedFeatures": ["List", "of", "key", "features", "implemented"],
   "modulesServices": ["List", "of", "main", "modules", "or", "services"]
 }`;
+
+    return basePrompt;
   }
 
   private generateRuleBasedProjectDetails(analysisData: AnalysisData): ProjectDetails {

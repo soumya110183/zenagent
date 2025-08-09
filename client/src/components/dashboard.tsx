@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -20,7 +22,8 @@ import {
   CheckCircle,
   Brain,
   Lightbulb,
-  Target
+  Target,
+  MessageSquareText
 } from 'lucide-react';
 import { type AnalysisData, type AIAnalysisResult } from '@shared/schema';
 
@@ -130,6 +133,7 @@ function AIInsightCard({ title, content, confidence, tags, type }: AIInsightCard
 export default function Dashboard({ analysisData }: DashboardProps) {
   const [aiAnalysis, setAiAnalysis] = useState<AIAnalysisResult | null>(null);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [customPrompt, setCustomPrompt] = useState('');
 
   // Calculate statistics
   const stats = {
@@ -146,12 +150,17 @@ export default function Dashboard({ analysisData }: DashboardProps) {
   const generateAIAnalysis = async () => {
     setIsLoadingAI(true);
     try {
+      const requestBody = {
+        ...analysisData,
+        customPrompt: customPrompt.trim() || undefined
+      };
+      
       const response = await fetch('/api/projects/ai-analysis', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(analysisData),
+        body: JSON.stringify(requestBody),
       });
       
       if (!response.ok) {
@@ -238,6 +247,34 @@ export default function Dashboard({ analysisData }: DashboardProps) {
           color="purple"
         />
       </div>
+
+      {/* Custom Prompt Section */}
+      <Card className="border-dashed border-2 border-blue-200 bg-blue-50/30">
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <MessageSquareText className="w-5 h-5 text-blue-600" />
+              <Label htmlFor="custom-prompt" className="text-sm font-medium text-gray-700">
+                Custom Prompt for AI Analysis (Optional)
+              </Label>
+            </div>
+            <div className="space-y-2">
+              <Textarea
+                id="custom-prompt"
+                placeholder="Add any specific instructions or context for the AI analysis... 
+Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Analyze the authentication flow in detail'"
+                value={customPrompt}
+                onChange={(e) => setCustomPrompt(e.target.value)}
+                className="min-h-[100px] resize-vertical"
+                disabled={isLoadingAI}
+              />
+              <p className="text-xs text-gray-500">
+                This additional context will be included when generating AI insights to provide more targeted analysis.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="overview" className="space-y-6">
