@@ -207,10 +207,13 @@ export default function Home() {
                       </div>
                       
                       {/* Right side - Content */}
-                      <div className="flex-1 min-w-0 flex items-center">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                           {type.name}
                         </h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          {type.description}
+                        </p>
                       </div>
                     </div>
                     
