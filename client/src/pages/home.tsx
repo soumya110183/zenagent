@@ -12,7 +12,7 @@ import { GitBranch, HelpCircle, Settings, Upload, Github, Code2, Database, Cpu, 
 import Layout from "@/components/layout";
 import { SiPython, SiApachespark } from "react-icons/si";
 import zensarLogo from "@assets/Zensar_composite_logo_whit_ai_1754732936523.png";
-import topBanner from "@assets/top banner_1754681525606.png";
+import zenagentBanner from "@assets/zenagent_1754759778955.png";
 import agentLogo from "@assets/agent_1754754612491.png";
 import pythonLogo from "@assets/pyth_1754703124415.png";
 import pysparkLogo from "@assets/pyspark-lang_1754703714412.png";
@@ -166,11 +166,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Zensar Banner */}
+      {/* Zenagent Banner */}
       <div className="flex justify-center py-4 bg-muted">
-        <div className="w-[60%] h-[60vw] max-h-96">
+        <div className="w-[80%] h-[50vw] max-h-80">
           <img 
-            src={topBanner} 
+            src={zenagentBanner} 
             alt="Zengent AI Agents" 
             className="w-full h-full object-contain rounded-lg"
           />
