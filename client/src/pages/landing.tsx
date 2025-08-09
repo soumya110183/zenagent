@@ -18,16 +18,16 @@ export default function Landing() {
         </div>
         
         {/* Middle Section - Zenagent AI Agents Image */}
-        <div className="flex-1 flex items-start justify-center pt-2">
+        <div className="flex-1 flex items-start justify-center pt-6 pb-8">
           <img 
             src={zenagentAgents} 
             alt="Zengent AI Agents" 
-            className="max-w-3xl w-full h-auto object-contain"
+            className="max-w-2xl w-full h-auto object-contain"
           />
         </div>
         
-        {/* Text below image */}
-        <div className="text-center mb-12">
+        {/* Text below image with more spacing */}
+        <div className="text-center mb-12 mt-6">
           <p className="text-sm opacity-70 leading-relaxed max-w-md mx-auto">
             Analyze your enterprise applications with powerful AI-driven insights 
             and comprehensive project intelligence for better decision making.
