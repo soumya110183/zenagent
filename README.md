@@ -187,4 +187,4 @@ This project follows modern development practices with TypeScript, comprehensive
 
 ---
 
-**Zengent** - Transforming code into insights with the power of AI, whether online or local.
+**Zengent** - Transforming code into insights with the power of AI, whether online or local.# Zengent AI - Enterprise Application Intelligence Platform
