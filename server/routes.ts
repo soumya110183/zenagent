@@ -11,6 +11,7 @@ import { projectStructureAnalyzer } from "./services/projectStructureAnalyzer";
 import swaggerUi from "swagger-ui-express";
 import multer from "multer";
 import { z } from "zod";
+import os from "os";
 
 interface AIModelConfig {
   type: 'openai' | 'local';
@@ -449,7 +450,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get memory usage
       const memoryUsage = process.memoryUsage();
-      const os = await import('os');
       const totalMemory = os.totalmem();
       const freeMemory = os.freemem();
       const usedMemory = totalMemory - freeMemory;
