@@ -56,54 +56,48 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
   return (
     <div className="w-full">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-3">
           <div>
-            <Label htmlFor="username" className="text-sm font-medium text-gray-700">
-              Username
-            </Label>
             <Input
               id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
-              className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Username"
+              className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:ring-2 focus:ring-blue-400 focus:border-transparent backdrop-blur-sm"
               required
             />
           </div>
           <div>
-            <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-              Password
-            </Label>
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Password"
+              className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:ring-2 focus:ring-blue-400 focus:border-transparent backdrop-blur-sm"
               required
             />
           </div>
         </div>
         
-        <div className="flex items-center justify-between text-sm">
-          <label className="flex items-center text-gray-600">
-            <input type="checkbox" className="mr-2 rounded" />
+        <div className="flex items-center justify-between text-sm mt-4">
+          <label className="flex items-center text-gray-300">
+            <input type="checkbox" className="mr-2 rounded bg-white/20 border-white/30" />
             Remember me
           </label>
-          <a href="#" className="text-blue-600 hover:text-blue-800">
+          <a href="#" className="text-blue-300 hover:text-blue-200">
             Forgot Password?
           </a>
         </div>
         
         <Button 
           type="submit" 
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors" 
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 rounded-lg font-medium transition-all duration-200 mt-6" 
           disabled={loginMutation.isPending}
         >
-          {loginMutation.isPending ? "SIGNING IN..." : "LOGIN"}
+          {loginMutation.isPending ? "SIGNING IN..." : "SIGN IN"}
         </Button>
       </form>
     </div>
