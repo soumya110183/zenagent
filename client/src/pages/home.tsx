@@ -242,14 +242,16 @@ export default function Home() {
                         <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
                           {type.description}
                         </p>
-                        <ul className="space-y-1">
-                          {type.features.map((feature, index) => (
-                            <li key={index} className="text-xs text-gray-500 dark:text-gray-400 flex items-start">
-                              <div className="w-1 h-1 bg-gray-400 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
+                        <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-3 mt-3">
+                          <ul className="space-y-1">
+                            {type.features.map((feature, index) => (
+                              <li key={index} className="text-xs text-gray-300 dark:text-gray-400 flex items-start">
+                                <div className="w-1 h-1 bg-gray-400 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
                     </div>
                     
