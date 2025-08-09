@@ -6,37 +6,41 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 flex">
       {/* Left Panel - Hero Content */}
-      <div className="flex-1 flex flex-col justify-center items-center p-12 text-white relative overflow-hidden">
-        {/* Zenagent AI Agents Image - Top Section */}
-        <div className="flex-1 flex items-end justify-center pb-8">
+      <div className="flex-1 flex flex-col p-12 text-white relative overflow-hidden">
+        {/* Top Section - Title Text */}
+        <div className="text-center pt-8 pb-4">
+          <h1 className="text-4xl font-bold mb-4 tracking-wide">
+            ENTERPRISE APPLICATION INTELLIGENCE
+          </h1>
+        </div>
+        
+        {/* Middle Section - Zenagent AI Agents Image */}
+        <div className="flex-1 flex items-center justify-center">
           <img 
             src={zenagentAgents} 
             alt="Zengent AI Agents" 
-            className="max-w-2xl w-full h-auto object-contain"
+            className="max-w-3xl w-full h-auto object-contain"
           />
         </div>
         
-        {/* Content - Bottom Section */}
-        <div className="text-center max-w-lg">
-          {/* Zensar Logo */}
-          <div className="mb-6">
-            <img 
-              src={zensarLogo} 
-              alt="Zensar Logo" 
-              className="h-16 w-auto object-contain mx-auto filter brightness-0 invert"
-            />
-          </div>
-
-          <h1 className="text-3xl font-bold mb-3">
-            ENTERPRISE APPLICATION INTELLIGENCE
-          </h1>
-          <h2 className="text-lg font-medium mb-4 opacity-90">
+        {/* Text below image */}
+        <div className="text-center mb-8">
+          <h2 className="text-xl font-medium mb-4 opacity-90">
             PLATFORM POWERED BY AI AGENTS
           </h2>
-          <p className="text-base opacity-80 leading-relaxed">
-            Analyze your enterprise applications with powerful AI-driven insights and comprehensive 
-            project intelligence for better decision making.
+          <p className="text-base opacity-80 leading-relaxed max-w-lg mx-auto">
+            Analyze your enterprise applications with powerful AI-driven insights 
+            and comprehensive project intelligence for better decision making.
           </p>
+        </div>
+        
+        {/* Bottom Section - Zensar Logo */}
+        <div className="text-center pb-4">
+          <img 
+            src={zensarLogo} 
+            alt="Zensar Logo" 
+            className="h-12 w-auto object-contain mx-auto filter brightness-0 invert"
+          />
         </div>
       </div>
 
