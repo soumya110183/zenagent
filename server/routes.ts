@@ -47,6 +47,22 @@ const upload = multer({
   }
 });
 
+const uploadImage = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit for images
+  },
+  fileFilter: (req, file, cb) => {
+    const isImage = file.mimetype.startsWith('image/');
+    
+    if (isImage) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Session middleware
@@ -92,6 +108,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Update user profile
+  app.patch('/api/auth/user', isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const updateData = req.body;
+      
+      // Validate the update data
+      const allowedFields = ['firstName', 'lastName', 'email'];
+      const validData: any = {};
+      
+      for (const field of allowedFields) {
+        if (updateData[field] !== undefined) {
+          validData[field] = updateData[field];
+        }
+      }
+      
+      const updatedUser = await storage.updateUser(userId, validData);
+      if (updatedUser) {
+        const { password, ...userWithoutPassword } = updatedUser;
+        res.json(userWithoutPassword);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  // Upload profile image
+  app.post('/api/auth/upload-avatar', isAuthenticated, uploadImage.single('profileImage'), async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const file = req.file;
+      
+      if (!file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+      
+      // Convert image to base64 for storage
+      const imageData = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+      
+      const updatedUser = await storage.updateUser(userId, { profileImageUrl: imageData });
+      if (updatedUser) {
+        const { password, ...userWithoutPassword } = updatedUser;
+        res.json(userWithoutPassword);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      console.error("Error uploading profile image:", error);
+      res.status(500).json({ message: "Failed to upload image" });
     }
   });
   
