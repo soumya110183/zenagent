@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { type Project } from "@shared/schema";
 import UploadSection from "@/components/upload-section";
@@ -13,7 +13,7 @@ import Layout from "@/components/layout";
 import { SiPython, SiApachespark } from "react-icons/si";
 import zensarLogo from "@assets/Zensar_composite_logo_whit_ai_1754732936523.png";
 import topBanner from "@assets/top banner_1754681525606.png";
-import javaLogo from "@assets/226777_1754703124416.png";
+import agentLogo from "@assets/agent_1754754612491.png";
 import pythonLogo from "@assets/pyth_1754703124415.png";
 import pysparkLogo from "@assets/pyspark-lang_1754703714412.png";
 import ibmLogo from "@assets/ibm_1754703124415.png";
@@ -76,9 +76,9 @@ export default function Home() {
   const projectTypes = [
     {
       id: 'java' as ProjectType,
-      name: 'Java Code',
+      name: 'Java',
       description: 'Comprehensive analysis of Java applications including Spring Boot frameworks, Maven/Gradle builds, and enterprise patterns',
-      logoSrc: javaLogo,
+      logoSrc: agentLogo,
       color: 'bg-orange-500',
       hoverColor: 'hover:bg-orange-600',
       borderColor: 'border-orange-200',
@@ -95,7 +95,7 @@ export default function Home() {
       id: 'pyspark' as ProjectType,
       name: 'PySpark',
       description: 'Advanced big data processing pipeline analysis with Apache Spark ecosystem integration and performance optimization insights',
-      logoSrc: pysparkLogo,
+      logoSrc: agentLogo,
       color: 'bg-yellow-500',
       hoverColor: 'hover:bg-yellow-600',
       borderColor: 'border-yellow-200',
@@ -112,7 +112,7 @@ export default function Home() {
       id: 'mainframe' as ProjectType,
       name: 'Mainframe',
       description: 'Legacy system analysis for COBOL programs, JCL job scheduling, and mainframe database integrations with modernization insights',
-      logoSrc: ibmLogo,
+      logoSrc: agentLogo,
       color: 'bg-blue-500',
       hoverColor: 'hover:bg-blue-600',
       borderColor: 'border-blue-200',
@@ -129,7 +129,7 @@ export default function Home() {
       id: 'python' as ProjectType,
       name: 'Python',
       description: 'Full-stack Python application analysis covering Django/Flask frameworks, API architectures, and dependency management',
-      logoSrc: pythonLogo,
+      logoSrc: agentLogo,
       color: 'bg-green-500',
       hoverColor: 'hover:bg-green-600',
       borderColor: 'border-green-200',
