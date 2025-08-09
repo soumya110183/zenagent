@@ -24,7 +24,7 @@ export default function Landing() {
         </div>
         
         {/* Text below image */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-12">
           <h2 className="text-lg font-medium mb-6 opacity-90">
             PLATFORM POWERED BY AI AGENTS
           </h2>
@@ -34,8 +34,8 @@ export default function Landing() {
           </p>
         </div>
         
-        {/* Bottom Section - Zensar Logo */}
-        <div className="text-center pb-4">
+        {/* Bottom Section - Zensar Logo - Moved Further Down */}
+        <div className="text-center pb-8 mt-auto">
           <img 
             src={zensarLogo} 
             alt="Zensar Logo" 
