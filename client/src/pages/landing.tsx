@@ -25,7 +25,7 @@ export default function Landing() {
         
         {/* Text below image */}
         <div className="text-center mb-8">
-          <h2 className="text-xl font-medium mb-4 opacity-90">
+          <h2 className="text-lg font-medium mb-4 opacity-90">
             PLATFORM POWERED BY AI AGENTS
           </h2>
           <p className="text-base opacity-80 leading-relaxed max-w-lg mx-auto">
