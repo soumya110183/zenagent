@@ -41,9 +41,8 @@ export default function Landing() {
               Enterprise Application Intelligence Platform
             </h2>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              Transform your enterprise applications with intelligent analysis powered by specialized AI agents. 
-              From legacy COBOL systems to modern Java applications, our platform provides comprehensive 
-              architecture insights, dependency mapping, and modernization recommendations.
+              Analyze your enterprise applications with powerful AI-driven insights and comprehensive 
+              project intelligence for better decision making.
             </p>
 
             {/* Features Grid */}
