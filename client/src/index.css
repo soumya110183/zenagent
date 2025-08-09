@@ -4,82 +4,82 @@
 @tailwind utilities;
 
 :root {
-  /* Card-based Theme - Light Mode */
-  --background: hsl(210, 20%, 98%);
-  --foreground: hsl(210, 40%, 8%);
+  /* Coolors Palette Theme - Light Mode */
+  --background: hsl(0, 0%, 100%); /* Pure white background */
+  --foreground: hsl(184, 91%, 9%); /* Dark Jungle Green #071E22 */
   --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(210, 40%, 8%);
+  --card-foreground: hsl(184, 91%, 9%);
   --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(210, 40%, 8%);
-  --primary: hsl(160, 84%, 39%); /* Success Green */
+  --popover-foreground: hsl(184, 91%, 9%);
+  --primary: hsl(164, 73%, 32%); /* Myrtle Green #1D7874 */
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(214, 100%, 59%); /* Confirmation Blue */
+  --secondary: hsl(163, 28%, 49%); /* Wintergreen Dream #679289 */
   --secondary-foreground: hsl(0, 0%, 100%);
-  --muted: hsl(210, 40%, 96%);
-  --muted-foreground: hsl(210, 25%, 40%);
-  --accent: hsl(160, 84%, 39%); /* Success Green accent */
+  --muted: hsl(0, 0%, 96%);
+  --muted-foreground: hsl(184, 20%, 40%);
+  --accent: hsl(164, 73%, 32%); /* Myrtle Green accent */
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(348, 86%, 61%); /* Failure Red */
+  --destructive: hsl(357, 79%, 55%); /* Red Pigment #EE2E31 */
   --destructive-foreground: hsl(0, 0%, 100%);
-  --warning: hsl(36, 100%, 50%); /* Warning Orange */
-  --warning-foreground: hsl(0, 0%, 100%);
-  --border: hsl(210, 36%, 91%);
-  --input: hsl(210, 40%, 96%);
-  --ring: hsl(160, 84%, 39%);
-  --chart-1: hsl(160, 84%, 39%); /* Success Green */
-  --chart-2: hsl(348, 86%, 61%); /* Failure Red */
-  --chart-3: hsl(36, 100%, 50%); /* Warning Orange */
-  --chart-4: hsl(214, 100%, 59%); /* Confirmation Blue */
-  --chart-5: hsl(266, 85%, 58%); /* Purple accent */
+  --warning: hsl(35, 88%, 76%); /* Peach Crayola #F4C095 */
+  --warning-foreground: hsl(184, 91%, 9%);
+  --border: hsl(0, 0%, 90%);
+  --input: hsl(0, 0%, 96%);
+  --ring: hsl(164, 73%, 32%);
+  --chart-1: hsl(164, 73%, 32%); /* Myrtle Green */
+  --chart-2: hsl(357, 79%, 55%); /* Red Pigment */
+  --chart-3: hsl(35, 88%, 76%); /* Peach Crayola */
+  --chart-4: hsl(163, 28%, 49%); /* Wintergreen Dream */
+  --chart-5: hsl(184, 91%, 9%); /* Dark Jungle Green */
   --sidebar: hsl(0, 0%, 100%);
-  --sidebar-foreground: hsl(210, 40%, 8%);
-  --sidebar-primary: hsl(160, 84%, 39%);
+  --sidebar-foreground: hsl(184, 91%, 9%);
+  --sidebar-primary: hsl(164, 73%, 32%);
   --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: hsl(210, 40%, 96%);
-  --sidebar-accent-foreground: hsl(210, 40%, 8%);
-  --sidebar-border: hsl(210, 36%, 91%);
-  --sidebar-ring: hsl(160, 84%, 39%);
+  --sidebar-accent: hsl(0, 0%, 96%);
+  --sidebar-accent-foreground: hsl(184, 91%, 9%);
+  --sidebar-border: hsl(0, 0%, 90%);
+  --sidebar-ring: hsl(164, 73%, 32%);
   --font-sans: 'Roboto', sans-serif;
   --font-mono: 'Roboto Mono', monospace;
   --radius: 0.75rem;
 }
 
 .dark {
-  /* Card-based Theme - Dark Mode - Enhanced */
-  --background: hsl(220, 27%, 8%); /* Rich dark background */
-  --foreground: hsl(210, 40%, 98%);
-  --card: hsl(220, 23%, 12%); /* Elevated card background */
-  --card-foreground: hsl(210, 40%, 98%);
-  --popover: hsl(220, 27%, 10%);
-  --popover-foreground: hsl(210, 40%, 98%);
-  --primary: hsl(160, 84%, 39%); /* Success Green */
+  /* Coolors Palette Theme - Dark Mode */
+  --background: hsl(184, 91%, 9%); /* Dark Jungle Green background */
+  --foreground: hsl(0, 0%, 98%);
+  --card: hsl(184, 40%, 12%); /* Slightly lighter dark green */
+  --card-foreground: hsl(0, 0%, 98%);
+  --popover: hsl(184, 50%, 10%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --primary: hsl(164, 73%, 32%); /* Myrtle Green */
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(217, 91%, 60%); /* Enhanced Blue */
+  --secondary: hsl(163, 28%, 49%); /* Wintergreen Dream */
   --secondary-foreground: hsl(0, 0%, 100%);
-  --muted: hsl(220, 23%, 18%); /* Better muted background */
-  --muted-foreground: hsl(215, 20%, 65%);
-  --accent: hsl(160, 84%, 39%); /* Success Green accent */
+  --muted: hsl(184, 30%, 15%);
+  --muted-foreground: hsl(163, 20%, 65%);
+  --accent: hsl(164, 73%, 32%); /* Myrtle Green accent */
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 84%, 60%); /* Enhanced Red */
+  --destructive: hsl(357, 79%, 55%); /* Red Pigment */
   --destructive-foreground: hsl(0, 0%, 100%);
-  --warning: hsl(38, 92%, 50%); /* Enhanced Orange */
-  --warning-foreground: hsl(0, 0%, 100%);
-  --border: hsl(220, 23%, 20%); /* Better border visibility */
-  --input: hsl(220, 23%, 18%);
-  --ring: hsl(160, 84%, 39%);
-  --chart-1: hsl(160, 84%, 39%); /* Success Green */
-  --chart-2: hsl(0, 84%, 60%); /* Enhanced Red */
-  --chart-3: hsl(38, 92%, 50%); /* Enhanced Orange */
-  --chart-4: hsl(217, 91%, 60%); /* Enhanced Blue */
-  --chart-5: hsl(266, 85%, 58%); /* Purple accent */
-  --sidebar: hsl(220, 30%, 6%); /* Very dark slate */
-  --sidebar-foreground: hsl(210, 40%, 92%);
-  --sidebar-primary: hsl(160, 84%, 39%);
+  --warning: hsl(35, 88%, 76%); /* Peach Crayola */
+  --warning-foreground: hsl(184, 91%, 9%);
+  --border: hsl(184, 30%, 20%);
+  --input: hsl(184, 30%, 15%);
+  --ring: hsl(164, 73%, 32%);
+  --chart-1: hsl(164, 73%, 32%); /* Myrtle Green */
+  --chart-2: hsl(357, 79%, 55%); /* Red Pigment */
+  --chart-3: hsl(35, 88%, 76%); /* Peach Crayola */
+  --chart-4: hsl(163, 28%, 49%); /* Wintergreen Dream */
+  --chart-5: hsl(0, 0%, 98%); /* White accent */
+  --sidebar: hsl(184, 60%, 6%); /* Very dark jungle green */
+  --sidebar-foreground: hsl(0, 0%, 92%);
+  --sidebar-primary: hsl(164, 73%, 32%);
   --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: hsl(220, 23%, 14%);
-  --sidebar-accent-foreground: hsl(160, 84%, 39%);
-  --sidebar-border: hsl(220, 23%, 18%);
-  --sidebar-ring: hsl(160, 84%, 39%);
+  --sidebar-accent: hsl(184, 40%, 14%);
+  --sidebar-accent-foreground: hsl(164, 73%, 40%);
+  --sidebar-border: hsl(184, 30%, 18%);
+  --sidebar-ring: hsl(164, 73%, 32%);
 }
 
 @layer base {

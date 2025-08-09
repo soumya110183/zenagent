@@ -59,13 +59,7 @@ export default function Home() {
 
   const handleAIModelConfig = async (config: AIModelConfig) => {
     try {
-      await apiRequest('/api/ai-config', {
-        method: 'POST',
-        body: JSON.stringify(config),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      await apiRequest('/api/ai-config', 'POST', config);
       setAiConfig(config);
       setShowAIConfig(false);
     } catch (error) {
@@ -79,9 +73,9 @@ export default function Home() {
       name: 'Java',
       description: 'Comprehensive analysis of Java applications including Spring Boot frameworks, Maven/Gradle builds, and enterprise patterns',
       logoSrc: agentLogo,
-      color: 'bg-primary',
-      hoverColor: 'hover:bg-primary/90',
-      borderColor: 'border-primary/20',
+      borderColor: 'border-primary', // Myrtle Green
+      bgColor: 'bg-primary/5',
+      hoverBgColor: 'hover:bg-primary/10',
       features: [
         'Spring Boot & Spring Framework analysis',
         'JPA/Hibernate entity relationship mapping', 
@@ -95,10 +89,10 @@ export default function Home() {
       id: 'pyspark' as ProjectType,
       name: 'PySpark',
       description: 'Advanced big data processing pipeline analysis with Apache Spark ecosystem integration and performance optimization insights',
-      logoSrc: agentLogo,
-      color: 'bg-secondary',
-      hoverColor: 'hover:bg-secondary/90',
-      borderColor: 'border-secondary/20',
+      logoSrc: pysparkLogo,
+      borderColor: 'border-warning', // Peach Crayola
+      bgColor: 'bg-warning/10',
+      hoverBgColor: 'hover:bg-warning/20',
       features: [
         'DataFrame operations and transformations',
         'Spark job execution flow visualization',
@@ -112,10 +106,10 @@ export default function Home() {
       id: 'mainframe' as ProjectType,
       name: 'Mainframe',
       description: 'Legacy system analysis for COBOL programs, JCL job scheduling, and mainframe database integrations with modernization insights',
-      logoSrc: agentLogo,
-      color: 'bg-warning',
-      hoverColor: 'hover:bg-warning/90',
-      borderColor: 'border-warning/20',
+      logoSrc: ibmLogo,
+      borderColor: 'border-secondary', // Wintergreen Dream
+      bgColor: 'bg-secondary/5',
+      hoverBgColor: 'hover:bg-secondary/10',
       features: [
         'COBOL program structure and flow analysis',
         'JCL job dependency mapping',
@@ -129,10 +123,10 @@ export default function Home() {
       id: 'python' as ProjectType,
       name: 'Python',
       description: 'Full-stack Python application analysis covering Django/Flask frameworks, API architectures, and dependency management',
-      logoSrc: agentLogo,
-      color: 'bg-destructive',
-      hoverColor: 'hover:bg-destructive/90',
-      borderColor: 'border-destructive/20',
+      logoSrc: pythonLogo,
+      borderColor: 'border-destructive', // Red Pigment
+      bgColor: 'bg-destructive/5',
+      hoverBgColor: 'hover:bg-destructive/10',
       features: [
         'Django/Flask framework pattern detection',
         'Python package and module dependencies',
@@ -194,33 +188,33 @@ export default function Home() {
                   <div
                     key={type.id}
                     onClick={() => setSelectedProjectType(type.id)}
-                    className={`relative group cursor-pointer bg-white dark:bg-gray-800 rounded-xl border-2 ${type.borderColor} hover:border-opacity-60 shadow-lg hover:shadow-xl transition-all duration-300 p-6`}
+                    className={`relative group cursor-pointer bg-card rounded-xl border-2 ${type.borderColor} ${type.hoverBgColor} shadow-lg hover:shadow-xl transition-all duration-300 p-6`}
                   >
                     <div>
                       {/* First line - Logo and Heading name */}
                       <div className="flex items-center space-x-3 mb-3">
-                        <div className={`inline-flex items-center justify-center bg-white rounded-lg p-2 ${type.id === 'pyspark' ? 'w-20 h-12' : 'w-12 h-12'}`}>
+                        <div className={`inline-flex items-center justify-center bg-background rounded-lg p-2 ${type.id === 'pyspark' ? 'w-20 h-12' : 'w-12 h-12'}`}>
                           <img 
                             src={type.logoSrc} 
                             alt={`${type.name} logo`}
                             className="w-full h-full object-contain"
                           />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white leading-tight">
+                        <h3 className="text-lg font-semibold text-foreground leading-tight">
                           {type.name}
                         </h3>
                       </div>
                       
                       {/* Second line - Description text */}
                       <div>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
+                        <p className="text-muted-foreground text-sm mb-3">
                           {type.description}
                         </p>
-                        <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-3 mt-3">
+                        <div className={`${type.bgColor} rounded-lg p-3 mt-3`}>
                           <ul className="space-y-1">
                             {type.features.map((feature, index) => (
-                              <li key={index} className="text-xs text-gray-300 dark:text-gray-400 flex items-start">
-                                <div className="w-1 h-1 bg-gray-400 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                              <li key={index} className="text-xs text-foreground/80 flex items-start">
+                                <div className="w-1 h-1 bg-primary rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
                                 <span>{feature}</span>
                               </li>
                             ))}
@@ -230,7 +224,7 @@ export default function Home() {
                     </div>
                     
                     <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
                     </div>
                   </div>
                 );
@@ -239,19 +233,19 @@ export default function Home() {
 
             {/* CTA Section */}
             <div className="text-center">
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-8">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="bg-gradient-to-r from-muted to-muted/50 rounded-xl p-8">
+                <h2 className="text-2xl font-semibold text-foreground mb-4">
                   Ready to analyze your code?
                 </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                <p className="text-muted-foreground mb-6">
                   Select a project type above to get started with intelligent code analysis
                 </p>
                 <div className="flex justify-center space-x-4">
-                  <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Upload className="w-4 h-4" />
                     <span>Upload ZIP files</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Github className="w-4 h-4" />
                     <span>Analyze GitHub repos</span>
                   </div>
@@ -266,7 +260,7 @@ export default function Home() {
             <div className="mb-6">
               <button
                 onClick={() => setSelectedProjectType(null)}
-                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center space-x-2 mb-4"
+                className="text-primary hover:text-primary/80 flex items-center space-x-2 mb-4"
               >
                 <span>← Back to project types</span>
               </button>
@@ -284,10 +278,10 @@ export default function Home() {
                         />
                       </div>
                       <div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        <h1 className="text-2xl font-bold text-foreground">
                           {selectedType.name} Analysis
                         </h1>
-                        <p className="text-gray-600 dark:text-gray-300">
+                        <p className="text-muted-foreground">
                           {selectedType.description}
                         </p>
                       </div>
@@ -319,7 +313,7 @@ export default function Home() {
       {appState === 'results' && (
         <button
           onClick={handleNewAnalysis}
-          className="fixed bottom-6 right-6 bg-primary text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-all hover:scale-105"
+          className="fixed bottom-6 right-6 bg-primary text-primary-foreground p-4 rounded-full shadow-lg hover:bg-primary/90 transition-all hover:scale-105"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
