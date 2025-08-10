@@ -314,7 +314,7 @@ export default function Home() {
                   <Code2 className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Project AI Agents</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Zengent AI - Agents</h3>
                   <p className="text-sm text-gray-600">Multi-language codebase analysis supporting enterprise frameworks</p>
                 </div>
               </div>
