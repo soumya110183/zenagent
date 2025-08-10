@@ -20,6 +20,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 import zensarLogo from "@assets/Zensar_composite_logo_whit_ai_1754732936523.png";
 import zenagentBanner from "@assets/zenagent_1754759778955.png";
 import agentLogo from "@assets/agent_1754754612491.png";
@@ -36,6 +38,7 @@ export default function Home() {
   const [selectedProjectType, setSelectedProjectType] = useState<ProjectType | null>(null);
   const [showAIConfig, setShowAIConfig] = useState(false);
   const [aiConfig, setAiConfig] = useState<AIModelConfig>({ type: 'openai' });
+  const { toast } = useToast();
 
   const { data: currentProject, refetch: refetchProject } = useQuery<Project>({
     queryKey: ['/api/projects', currentProjectId],
@@ -73,6 +76,34 @@ export default function Home() {
       setShowAIConfig(false);
     } catch (error) {
       console.error('Failed to configure AI model:', error);
+    }
+  };
+
+  const handleAgentClick = (agentId: ProjectType) => {
+    if (agentId === 'code-lens') {
+      // Only Code Lens Agent navigates to another page
+      setSelectedProjectType(agentId);
+    } else {
+      // All other agents show development mode notification
+      const agentNames: Record<ProjectType, string> = {
+        'java': 'Java Agent',
+        'pyspark': 'PySpark Agent',
+        'mainframe': 'Mainframe Agent', 
+        'python': 'Python Agent',
+        'code-lens': 'Code Lens Agent',
+        'match-lens': 'Match Lens Agent',
+        'validator': 'Validator Agent',
+        'zenvector': 'ZenVector Agent',
+        'knowledge': 'Knowledge Agent',
+        'datalens': 'Data Lens Agent',
+        'codeshift': 'Codeshift Lens Agent'
+      };
+      
+      toast({
+        title: "Agent in Development Mode",
+        description: `${agentNames[agentId]} is currently under development. Coming soon!`,
+        variant: "default",
+      });
     }
   };
 
@@ -345,7 +376,7 @@ export default function Home() {
                   return (
                     <div
                       key={type.id}
-                      onClick={() => setSelectedProjectType(type.id)}
+                      onClick={() => handleAgentClick(type.id)}
                       className={`relative group cursor-pointer bg-card rounded-lg border-2 ${type.borderColor} ${type.hoverBgColor} shadow-md hover:shadow-lg transition-all duration-300 p-4`}
                     >
                       <div>
@@ -451,7 +482,7 @@ export default function Home() {
                   return (
                     <div
                       key={type.id}
-                      onClick={() => setSelectedProjectType(type.id)}
+                      onClick={() => handleAgentClick(type.id)}
                       className={`relative group cursor-pointer bg-card rounded-lg border-2 ${type.borderColor} ${type.hoverBgColor} shadow-md hover:shadow-lg transition-all duration-300 p-4`}
                     >
                       <div>
@@ -659,6 +690,7 @@ export default function Home() {
       )}
         </div>
       </Layout>
+      <Toaster />
     </TooltipProvider>
   );
 }
