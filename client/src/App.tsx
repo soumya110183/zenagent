@@ -17,7 +17,7 @@ import TeamBehind from "@/pages/about";
 import ReadmePage from "@/pages/readme";
 import KnowledgeAgent from "@/pages/knowledge-agent";
 import ZenVectorAgent from "@/pages/zenvector-agent";
-import AuthPage from "@/pages/auth-page";
+
 
 import Layout from "@/components/layout";
 
@@ -28,8 +28,9 @@ function Router() {
     <Switch>
       {isLoading || !isAuthenticated ? (
         <>
-          <Route path="/" component={AuthPage} />
-          <Route path="/auth" component={AuthPage} />
+          <Route path="/" component={Landing} />
+          <Route path="/auth" component={Landing} />
+          <Route path="/login" component={Landing} />
           <Route path="/terms-of-use" component={TermsOfUse} />
           <Route path="/privacy-policy" component={PrivacyPolicy} />
           <Route path="/landing" component={Landing} />
