@@ -15,6 +15,7 @@ import multer from "multer";
 import { z } from "zod";
 import os from "os";
 import zenVectorRoutes from "./routes/zenVectorRoutes";
+import knowledgeAgentRoutes from "./routes/knowledgeAgentRoutes";
 
 interface AIModelConfig {
   type: 'openai' | 'local';
@@ -687,6 +688,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ZenVector Agent routes
   app.use('/api/zenvector', zenVectorRoutes);
+
+  // Knowledge Agent routes
+  app.use('/api/knowledge', knowledgeAgentRoutes);
 
   const httpServer = createServer(app);
   return httpServer;

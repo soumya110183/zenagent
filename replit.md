@@ -24,6 +24,8 @@ The platform features a modern React frontend with an agent-like interface suppo
 - **Zensar Corporate Branding**: Integrated Zensar logos, colors, and "Prepared by Diamond Zensar Team" footer
 - **GitHub Integration**: Enhanced GitHub repository analysis with multi-language detection
 - **Local LLM Setup Guide**: Created comprehensive setup documentation for offline AI analysis
+- **ZenVector Agent with ChromaDB**: Implemented advanced vector database agent for code similarity analysis, semantic search, and demographic data insights using ChromaDB for persistent storage
+- **Knowledge Agent with ChromaDB & Redis**: Created comprehensive document scraper with Confluence integration, PDF processing via IBM Doclinq, Redis caching for performance, and chat interface for intelligent Q&A functionality
 
 ## User Preferences
 
@@ -88,6 +90,30 @@ The core analysis functionality processes multiple programming languages:
 - **Relationship Mapping**: Builds dependency graphs and architectural relationships
 - **Interactive Diagrams**: UML-style visualizations with language-specific representations
 - **Professional Reporting**: Comprehensive PDF exports with all analysis and diagrams
+
+### ZenVector Agent - Vector Database Intelligence
+
+Advanced AI agent for code intelligence and demographic analysis:
+
+- **ChromaDB Integration**: Persistent vector storage for code similarity analysis
+- **Semantic Search**: Natural language queries across codebases with intelligent context matching
+- **Code Similarity Detection**: Find similar code patterns and architectural relationships
+- **Demographic Data Analysis**: Pattern recognition and clustering for business intelligence
+- **Multi-modal Search**: Search across different data types and content formats
+- **Vector Embeddings**: Sentence transformer models for high-quality semantic understanding
+
+### Knowledge Agent - Document Intelligence & Q&A
+
+Comprehensive document scraper and intelligent Q&A system:
+
+- **Confluence Integration**: Advanced web scraping with sub-menu navigation and authentication
+- **IBM Doclinq Processing**: Enterprise PDF document analysis with entity extraction and OCR
+- **ChromaDB Vector Storage**: Persistent knowledge base with semantic search capabilities
+- **Redis Caching**: High-performance caching for fast response times and reduced API calls
+- **Chat Interface**: Intelligent Q&A system with context-aware responses from knowledge base
+- **Bulk Operations**: Process multiple document sources simultaneously
+- **Web Scraping**: Comprehensive knowledge extraction from web-based documentation
+- **Document Analysis**: Advanced text processing with metadata extraction and content structuring
 
 ## External Dependencies
 

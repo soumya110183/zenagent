@@ -15,6 +15,8 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import Profile from "@/pages/profile";
 import About from "@/pages/about";
 import ReadmePage from "@/pages/readme";
+import KnowledgeAgent from "@/pages/knowledge-agent";
+import ZenVectorAgent from "@/pages/zenvector-agent";
 import Layout from "@/components/layout";
 
 function Router() {
@@ -56,6 +58,20 @@ function Router() {
             {() => (
               <Layout>
                 <ReadmePage />
+              </Layout>
+            )}
+          </Route>
+          <Route path="/knowledge-agent">
+            {() => (
+              <Layout>
+                <KnowledgeAgent />
+              </Layout>
+            )}
+          </Route>
+          <Route path="/zenvector-agent">
+            {() => (
+              <Layout>
+                <ZenVectorAgent />
               </Layout>
             )}
           </Route>

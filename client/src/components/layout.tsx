@@ -79,6 +79,18 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
       current: location === '/'
     },
     {
+      name: 'Knowledge Agent',
+      href: '/knowledge-agent',
+      icon: Bot,
+      current: location === '/knowledge-agent'
+    },
+    {
+      name: 'ZenVector Agent',
+      href: '/zenvector-agent',
+      icon: Bot,
+      current: location === '/zenvector-agent'
+    },
+    {
       name: 'Usage Statistics',
       href: '/usage-statistics',
       icon: BarChart3,
