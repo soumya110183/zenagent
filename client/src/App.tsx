@@ -13,7 +13,7 @@ import PrivacyPolicy from "@/pages/privacy-policy";
 import UsageStatistics from "@/pages/usage-statistics";
 import AdminDashboard from "@/pages/admin-dashboard";
 import Profile from "@/pages/profile";
-import About from "@/pages/about";
+import TeamBehind from "@/pages/about";
 import ReadmePage from "@/pages/readme";
 import KnowledgeAgent from "@/pages/knowledge-agent";
 import ZenVectorAgent from "@/pages/zenvector-agent";
@@ -48,7 +48,7 @@ function Router() {
       <Route path="/about">
         {() => (
           <Layout>
-            <About />
+            <TeamBehind />
           </Layout>
         )}
       </Route>

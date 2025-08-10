@@ -23,7 +23,7 @@ import piyushPhoto from "@assets/piyush_1754851116404.jpg";
 import hrushikeshPhoto from "@assets/hri_1754851135645.png";
 
 
-export default function About() {
+export default function TeamBehind() {
   const features = [
     {
       icon: <Code className="h-6 w-6 text-blue-600" />,
@@ -135,13 +135,13 @@ export default function About() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
-            <Sparkles className="h-8 w-8 text-blue-600 mr-3" />
+            <Users className="h-8 w-8 text-blue-600 mr-3" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Zengent AI
+              Team Behind
             </h1>
           </div>
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Enterprise Application Agents
+            Zengent AI - Enterprise Application Agents
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Transform your codebase understanding with AI-powered analysis, interactive visualizations, 
