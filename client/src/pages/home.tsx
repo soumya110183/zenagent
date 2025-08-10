@@ -30,7 +30,7 @@ import pysparkLogo from "@assets/pyspark-lang_1754703714412.png";
 import ibmLogo from "@assets/ibm_1754703124415.png";
 
 type AppState = 'upload' | 'processing' | 'results';
-type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'responsible' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
+type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'responsible-ai' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>('upload');
@@ -92,7 +92,7 @@ export default function Home() {
         'pyspark': 'PySpark Agent',
         'mainframe': 'Mainframe Agent', 
         'python': 'Python Agent',
-        'responsible': 'Responsible AI Agent',
+        'responsible-ai': 'Responsible AI Agent',
         'code-lens': 'Code Lens Agent',
         'match-lens': 'Match Lens Agent',
         'validator': 'Validator Agent',
