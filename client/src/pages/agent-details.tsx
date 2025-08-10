@@ -444,6 +444,54 @@ export default function AgentDetails() {
           </p>
         </div>
 
+        {/* Enterprise AI Platform Summary */}
+        <Card className="mb-8 border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
+          <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+            <CardTitle className="flex items-center gap-3 text-2xl">
+              <Shield className="w-8 h-8" />
+              Enterprise AI Platform Summary
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                  <Bot className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-gray-900">7</div>
+                  <div className="text-sm text-gray-600">AI Agents</div>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200">
+                  <Activity className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-gray-900">15+</div>
+                  <div className="text-sm text-gray-600">Enterprise Integrations</div>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-lg border border-orange-200">
+                  <Users className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-gray-900">6</div>
+                  <div className="text-sm text-gray-600">Team Members</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 text-center">
+              <p className="text-gray-700 mb-4">
+                Comprehensive AI-powered platform for enterprise application analysis with multi-language support, 
+                advanced vector databases, and enterprise-grade security.
+              </p>
+              <div className="flex flex-wrap justify-center gap-2">
+                <Badge variant="outline" className="border-blue-200 text-blue-700">Multi-Language Analysis</Badge>
+                <Badge variant="outline" className="border-green-200 text-green-700">Vector Intelligence</Badge>
+                <Badge variant="outline" className="border-purple-200 text-purple-700">Enterprise Security</Badge>
+                <Badge variant="outline" className="border-orange-200 text-orange-700">AI Integration</Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
 
 
         {/* Agent Selection Tabs */}
