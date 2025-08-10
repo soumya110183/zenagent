@@ -299,7 +299,7 @@ export default function About() {
             Transforming enterprises through intelligent automation and AI-driven solutions
           </p>
           <p className="text-xs text-gray-400 mt-2">
-            Prepared by Diamond Zensar Team
+            Built by the Amex Diamond Zensar Team
           </p>
         </div>
       </div>

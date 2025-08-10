@@ -97,7 +97,7 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
       current: location === '/about'
     },
     {
-      name: 'Documentation',
+      name: 'Developer Guide',
       href: '/readme',
       icon: FileText,
       current: location === '/readme'

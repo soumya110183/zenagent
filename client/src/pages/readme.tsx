@@ -457,7 +457,7 @@ CMD ["npm", "start"]`}
         {/* Footer */}
         <div className="text-center py-8 border-t">
           <p className="text-gray-600 mb-2">
-            <strong>Built with ❤️ by the Diamond Zensar Team</strong>
+            <strong>Built by the Amex Diamond Zensar Team</strong>
           </p>
           <p className="text-sm text-gray-500">
             For support, feature requests, or enterprise inquiries, please contact our team
