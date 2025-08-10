@@ -30,6 +30,9 @@ The platform features a modern React frontend with an agent-like interface suppo
 - **Multi-Model AI Pipeline**: Advanced AI workflows with LangChain orchestration, LangGraph state management, and Langfuse observability
 - **SonarQube Code Quality**: Comprehensive static code analysis with metrics, issue tracking, quality gates, and technical debt assessment
 - **HuggingFace Model Integration**: Local AI processing with CodeBERT for code analysis, DialoGPT for insights, and sentence transformers for embeddings
+- **UI Enhancement (August 2025)**: Increased agent icon sizes by 3x for better visibility and visual prominence across all AI agent blocks
+- **Branding Consistency**: Updated all references from "Project AI Agents" to "Zengent AI - Agents" for unified branding
+- **Streamlined About Page**: Removed detailed agent sections, Key Features, and Technology Stack for cleaner focus on core information
 
 ## User Preferences
 
