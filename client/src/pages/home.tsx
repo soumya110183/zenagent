@@ -323,49 +323,73 @@ export default function Home() {
                   <p className="text-sm text-gray-600">Multi-language codebase analysis supporting enterprise frameworks</p>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {languageProjects.map((type) => {
                   return (
                     <div
                       key={type.id}
                       onClick={() => setSelectedProjectType(type.id)}
-                      className={`relative group cursor-pointer bg-card rounded-xl border-2 ${type.borderColor} ${type.hoverBgColor} shadow-lg hover:shadow-xl transition-all duration-300 p-6`}
+                      className={`relative group cursor-pointer bg-card rounded-lg border-2 ${type.borderColor} ${type.hoverBgColor} shadow-md hover:shadow-lg transition-all duration-300 p-4`}
                     >
                       <div>
-                        {/* First line - Logo and Heading name */}
-                        <div className="flex items-center space-x-3 mb-3">
-                          <div className={`inline-flex items-center justify-center bg-background rounded-lg p-2 ${type.id === 'pyspark' ? 'w-20 h-12' : 'w-12 h-12'}`}>
+                        {/* Compact header with logo and name */}
+                        <div className="flex items-center space-x-2 mb-2">
+                          <div className={`inline-flex items-center justify-center bg-background rounded-lg p-1.5 ${type.id === 'pyspark' ? 'w-10 h-6' : 'w-8 h-8'}`}>
                             <img 
                               src={type.logoSrc} 
                               alt={`${type.name} logo`}
                               className="w-full h-full object-contain"
                             />
                           </div>
-                          <h3 className="text-lg font-semibold text-foreground leading-tight">
+                          <h3 className="text-sm font-semibold text-foreground leading-tight">
                             {type.name}
                           </h3>
                         </div>
                         
-                        {/* Second line - Description text */}
-                        <div>
-                          <p className="text-muted-foreground text-sm mb-3">
-                            {type.description}
-                          </p>
-                          <div className={`${type.bgColor} rounded-lg p-3 mt-3`}>
-                            <ul className="space-y-1">
-                              {type.features.map((feature, index) => (
-                                <li key={index} className="text-xs text-foreground/80 flex items-start">
-                                  <div className="w-1 h-1 bg-primary rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
-                                  <span>{feature}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
+                        {/* Compact description */}
+                        <p className="text-muted-foreground text-xs mb-2 line-clamp-2">
+                          {type.description}
+                        </p>
+                        
+                        {/* Compact feature list - show only first 3 features */}
+                        <div className={`${type.bgColor} rounded-lg p-2`}>
+                          <ul className="space-y-0.5">
+                            {type.features.slice(0, 3).map((feature, index) => (
+                              <li key={index} className="text-xs text-foreground/70 flex items-start">
+                                <div className="w-1 h-1 bg-primary rounded-full mr-1.5 mt-1 flex-shrink-0"></div>
+                                <span className="line-clamp-1">{feature}</span>
+                              </li>
+                            ))}
+                            {type.features.length > 3 && (
+                              <li className="text-xs text-muted-foreground/60 italic">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="cursor-help hover:text-muted-foreground underline decoration-dotted">
+                                      +{type.features.length - 3} more features
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="max-w-xs">
+                                    <div className="space-y-1">
+                                      <p className="font-semibold text-sm">All {type.name} Features:</p>
+                                      <ul className="space-y-0.5">
+                                        {type.features.slice(3).map((feature, index) => (
+                                          <li key={index} className="text-xs flex items-start">
+                                            <div className="w-1 h-1 bg-primary rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                                            <span>{feature}</span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </li>
+                            )}
+                          </ul>
                         </div>
                       </div>
                       
-                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
                       </div>
                     </div>
                   );
