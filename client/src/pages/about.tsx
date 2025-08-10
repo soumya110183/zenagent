@@ -17,6 +17,10 @@ import {
   Lock
 } from "lucide-react";
 import ullasPhoto from "@assets/ullas_1754848831242.png";
+import kaushikPhoto from "@assets/kaushik_1754851074835.png";
+import sameerPhoto from "@assets/sameer_1754851092170.png";
+import piyushPhoto from "@assets/piyush_1754851116404.jpg";
+import hrushikeshPhoto from "@assets/hri_1754851135645.png";
 
 
 export default function About() {
@@ -265,9 +269,11 @@ export default function About() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-gray-400" />
-                  </div>
+                  <img 
+                    src={kaushikPhoto} 
+                    alt="Kaushik Saha" 
+                    className="w-24 h-24 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
+                  />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Kaushik Saha</h3>
                     <p className="text-blue-600 font-medium mb-1">Project Manager</p>
@@ -278,9 +284,11 @@ export default function About() {
               
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-gray-400" />
-                  </div>
+                  <img 
+                    src={sameerPhoto} 
+                    alt="Sameer Kumar Sharma" 
+                    className="w-24 h-24 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
+                  />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Sameer Kumar Sharma</h3>
                     <p className="text-blue-600 font-medium mb-1">Technical Manager</p>
@@ -291,9 +299,11 @@ export default function About() {
               
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-gray-400" />
-                  </div>
+                  <img 
+                    src={piyushPhoto} 
+                    alt="Piyush Gupta" 
+                    className="w-24 h-24 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
+                  />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Piyush Gupta</h3>
                     <p className="text-blue-600 font-medium mb-1">Onsite Manager</p>
@@ -319,9 +329,11 @@ export default function About() {
               
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-gray-400" />
-                  </div>
+                  <img 
+                    src={hrushikeshPhoto} 
+                    alt="Hrushikesh Nalwade" 
+                    className="w-24 h-24 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
+                  />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Hrushikesh Nalwade</h3>
                     <p className="text-blue-600 font-medium mb-1">Java Solution Architect</p>
