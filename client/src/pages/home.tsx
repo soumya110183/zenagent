@@ -80,8 +80,8 @@ export default function Home() {
   };
 
   const handleAgentClick = (agentId: ProjectType) => {
-    if (agentId === 'code-lens') {
-      // Only Code Lens Agent navigates to another page
+    if (agentId === 'code-lens' || agentId === 'java') {
+      // Java Agent and Code Lens Agent navigate to analysis pages
       setSelectedProjectType(agentId);
     } else {
       // All other agents show development mode notification
