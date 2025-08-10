@@ -29,7 +29,7 @@ export default function Landing() {
         {/* Text below image with more spacing */}
         <div className="text-center mb-12 mt-6">
           <p className="text-sm opacity-70 leading-relaxed max-w-md mx-auto">
-            AI Agents powered by advanced AI-driven insights and comprehensive project intelligence to analyze your enterprise applications with precision. Tailored exclusively to meet the unique requirements of the <span className="text-white font-normal" style={{ color: '#FFFFFF', opacity: 1 }}>Amex Diamond Project</span> team.
+            AI Agents powered by advanced AI-driven insights and comprehensive project intelligence to analyze your enterprise applications with precision. Tailored exclusively to meet the unique requirements of the <span className="text-white !opacity-100 font-semibold">Amex Diamond Project</span> team.
           </p>
         </div>
         
