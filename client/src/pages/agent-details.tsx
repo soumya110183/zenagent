@@ -20,7 +20,8 @@ import {
   Zap,
   Eye,
   Target,
-  Activity
+  Activity,
+  Users
 } from 'lucide-react';
 
 interface AgentInfo {
