@@ -695,8 +695,12 @@ export default function Home() {
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all">
             <div className="text-center p-8">
               {/* Icon */}
-              <div className="mx-auto flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mb-4">
-                <Bot className="w-8 h-8 text-blue-600" />
+              <div className="mx-auto flex items-center justify-center w-16 h-16 mb-4">
+                <img 
+                  src={agentLogo} 
+                  alt="Agent" 
+                  className="w-16 h-16 object-contain"
+                />
               </div>
               
               {/* Title */}
