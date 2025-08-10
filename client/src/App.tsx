@@ -21,71 +21,66 @@ import AgentDetails from "@/pages/agent-details";
 import Layout from "@/components/layout";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
+  // Temporarily bypassing authentication - go directly to main app
   return (
     <Switch>
       {/* Public routes available without authentication */}
       <Route path="/terms-of-use" component={TermsOfUse} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/landing" component={Landing} />
       
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
-          <Route path="/usage-statistics">
-            {() => (
-              <Layout>
-                <UsageStatistics />
-              </Layout>
-            )}
-          </Route>
-          <Route path="/admin-dashboard">
-            {() => (
-              <Layout>
-                <AdminDashboard />
-              </Layout>
-            )}
-          </Route>
-          <Route path="/profile" component={Profile} />
-          <Route path="/about">
-            {() => (
-              <Layout>
-                <About />
-              </Layout>
-            )}
-          </Route>
-          <Route path="/readme">
-            {() => (
-              <Layout>
-                <ReadmePage />
-              </Layout>
-            )}
-          </Route>
-          <Route path="/knowledge-agent">
-            {() => (
-              <Layout>
-                <KnowledgeAgent />
-              </Layout>
-            )}
-          </Route>
-          <Route path="/zenvector-agent">
-            {() => (
-              <Layout>
-                <ZenVectorAgent />
-              </Layout>
-            )}
-          </Route>
-          <Route path="/agent-details">
-            {() => (
-              <Layout>
-                <AgentDetails />
-              </Layout>
-            )}
-          </Route>
-          <Route path="/" component={Home} />
-        </>
-      )}
+      {/* Main application routes - temporarily accessible without login */}
+      <Route path="/usage-statistics">
+        {() => (
+          <Layout>
+            <UsageStatistics />
+          </Layout>
+        )}
+      </Route>
+      <Route path="/admin-dashboard">
+        {() => (
+          <Layout>
+            <AdminDashboard />
+          </Layout>
+        )}
+      </Route>
+      <Route path="/profile" component={Profile} />
+      <Route path="/about">
+        {() => (
+          <Layout>
+            <About />
+          </Layout>
+        )}
+      </Route>
+      <Route path="/readme">
+        {() => (
+          <Layout>
+            <ReadmePage />
+          </Layout>
+        )}
+      </Route>
+      <Route path="/knowledge-agent">
+        {() => (
+          <Layout>
+            <KnowledgeAgent />
+          </Layout>
+        )}
+      </Route>
+      <Route path="/zenvector-agent">
+        {() => (
+          <Layout>
+            <ZenVectorAgent />
+          </Layout>
+        )}
+      </Route>
+      <Route path="/agent-details">
+        {() => (
+          <Layout>
+            <AgentDetails />
+          </Layout>
+        )}
+      </Route>
+      <Route path="/" component={Home} />
       <Route component={NotFound} />
     </Switch>
   );
