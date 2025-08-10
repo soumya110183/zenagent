@@ -310,7 +310,7 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
               <strong>Powered by Zensar Technologies</strong>
             </p>
             <p className="text-lg text-gray-600 mb-4">
-              Transforming enterprises through intelligent automation and AI-driven solutions
+              Transforming enterprises through intelligent automation and AI Agent-driven solutions
             </p>
             <p className="text-base text-gray-500 mt-2">
               Built by the Amex Diamond Zensar Team
