@@ -592,45 +592,6 @@ export default function Home() {
             <UploadSection onFileUploaded={handleFileUploaded} />
           </div>
         )}
-
-        {appState === 'upload' && selectedProjectType && (
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-6">
-              <button
-                onClick={() => setSelectedProjectType(null)}
-                className="text-primary hover:text-primary/80 flex items-center space-x-2 mb-4"
-              >
-                <span>← Back to project types</span>
-              </button>
-              <div className="flex items-center space-x-4">
-                {(() => {
-                  const selectedType = projectTypes.find(t => t.id === selectedProjectType);
-                  if (!selectedType) return null;
-                  return (
-                    <>
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-lg p-3">
-                        <img 
-                          src={selectedType.logoSrc} 
-                          alt={`${selectedType.name} logo`}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                      <div>
-                        <h1 className="text-2xl font-bold text-foreground">
-                          {selectedType.name} Analysis
-                        </h1>
-                        <p className="text-muted-foreground">
-                          {selectedType.description}
-                        </p>
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
-            <UploadSection onFileUploaded={handleFileUploaded} />
-          </div>
-        )}
         
         {appState === 'processing' && currentProject && (
           <ProcessingSection project={currentProject} />
