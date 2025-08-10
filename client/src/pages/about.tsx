@@ -49,7 +49,7 @@ export default function About() {
   const agents = [
     {
       name: "Code Lens",
-      description: "Deep code analysis and architectural pattern recognition",
+      description: "Demographic data scanning and analysis specialized for Diamond Project requirements",
       icon: "🔍"
     },
     {

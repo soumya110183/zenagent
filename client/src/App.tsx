@@ -45,8 +45,20 @@ function Router() {
             )}
           </Route>
           <Route path="/profile" component={Profile} />
-          <Route path="/about" component={About} />
-          <Route path="/readme" component={ReadmePage} />
+          <Route path="/about">
+            {() => (
+              <Layout>
+                <About />
+              </Layout>
+            )}
+          </Route>
+          <Route path="/readme">
+            {() => (
+              <Layout>
+                <ReadmePage />
+              </Layout>
+            )}
+          </Route>
           <Route path="/" component={Home} />
         </>
       )}
