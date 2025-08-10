@@ -312,8 +312,8 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
             <p className="text-lg text-gray-600 mb-4">
               Transforming enterprises through intelligent automation and AI Agent-driven solutions
             </p>
-            <p className="text-base text-gray-500 mt-2">
-              Built by the Amex Diamond Zensar Team
+            <p className="text-base text-blue-600 mt-2 font-medium">
+              Built by the Amex Diamond Project Zensar Team
             </p>
           </div>
         </main>
