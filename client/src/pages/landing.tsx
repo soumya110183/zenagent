@@ -30,7 +30,7 @@ export default function Landing() {
         <div className="text-center mb-12 mt-6">
           <p className="text-sm opacity-70 leading-relaxed max-w-md mx-auto">
             Analyze your enterprise applications with powerful AI-driven insights 
-            and comprehensive project intelligence for better decision making.
+            and comprehensive project intelligence for better decision making. This was <strong>crafted and customized for "Amex Diamond Project" Team</strong> requirements.
           </p>
         </div>
         
@@ -56,7 +56,7 @@ export default function Landing() {
           
           <div className="text-center mt-6">
             <p className="text-xs text-gray-500 mb-2">
-              Prepared by Diamond Zensar Team
+              Built by the Amex Diamond Zensar Team
             </p>
             <p className="text-xs text-gray-400 mb-2">
               © 2025 | <a href="/terms-of-use" className="hover:text-gray-600">Terms of use</a> | <a href="/privacy-policy" className="hover:text-gray-600">Privacy Policy</a>
