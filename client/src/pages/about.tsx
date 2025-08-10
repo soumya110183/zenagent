@@ -265,8 +265,8 @@ export default function About() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-8 h-8 text-gray-400" />
+                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <Users className="w-12 h-12 text-gray-400" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Kaushik Saha</h3>
@@ -278,8 +278,8 @@ export default function About() {
               
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-8 h-8 text-gray-400" />
+                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <Users className="w-12 h-12 text-gray-400" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Sameer Kumar Sharma</h3>
@@ -291,8 +291,8 @@ export default function About() {
               
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-8 h-8 text-gray-400" />
+                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <Users className="w-12 h-12 text-gray-400" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Piyush Gupta</h3>
@@ -307,7 +307,7 @@ export default function About() {
                   <img 
                     src={ullasPhoto} 
                     alt="Ullas Krishnan" 
-                    className="w-20 h-20 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
+                    className="w-24 h-24 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Ullas Krishnan</h3>
@@ -319,8 +319,8 @@ export default function About() {
               
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-8 h-8 text-gray-400" />
+                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <Users className="w-12 h-12 text-gray-400" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Hrushikesh Nalwade</h3>
@@ -332,8 +332,8 @@ export default function About() {
               
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-8 h-8 text-gray-400" />
+                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <Users className="w-12 h-12 text-gray-400" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Pavan Luka</h3>
