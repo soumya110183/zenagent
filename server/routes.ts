@@ -14,9 +14,6 @@ import swaggerUi from "swagger-ui-express";
 import multer from "multer";
 import { z } from "zod";
 import os from "os";
-import fs from "fs";
-import path from "path";
-import JSZip from "jszip";
 import zenVectorRoutes from "./routes/zenVectorRoutes";
 import knowledgeAgentRoutes from "./routes/knowledgeAgentRoutes";
 
@@ -285,66 +282,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Generate AI analysis for project
-  // Java Agent specialized analysis endpoint
-  app.post("/api/java-agent/analyze", upload.single('zipFile'), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ message: "No ZIP file provided" });
-      }
-
-      const { buffer } = req.file;
-      const customPrompt = req.body.customPrompt || "";
-      
-      // Create temporary directory for analysis
-      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'java-agent-'));
-      
-      try {
-        // Extract and analyze Java files
-        const zip = new JSZip();
-        const zipContent = await zip.loadAsync(buffer);
-        
-        const javaFiles: string[] = [];
-        
-        // Extract Java files
-        for (const filename of Object.keys(zipContent.files)) {
-          const file = zipContent.files[filename];
-          
-          if (!file.dir && filename.endsWith('.java')) {
-            const filePath = path.join(tempDir, filename);
-            const fileDir = path.dirname(filePath);
-            
-            if (!fs.existsSync(fileDir)) {
-              fs.mkdirSync(fileDir, { recursive: true });
-            }
-            
-            const content = await file.async('nodebuffer');
-            fs.writeFileSync(filePath, content);
-            javaFiles.push(filePath);
-          }
-        }
-
-        if (javaFiles.length === 0) {
-          return res.status(400).json({ message: "No Java files found in the uploaded ZIP" });
-        }
-
-        // Perform specialized Java analysis
-        const analysisResult = await aiAnalysisService.analyzeJavaProject(javaFiles, tempDir, customPrompt);
-        
-        res.json(analysisResult);
-        
-      } finally {
-        // Clean up
-        if (fs.existsSync(tempDir)) {
-          fs.rmSync(tempDir, { recursive: true, force: true });
-        }
-      }
-      
-    } catch (error) {
-      console.error("Java Agent analysis error:", error);
-      res.status(500).json({ message: "Failed to analyze Java project" });
-    }
-  });
-
   app.post("/api/projects/ai-analysis", async (req, res) => {
     try {
       const { customPrompt, ...analysisData } = req.body;

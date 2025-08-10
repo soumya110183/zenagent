@@ -11,7 +11,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { GitBranch, HelpCircle, Settings, Upload, Github, Code2, Database, Cpu, FileCode, Eye, GitMerge, Shield, Bot, Brain, Zap, Info, Search, BarChart4, ArrowRightLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import Layout from "@/components/layout";
 import { SiPython, SiApachespark } from "react-icons/si";
 import {
@@ -41,7 +41,6 @@ export default function Home() {
   const [showDevelopmentModal, setShowDevelopmentModal] = useState(false);
   const [selectedAgentName, setSelectedAgentName] = useState<string>('');
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
 
   const { data: currentProject, refetch: refetchProject } = useQuery<Project>({
     queryKey: ['/api/projects', currentProjectId],
@@ -83,11 +82,8 @@ export default function Home() {
   };
 
   const handleAgentClick = (agentId: ProjectType) => {
-    if (agentId === 'java') {
-      // Navigate to dedicated Java Agent page
-      setLocation('/java-agent');
-    } else if (agentId === 'code-lens') {
-      // Code Lens Agent navigate to analysis page
+    if (agentId === 'code-lens' || agentId === 'java') {
+      // Java Agent and Code Lens Agent navigate to analysis pages
       setSelectedProjectType(agentId);
     } else {
       // All other agents show development mode modal
