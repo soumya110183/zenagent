@@ -146,6 +146,35 @@ router.post('/search-demographics', async (req, res) => {
   }
 });
 
+// SonarQube integration for code quality analysis
+router.post('/sonar-analysis', async (req, res) => {
+  try {
+    const { projectKey, sonarConfig } = req.body;
+    
+    if (!projectKey) {
+      return res.status(400).json({ 
+        error: 'Project key is required for SonarQube analysis' 
+      });
+    }
+
+    const zenAgent = getZenVectorAgent();
+    const result = await zenAgent.analyzeWithSonarqube(projectKey, sonarConfig || {});
+
+    res.json({
+      message: 'SonarQube analysis completed',
+      agent: 'ZenVector',
+      ...result
+    });
+
+  } catch (error) {
+    console.error('Error with SonarQube analysis:', error);
+    res.status(500).json({ 
+      error: 'Failed to perform SonarQube analysis',
+      details: error.message 
+    });
+  }
+});
+
 // Get ZenVector agent statistics
 router.get('/stats', async (req, res) => {
   try {
@@ -176,7 +205,10 @@ router.get('/health', (req, res) => {
       'Semantic Code Search', 
       'Demographic Data Analysis',
       'Pattern Recognition',
-      'Multi-modal Search'
+      'Multi-modal Search',
+      'HuggingFace Code Analysis',
+      'SonarQube Integration',
+      'Langfuse Observability'
     ],
     database: 'ChromaDB',
     embedding_model: 'all-MiniLM-L6-v2'

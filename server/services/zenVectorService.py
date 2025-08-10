@@ -36,19 +36,64 @@ try:
 except ImportError:
     SENTENCE_TRANSFORMERS_AVAILABLE = False
 
+# Advanced AI/ML Libraries Integration for ZenVector
+try:
+    from transformers import pipeline, AutoTokenizer, AutoModel
+    import torch
+    HUGGINGFACE_AVAILABLE = True
+except ImportError:
+    print("Installing HuggingFace Transformers...")
+    try:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "transformers", "torch", "accelerate", "--user"])
+        from transformers import pipeline, AutoTokenizer, AutoModel
+        import torch
+        HUGGINGFACE_AVAILABLE = True
+    except:
+        HUGGINGFACE_AVAILABLE = False
+
+try:
+    from langfuse import Langfuse
+    from langfuse.decorators import observe, langfuse_context
+    LANGFUSE_AVAILABLE = True
+except ImportError:
+    print("Installing Langfuse...")
+    try:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "langfuse", "--user"])
+        from langfuse import Langfuse
+        from langfuse.decorators import observe, langfuse_context
+        LANGFUSE_AVAILABLE = True
+    except:
+        LANGFUSE_AVAILABLE = False
+
+try:
+    import requests
+    REQUESTS_AVAILABLE = True
+except ImportError:
+    print("Installing requests...")
+    try:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "requests", "--user"])
+        import requests
+        REQUESTS_AVAILABLE = True
+    except:
+        REQUESTS_AVAILABLE = False
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class ZenVectorAgent:
     """
-    ZenVector: Advanced AI Agent for Code Intelligence and Demographic Analysis using ChromaDB
+    ZenVector: Advanced AI Agent for Code Intelligence with Enterprise AI Integration
     
     Features:
     - Code similarity detection using ChromaDB vector embeddings
     - Semantic search across codebases with persistent storage
     - Demographic data pattern analysis with clustering
     - Multi-modal search capabilities
+    - HuggingFace model integration for advanced code analysis
+    - Langfuse observability for LLM monitoring
+    - SonarQube integration for code quality analysis
+    - Multi-model AI pipeline for comprehensive insights
     """
     """
     ZenVector: Advanced AI Agent for Code Intelligence and Demographic Analysis
@@ -68,6 +113,12 @@ class ZenVectorAgent:
         self.code_collection = None
         self.semantic_collection = None
         self.demographic_collection = None
+        
+        # Advanced AI Integration Components
+        self.langfuse_client = None
+        self.huggingface_pipeline = None
+        self.code_analysis_pipeline = None
+        self.sonarqube_client = None
         
         try:
             if CHROMADB_AVAILABLE:
@@ -92,6 +143,34 @@ class ZenVectorAgent:
                 print("ZenVector Agent with ChromaDB initialized successfully")
             else:
                 print("ChromaDB not available, using fallback mode")
+        
+        # Initialize Langfuse for LLM observability
+        try:
+            if LANGFUSE_AVAILABLE:
+                self.langfuse_client = Langfuse()
+                print("Langfuse observability initialized for ZenVector")
+        except Exception as e:
+            print(f"Langfuse initialization failed: {e}")
+        
+        # Initialize HuggingFace models for code analysis
+        try:
+            if HUGGINGFACE_AVAILABLE:
+                # Code analysis pipeline
+                self.code_analysis_pipeline = pipeline(
+                    "text-classification",
+                    model="microsoft/codebert-base",
+                    device=0 if torch.cuda.is_available() else -1
+                )
+                
+                # General text generation for insights
+                self.huggingface_pipeline = pipeline(
+                    "text-generation",
+                    model="microsoft/DialoGPT-medium",
+                    device=0 if torch.cuda.is_available() else -1
+                )
+                print("HuggingFace models initialized for ZenVector")
+        except Exception as e:
+            print(f"HuggingFace initialization failed: {e}")
                 
         except Exception as e:
             print(f"Failed to initialize ZenVector Agent: {e}")
@@ -111,6 +190,7 @@ class ZenVectorAgent:
                 metadata={"hnsw:space": "cosine"}  # Use cosine similarity
             )
     
+    @observe()
     def add_code_to_vector_db(self, project_id: str, code_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Add code snippets to ChromaDB vector database for similarity analysis
@@ -175,10 +255,14 @@ class ZenVectorAgent:
                         ids=[class_id]
                     )
                 
+                # Enhance with HuggingFace code analysis
+                code_insights = self._analyze_code_with_huggingface(class_text)
+                
                 processed_items.append({
                     'id': class_id,
                     'class_name': class_info['name'],
-                    'embedding_size': len(embedding) if self.embedding_model else 'auto-generated'
+                    'embedding_size': len(embedding) if self.embedding_model else 'auto-generated',
+                    'code_insights': code_insights
                 })
             
             return {
@@ -191,6 +275,7 @@ class ZenVectorAgent:
             print(f"Error adding code to ChromaDB: {e}")
             return {'status': 'error', 'message': str(e)}
     
+    @observe()
     def find_similar_code(self, query_code: str, project_id: Optional[str] = None, 
                          top_k: int = 5) -> List[Dict[str, Any]]:
         """
@@ -263,6 +348,7 @@ class ZenVectorAgent:
             print(f"Error finding similar code: {e}")
             return []
     
+    @observe()
     def semantic_search(self, query: str, search_type: str = "all", 
                        top_k: int = 10) -> Dict[str, Any]:
         """
@@ -499,7 +585,11 @@ class ZenVectorAgent:
                     'Semantic Code Search',
                     'Demographic Data Analysis',
                     'Pattern Recognition',
-                    'Multi-modal Search'
+                    'Multi-modal Search',
+                    'HuggingFace Code Analysis',
+                    'SonarQube Integration',
+                    'Langfuse LLM Observability',
+                    'Multi-Model AI Pipeline'
                 ],
                 'embedding_model': 'all-MiniLM-L6-v2' if self.embedding_model else 'ChromaDB Default',
                 'vector_database': 'ChromaDB Persistent',
@@ -553,6 +643,185 @@ class ZenVectorAgent:
                 text_parts.append(f"{key}: {value}")
         
         return ' | '.join(text_parts)
+    
+    def _analyze_code_with_huggingface(self, code_text: str) -> Dict[str, Any]:
+        """Analyze code using HuggingFace models"""
+        try:
+            if not self.code_analysis_pipeline:
+                return {'status': 'not_available'}
+            
+            # Analyze code quality and patterns
+            analysis_result = self.code_analysis_pipeline(code_text[:512])  # Limit text length
+            
+            # Generate insights if text generation pipeline is available
+            insights = ""
+            if self.huggingface_pipeline:
+                try:
+                    prompt = f"Analyze this code for patterns and quality: {code_text[:200]}..."
+                    result = self.huggingface_pipeline(
+                        prompt,
+                        max_length=150,
+                        do_sample=True,
+                        temperature=0.7
+                    )
+                    insights = result[0]['generated_text'] if result else ""
+                except:
+                    insights = "Insights generation failed"
+            
+            return {
+                'status': 'analyzed',
+                'classification': analysis_result,
+                'ai_insights': insights,
+                'model_used': 'microsoft/codebert-base'
+            }
+            
+        except Exception as e:
+            print(f"HuggingFace code analysis failed: {e}")
+            return {'status': 'error', 'message': str(e)}
+    
+    def analyze_with_sonarqube(self, project_key: str, sonar_config: Dict[str, str]) -> Dict[str, Any]:
+        """
+        Integrate with SonarQube for comprehensive code quality analysis
+        
+        Args:
+            project_key: SonarQube project key
+            sonar_config: SonarQube configuration (URL, token)
+        
+        Returns:
+            SonarQube analysis results with quality metrics
+        """
+        try:
+            if not REQUESTS_AVAILABLE:
+                return {'error': 'Requests library not available'}
+            
+            sonar_url = sonar_config.get('url', 'http://localhost:9000')
+            sonar_token = sonar_config.get('token', '')
+            
+            if not sonar_token:
+                return {'error': 'SonarQube token not provided'}
+            
+            # SonarQube API endpoints
+            base_url = f"{sonar_url}/api"
+            headers = {'Authorization': f'Bearer {sonar_token}'}
+            
+            # Get project measures
+            measures_url = f"{base_url}/measures/component"
+            measures_params = {
+                'component': project_key,
+                'metricKeys': 'ncloc,complexity,coverage,duplicated_lines_density,bugs,vulnerabilities,code_smells,security_hotspots,sqale_index'
+            }
+            
+            measures_response = requests.get(measures_url, params=measures_params, headers=headers)
+            
+            if measures_response.status_code == 200:
+                measures_data = measures_response.json()
+                
+                # Get issues
+                issues_url = f"{base_url}/issues/search"
+                issues_params = {
+                    'componentKeys': project_key,
+                    'severities': 'BLOCKER,CRITICAL,MAJOR',
+                    'ps': 100
+                }
+                
+                issues_response = requests.get(issues_url, params=issues_params, headers=headers)
+                issues_data = issues_response.json() if issues_response.status_code == 200 else {}
+                
+                # Process and structure the results
+                analysis_result = {
+                    'status': 'success',
+                    'project_key': project_key,
+                    'metrics': self._process_sonar_measures(measures_data),
+                    'issues': self._process_sonar_issues(issues_data),
+                    'quality_gate': self._get_quality_gate_status(project_key, sonar_config),
+                    'analyzed_at': datetime.now().isoformat()
+                }
+                
+                return analysis_result
+            else:
+                return {
+                    'error': f'SonarQube API error: {measures_response.status_code}',
+                    'message': measures_response.text
+                }
+                
+        except Exception as e:
+            print(f"SonarQube analysis failed: {e}")
+            return {'error': str(e)}
+    
+    def _process_sonar_measures(self, measures_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Process SonarQube measures data"""
+        measures = {}
+        component = measures_data.get('component', {})
+        
+        for measure in component.get('measures', []):
+            metric = measure.get('metric')
+            value = measure.get('value')
+            measures[metric] = value
+        
+        return {
+            'lines_of_code': measures.get('ncloc', '0'),
+            'complexity': measures.get('complexity', '0'),
+            'coverage': f"{measures.get('coverage', '0')}%",
+            'duplications': f"{measures.get('duplicated_lines_density', '0')}%",
+            'bugs': measures.get('bugs', '0'),
+            'vulnerabilities': measures.get('vulnerabilities', '0'),
+            'code_smells': measures.get('code_smells', '0'),
+            'security_hotspots': measures.get('security_hotspots', '0'),
+            'technical_debt': measures.get('sqale_index', '0')
+        }
+    
+    def _process_sonar_issues(self, issues_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Process SonarQube issues data"""
+        issues = issues_data.get('issues', [])
+        
+        issue_summary = {
+            'total_issues': len(issues),
+            'blocker': 0,
+            'critical': 0,
+            'major': 0,
+            'by_type': {}
+        }
+        
+        for issue in issues:
+            severity = issue.get('severity', '').lower()
+            issue_type = issue.get('type', 'unknown')
+            
+            if severity in issue_summary:
+                issue_summary[severity] += 1
+            
+            if issue_type in issue_summary['by_type']:
+                issue_summary['by_type'][issue_type] += 1
+            else:
+                issue_summary['by_type'][issue_type] = 1
+        
+        return issue_summary
+    
+    def _get_quality_gate_status(self, project_key: str, sonar_config: Dict[str, str]) -> Dict[str, Any]:
+        """Get SonarQube quality gate status"""
+        try:
+            sonar_url = sonar_config.get('url', 'http://localhost:9000')
+            sonar_token = sonar_config.get('token', '')
+            
+            headers = {'Authorization': f'Bearer {sonar_token}'}
+            qg_url = f"{sonar_url}/api/qualitygates/project_status"
+            qg_params = {'projectKey': project_key}
+            
+            response = requests.get(qg_url, params=qg_params, headers=headers)
+            
+            if response.status_code == 200:
+                qg_data = response.json()
+                project_status = qg_data.get('projectStatus', {})
+                
+                return {
+                    'status': project_status.get('status', 'UNKNOWN'),
+                    'conditions': project_status.get('conditions', []),
+                    'period': project_status.get('periods', [])
+                }
+            else:
+                return {'status': 'ERROR', 'message': 'Failed to get quality gate status'}
+                
+        except Exception as e:
+            return {'status': 'ERROR', 'message': str(e)}
     
     def _analyze_demographic_clusters(self, demographic_data: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Analyze demographic data clusters using simple grouping"""
