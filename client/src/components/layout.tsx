@@ -102,12 +102,6 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
       href: '/about',
       icon: Info,
       current: location === '/about'
-    },
-    {
-      name: 'Developer Guide',
-      href: '/readme',
-      icon: FileText,
-      current: location === '/readme'
     }
   ];
 
