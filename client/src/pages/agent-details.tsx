@@ -68,6 +68,16 @@ const teamMembers: TeamMember[] = [
     name: "Ullas Krishnan",
     role: "Solution Architect",
     responsibility: "System architecture and design"
+  },
+  {
+    name: "Hrushikesh Nalwade",
+    role: "Java Architect",
+    responsibility: "Frameworks, Microservices"
+  },
+  {
+    name: "Pavan Luka",
+    role: "IBM Expert",
+    responsibility: "Mainframe, COBOL, Batch Processing"
   }
 ];
 
@@ -482,7 +492,7 @@ export default function AgentDetails() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {teamMembers.map((member, index) => (
                 <div key={index} className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3">
