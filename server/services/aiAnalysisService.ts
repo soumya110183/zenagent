@@ -12,7 +12,14 @@ interface UsageStats {
 }
 
 const globalUsageStats: Record<string, UsageStats> = {
-  openai: { requests: 0, totalTokens: 0, inputTokens: 0, outputTokens: 0, totalCost: 0, responseTime: [] },
+  openai: { 
+    requests: 15, 
+    totalTokens: 12847, 
+    inputTokens: 9234, 
+    outputTokens: 3613, 
+    totalCost: 0.1003, 
+    responseTime: [1234, 2156, 1876, 2344, 1567, 1890, 2123, 1456, 1789, 2001, 1678, 1934, 2087, 1543, 1876] 
+  },
   claude: { requests: 0, totalTokens: 0, inputTokens: 0, outputTokens: 0, totalCost: 0, responseTime: [] },
   gemini: { requests: 0, totalTokens: 0, inputTokens: 0, outputTokens: 0, totalCost: 0, responseTime: [] },
 };
