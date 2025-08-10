@@ -75,6 +75,13 @@ export default function Landing() {
                 className="h-12 w-auto object-contain"
               />
             </div>
+            
+            {/* Diamond Project Text */}
+            <div className="text-center mt-2">
+              <p className="text-sm text-blue-600 font-medium">
+                Diamond Project
+              </p>
+            </div>
           </div>
         </div>
       </div>
