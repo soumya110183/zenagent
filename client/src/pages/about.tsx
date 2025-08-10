@@ -184,7 +184,7 @@ export default function About() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Code className="h-6 w-6 text-blue-600 mr-2" />
-              Project AI Agents
+              Zengent AI - Agents
             </CardTitle>
             <CardDescription>
               Six specialized agents for multi-language codebase analysis and enterprise frameworks
