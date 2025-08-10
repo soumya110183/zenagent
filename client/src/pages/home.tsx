@@ -700,9 +700,14 @@ export default function Home() {
               </div>
               
               {/* Title */}
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-1">
                 {selectedAgentName}
               </h3>
+              
+              {/* Application Name */}
+              <h4 className="text-sm font-medium text-gray-500 mb-2">
+                Zengent AI
+              </h4>
               
               {/* Subtitle */}
               <h4 className="text-lg font-medium text-blue-600 mb-3">
