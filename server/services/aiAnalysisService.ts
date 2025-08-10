@@ -1,5 +1,7 @@
 import { type AnalysisData } from '@shared/schema';
 import OpenAI from 'openai';
+import fs from 'fs';
+import path from 'path';
 
 // Global usage tracking for LLM costs
 interface UsageStats {
@@ -916,7 +918,7 @@ Key relationships: ${analysisData.relationships.map(r => `${r.from} ${r.type} ${
         // Extract dependencies from imports
         const importMatches = content.match(/import\s+([^;]+);/g);
         if (importMatches) {
-          importMatches.forEach(imp => {
+          importMatches.forEach((imp: string) => {
             const packageName = imp.replace('import ', '').replace(';', '').trim();
             if (packageName.startsWith('org.springframework')) {
               dependencies.add('Spring Framework');
@@ -957,8 +959,8 @@ Provide a comprehensive overview of this Java application including its architec
 
           projectOverview = response.choices[0].message.content || 'Unable to generate project overview.';
           
-          // Track usage
-          this.trackUsage('openai', response.usage, Date.now() - startTime);
+          // Track usage (commented out - method not implemented yet)
+          // this.trackUsage('openai', response.usage, Date.now() - startTime);
           
         } catch (error) {
           console.error('OpenAI API error for Java analysis:', error);
