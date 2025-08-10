@@ -8,7 +8,7 @@ import Dashboard from "@/components/dashboard";
 import AIModelSelector, { type AIModelConfig } from "@/components/ai-model-selector";
 import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
-import { GitBranch, HelpCircle, Settings, Upload, Github, Code2, Database, Cpu, FileCode, Eye, GitMerge, Shield, Bot, Brain, Zap, Info } from "lucide-react";
+import { GitBranch, HelpCircle, Settings, Upload, Github, Code2, Database, Cpu, FileCode, Eye, GitMerge, Shield, Bot, Brain, Zap, Info, Search, BarChart4, ArrowRightLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
@@ -22,7 +22,7 @@ import pysparkLogo from "@assets/pyspark-lang_1754703714412.png";
 import ibmLogo from "@assets/ibm_1754703124415.png";
 
 type AppState = 'upload' | 'processing' | 'results';
-type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'code-lens' | 'match-lens' | 'validator' | 'responsible';
+type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>('upload');
@@ -70,13 +70,14 @@ export default function Home() {
     }
   };
 
-  const projectTypes = [
+  // Original language project types
+  const languageProjects = [
     {
       id: 'java' as ProjectType,
       name: 'Java',
       description: 'Comprehensive analysis of Java applications including Spring Boot frameworks, Maven/Gradle builds, and enterprise patterns',
       logoSrc: agentLogo,
-      borderColor: 'border-primary', // Myrtle Green
+      borderColor: 'border-primary',
       bgColor: 'bg-primary/5',
       hoverBgColor: 'hover:bg-primary/10',
       features: [
@@ -93,7 +94,7 @@ export default function Home() {
       name: 'PySpark',
       description: 'Advanced big data processing pipeline analysis with Apache Spark ecosystem integration and performance optimization insights',
       logoSrc: pysparkLogo,
-      borderColor: 'border-warning', // Peach Crayola
+      borderColor: 'border-warning',
       bgColor: 'bg-warning/10',
       hoverBgColor: 'hover:bg-warning/20',
       features: [
@@ -110,7 +111,7 @@ export default function Home() {
       name: 'Mainframe',
       description: 'Legacy system analysis for COBOL programs, JCL job scheduling, and mainframe database integrations with modernization insights',
       logoSrc: ibmLogo,
-      borderColor: 'border-secondary', // Wintergreen Dream
+      borderColor: 'border-secondary',
       bgColor: 'bg-secondary/5',
       hoverBgColor: 'hover:bg-secondary/10',
       features: [
@@ -125,26 +126,30 @@ export default function Home() {
     {
       id: 'python' as ProjectType,
       name: 'Python',
-      description: 'Full-stack Python application analysis covering Django/Flask frameworks, API architectures, and dependency management',
+      description: 'Deep analysis of Python applications with Django/Flask framework detection, package dependencies, and API architecture insights',
       logoSrc: pythonLogo,
-      borderColor: 'border-destructive', // Red Pigment
-      bgColor: 'bg-destructive/5',
-      hoverBgColor: 'hover:bg-destructive/10',
+      borderColor: 'border-blue-400',
+      bgColor: 'bg-blue-50',
+      hoverBgColor: 'hover:bg-blue-100',
       features: [
-        'Django/Flask framework pattern detection',
-        'Python package and module dependencies',
-        'REST/GraphQL API endpoint mapping',
+        'Django/Flask framework pattern analysis',
+        'Package dependency mapping (pip, conda)',
+        'API endpoint documentation and routing',
         'Database ORM relationship analysis',
-        'Virtual environment and requirements review',
-        'Code quality and security assessment'
+        'Virtual environment configuration review',
+        'Code quality and PEP compliance checking'
       ]
-    },
+    }
+  ];
+
+  // AI Agent types
+  const aiAgents = [
     {
       id: 'code-lens' as ProjectType,
       name: 'Code Lens Agent',
       description: 'Advanced demographic field analysis and integration pattern detection for comprehensive application understanding',
       logoSrc: agentLogo,
-      borderColor: 'border-chart-3', // Peach Crayola
+      borderColor: 'border-chart-3',
       bgColor: 'bg-chart-3/5',
       hoverBgColor: 'hover:bg-chart-3/10',
       features: [
@@ -161,7 +166,7 @@ export default function Home() {
       name: 'Match Lens Agent',
       description: 'Intelligent field matching between demographic data and C360 customer fields with automated relationship discovery',
       logoSrc: agentLogo,
-      borderColor: 'border-chart-4', // Wintergreen Dream
+      borderColor: 'border-chart-4',
       bgColor: 'bg-chart-4/5',
       hoverBgColor: 'hover:bg-chart-4/10',
       features: [
@@ -178,7 +183,7 @@ export default function Home() {
       name: 'Validator Agent',
       description: 'Comprehensive code validation covering security vulnerabilities, privacy compliance, and quality assessment',
       logoSrc: agentLogo,
-      borderColor: 'border-chart-5', // Dark Jungle Green
+      borderColor: 'border-chart-5',
       bgColor: 'bg-chart-5/5',
       hoverBgColor: 'hover:bg-chart-5/10',
       features: [
@@ -191,23 +196,76 @@ export default function Home() {
       ]
     },
     {
-      id: 'responsible' as ProjectType,
-      name: 'Responsible Agent',
-      description: 'AI/ML Safety, Fairness, and Governance framework implementation with comprehensive ethical AI assessment',
+      id: 'zenvector' as ProjectType,
+      name: 'ZenVector Agent',
+      description: 'Advanced vector database intelligence with ChromaDB integration for code similarity analysis and semantic search capabilities',
       logoSrc: agentLogo,
-      borderColor: 'border-chart-1', // Myrtle Green
-      bgColor: 'bg-chart-1/5',
-      hoverBgColor: 'hover:bg-chart-1/10',
+      borderColor: 'border-emerald-500',
+      bgColor: 'bg-emerald-50',
+      hoverBgColor: 'hover:bg-emerald-100',
       features: [
-        'AI/ML model fairness and bias detection',
-        'Algorithmic transparency and explainability analysis',
-        'Ethical AI governance framework implementation',
-        'Data privacy and consent management validation',
-        'Model safety and robustness assessment',
-        'Regulatory compliance for AI systems (EU AI Act, etc.)'
+        'ChromaDB vector database integration',
+        'Semantic code search capabilities',
+        'Code similarity detection algorithms',
+        'Pattern recognition and clustering',
+        'Multi-modal search functionality',
+        'HuggingFace model integration'
+      ]
+    },
+    {
+      id: 'knowledge' as ProjectType,
+      name: 'Knowledge Agent',
+      description: 'Document intelligence and Q&A system with Confluence integration, PDF processing, and intelligent knowledge extraction',
+      logoSrc: agentLogo,
+      borderColor: 'border-teal-500',
+      bgColor: 'bg-teal-50',
+      hoverBgColor: 'hover:bg-teal-100',
+      features: [
+        'Confluence web scraping integration',
+        'IBM Doclinq PDF processing',
+        'LangChain document processing',
+        'Redis caching for performance',
+        'Intelligent Q&A chat interface',
+        'Multi-source knowledge aggregation'
+      ]
+    },
+    {
+      id: 'datalens' as ProjectType,
+      name: 'Data Lens Agent',
+      description: 'Big Data intelligence agent for analyzing large-scale datasets, data lakes, and distributed computing environments',
+      logoSrc: agentLogo,
+      borderColor: 'border-cyan-500',
+      bgColor: 'bg-cyan-50',
+      hoverBgColor: 'hover:bg-cyan-100',
+      features: [
+        'Petabyte-scale data analysis',
+        'Apache Spark optimization',
+        'Real-time streaming analytics',
+        'Data quality monitoring',
+        'ETL pipeline optimization',
+        'ML pipeline integration'
+      ]
+    },
+    {
+      id: 'codeshift' as ProjectType,
+      name: 'Codeshift Lens Agent',
+      description: 'Multi-language code conversion agent for transforming source code between programming languages while preserving logic',
+      logoSrc: agentLogo,
+      borderColor: 'border-indigo-500',
+      bgColor: 'bg-indigo-50',
+      hoverBgColor: 'hover:bg-indigo-100',
+      features: [
+        'Multi-language code translation',
+        'Framework migration support',
+        'AST-based syntax conversion',
+        'Code quality preservation',
+        'Bulk project processing',
+        'Language ecosystem mapping'
       ]
     }
   ];
+
+  const projectTypes = [...languageProjects, ...aiAgents];
 
   const aiConfigButton = (
     <Button
@@ -242,59 +300,194 @@ export default function Home() {
         {appState === 'upload' && !selectedProjectType && (
           <div className="max-w-6xl mx-auto">
 
-
-
-            {/* Project Type Selection */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {projectTypes.map((type) => {
-                return (
-                  <div
-                    key={type.id}
-                    onClick={() => setSelectedProjectType(type.id)}
-                    className={`relative group cursor-pointer bg-card rounded-xl border-2 ${type.borderColor} ${type.hoverBgColor} shadow-lg hover:shadow-xl transition-all duration-300 p-6`}
-                  >
-                    <div>
-                      {/* First line - Logo and Heading name */}
-                      <div className="flex items-center space-x-3 mb-3">
-                        <div className={`inline-flex items-center justify-center bg-background rounded-lg p-2 ${type.id === 'pyspark' ? 'w-20 h-12' : 'w-12 h-12'}`}>
-                          <img 
-                            src={type.logoSrc} 
-                            alt={`${type.name} logo`}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-                        <h3 className="text-lg font-semibold text-foreground leading-tight">
-                          {type.name}
-                        </h3>
-                      </div>
-                      
-                      {/* Second line - Description text */}
-                      <div>
-                        <p className="text-muted-foreground text-sm mb-3">
-                          {type.description}
-                        </p>
-                        <div className={`${type.bgColor} rounded-lg p-3 mt-3`}>
-                          <ul className="space-y-1">
-                            {type.features.map((feature, index) => (
-                              <li key={index} className="text-xs text-foreground/80 flex items-start">
-                                <div className="w-1 h-1 bg-primary rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
-                                <span>{feature}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    </div>
+            {/* Enterprise AI Platform Summary */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-8 border border-blue-200">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <Bot className="h-8 w-8 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">
+                    Enterprise Application Intelligence Platform
+                  </h2>
+                  <p className="text-gray-700 text-sm mb-3">
+                    Transform your codebase understanding with 9 specialized AI agents covering multi-language analysis, 
+                    vector database intelligence, and enterprise-grade document processing. Each agent provides unique 
+                    capabilities for comprehensive application intelligence and code analysis.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="secondary" className="text-xs">Java & Spring Boot</Badge>
+                    <Badge variant="secondary" className="text-xs">Python & Django</Badge>
+                    <Badge variant="secondary" className="text-xs">PySpark & Big Data</Badge>
+                    <Badge variant="secondary" className="text-xs">Mainframe & COBOL</Badge>
+                    <Badge variant="secondary" className="text-xs">AI/ML Analysis</Badge>
+                    <Badge variant="secondary" className="text-xs">Vector Database</Badge>
                   </div>
-                );
-              })}
+                </div>
+              </div>
             </div>
 
+            {/* Language Project Types */}
+            <div className="mb-12">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Code2 className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Language Project Analysis</h3>
+                  <p className="text-sm text-gray-600">Multi-language codebase analysis supporting enterprise frameworks</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {languageProjects.map((type) => {
+                  return (
+                    <div
+                      key={type.id}
+                      onClick={() => setSelectedProjectType(type.id)}
+                      className={`relative group cursor-pointer bg-card rounded-xl border-2 ${type.borderColor} ${type.hoverBgColor} shadow-lg hover:shadow-xl transition-all duration-300 p-6`}
+                    >
+                      <div>
+                        {/* First line - Logo and Heading name */}
+                        <div className="flex items-center space-x-3 mb-3">
+                          <div className={`inline-flex items-center justify-center bg-background rounded-lg p-2 ${type.id === 'pyspark' ? 'w-20 h-12' : 'w-12 h-12'}`}>
+                            <img 
+                              src={type.logoSrc} 
+                              alt={`${type.name} logo`}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <h3 className="text-lg font-semibold text-foreground leading-tight">
+                            {type.name}
+                          </h3>
+                        </div>
+                        
+                        {/* Second line - Description text */}
+                        <div>
+                          <p className="text-muted-foreground text-sm mb-3">
+                            {type.description}
+                          </p>
+                          <div className={`${type.bgColor} rounded-lg p-3 mt-3`}>
+                            <ul className="space-y-1">
+                              {type.features.map((feature, index) => (
+                                <li key={index} className="text-xs text-foreground/80 flex items-start">
+                                  <div className="w-1 h-1 bg-primary rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
+            {/* AI Intelligence Agents */}
+            <div className="mb-12">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <Brain className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">AI Intelligence Agents</h3>
+                  <p className="text-sm text-gray-600">Specialized AI agents for advanced analysis and processing</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                {aiAgents.map((type) => {
+                  return (
+                    <div
+                      key={type.id}
+                      onClick={() => setSelectedProjectType(type.id)}
+                      className={`relative group cursor-pointer bg-card rounded-xl border-2 ${type.borderColor} ${type.hoverBgColor} shadow-lg hover:shadow-xl transition-all duration-300 p-6`}
+                    >
+                      <div>
+                        {/* First line - Logo and Heading name */}
+                        <div className="flex items-center space-x-3 mb-3">
+                          <div className="inline-flex items-center justify-center bg-background rounded-lg p-2 w-12 h-12">
+                            <img 
+                              src={type.logoSrc} 
+                              alt={`${type.name} logo`}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <h3 className="text-lg font-semibold text-foreground leading-tight">
+                            {type.name}
+                          </h3>
+                        </div>
+                        
+                        {/* Second line - Description text */}
+                        <div>
+                          <p className="text-muted-foreground text-sm mb-3">
+                            {type.description}
+                          </p>
+                          <div className={`${type.bgColor} rounded-lg p-3 mt-3`}>
+                            <ul className="space-y-1">
+                              {type.features.map((feature, index) => (
+                                <li key={index} className="text-xs text-foreground/80 flex items-start">
+                                  <div className="w-1 h-1 bg-primary rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {appState === 'upload' && selectedProjectType && (
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-6">
+              <button
+                onClick={() => setSelectedProjectType(null)}
+                className="text-primary hover:text-primary/80 flex items-center space-x-2 mb-4"
+              >
+                <span>← Back to AI agents</span>
+              </button>
+              <div className="flex items-center space-x-4">
+                {(() => {
+                  const selectedType = projectTypes.find(t => t.id === selectedProjectType);
+                  if (!selectedType) return null;
+                  return (
+                    <>
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-lg p-3">
+                        <img 
+                          src={selectedType.logoSrc} 
+                          alt={`${selectedType.name} logo`}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div>
+                        <h1 className="text-2xl font-bold text-foreground">
+                          {selectedType.name}
+                        </h1>
+                        <p className="text-muted-foreground">
+                          {selectedType.description}
+                        </p>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+            <UploadSection onFileUploaded={handleFileUploaded} />
           </div>
         )}
 

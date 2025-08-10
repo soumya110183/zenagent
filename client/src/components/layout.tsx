@@ -78,12 +78,7 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
       icon: Bot,
       current: location === '/'
     },
-    {
-      name: 'Agent Details',
-      href: '/agent-details',
-      icon: Info,
-      current: location === '/agent-details'
-    },
+
     {
       name: 'Usage Statistics',
       href: '/usage-statistics',

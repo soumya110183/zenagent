@@ -16,7 +16,7 @@ import {
   Database,
   Lock
 } from "lucide-react";
-import Layout from "@/components/layout";
+
 
 export default function About() {
   const features = [
@@ -77,8 +77,7 @@ export default function About() {
   ];
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
@@ -360,7 +359,6 @@ export default function About() {
             Built by the Amex Diamond Zensar Team
           </p>
         </div>
-      </div>
-    </Layout>
+    </div>
   );
 }
