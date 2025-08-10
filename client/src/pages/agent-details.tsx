@@ -478,8 +478,7 @@ export default function AgentDetails() {
             Zengent AI - Enterprise Agent Portfolio
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comprehensive suite of 7 specialized AI agents powered by enterprise-grade technology stack
-            including IBM Doclinq, LangChain, LangGraph, Langfuse, SonarQube, and HuggingFace Models
+            Enterprise application intelligence platform with specialized AI agents
           </p>
         </div>
 
