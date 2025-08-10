@@ -6,7 +6,7 @@ import { loginSchema } from "@shared/schema";
 import { insertProjectSchema, githubProjectSchema } from "@shared/schema";
 import { analyzeJavaProject } from "./services/javaAnalyzer";
 import { analyzeGithubRepository, isValidGithubUrl } from "./services/githubService";
-import { aiAnalysisService } from "./services/aiAnalysisService";
+import { aiAnalysisService, getGlobalUsageStats } from "./services/aiAnalysisService";
 import { sonarAnalyzer } from "./services/sonarAnalyzer";
 import { swaggerGenerator } from "./services/swaggerGenerator";
 import { projectStructureAnalyzer } from "./services/projectStructureAnalyzer";
@@ -650,19 +650,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           averageProcessingTime: totalProjects > 0 ? 3.2 : 0, // Based on typical processing time
           projectTypes: projectTypes
         },
-        llmUsage: (() => {
-          try {
-            const { getGlobalUsageStats } = require('./services/aiAnalysisService');
-            return getGlobalUsageStats();
-          } catch (error) {
-            console.log('AI service not available, using default LLM stats');
-            return {
-              openai: { requests: 0, tokens: 0, cost: 0, averageResponseTime: 0 },
-              claude: { requests: 0, tokens: 0, cost: 0, averageResponseTime: 0 },
-              gemini: { requests: 0, tokens: 0, cost: 0, averageResponseTime: 0 }
-            };
-          }
-        })(),
+        llmUsage: getGlobalUsageStats(),
         resourceUsage: {
           cpuUsage: cpuPercentage,
           memoryUsage: memoryPercentage,
