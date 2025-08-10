@@ -323,7 +323,7 @@ export default function About() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Hrushikesh Nalwade</h3>
-                    <p className="text-blue-600 font-medium mb-1">Java Architect</p>
+                    <p className="text-blue-600 font-medium mb-1">Java Solution Architect</p>
                     <p className="text-gray-600 text-sm">AI, Frameworks</p>
                   </div>
                 </div>
