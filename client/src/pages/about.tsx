@@ -46,26 +46,69 @@ export default function About() {
     }
   ];
 
-  const agents = [
+  const projectAIAgents = [
     {
-      name: "Code Lens",
-      description: "Demographic data scanning and analysis specialized for Diamond Project requirements",
-      icon: "🔍"
+      name: "Java Agent",
+      description: "Comprehensive analysis of Java applications including Spring Boot frameworks, Maven/Gradle builds, and enterprise patterns",
+      icon: "☕",
+      category: "Language Analysis"
     },
     {
-      name: "Match Lens", 
-      description: "Dependency mapping and relationship analysis",
-      icon: "🔗"
+      name: "PySpark Agent",
+      description: "Advanced big data processing pipeline analysis with Apache Spark ecosystem integration and performance optimization insights",
+      icon: "🔥",
+      category: "Big Data"
     },
     {
-      name: "Validator",
-      description: "Code quality and compliance checking",
-      icon: "✅"
+      name: "Mainframe Agent",
+      description: "Legacy system analysis for COBOL programs, JCL job scheduling, and mainframe database integrations with modernization insights",
+      icon: "🏢",
+      category: "Legacy Systems"
     },
     {
-      name: "Responsible AI",
-      description: "Ethics and bias detection in code analysis",
-      icon: "⚖️"
+      name: "Python Agent",
+      description: "Deep analysis of Python applications with Django/Flask framework detection, package dependencies, and API architecture insights",
+      icon: "🐍",
+      category: "Web Development"
+    },
+    {
+      name: "Validator Agent",
+      description: "Comprehensive code validation covering security vulnerabilities, privacy compliance, and quality assessment",
+      icon: "✅",
+      category: "Code Quality"
+    }
+  ];
+
+  const diamondProjectAgents = [
+    {
+      name: "Code Lens Agent",
+      description: "Advanced demographic field analysis and integration pattern detection for comprehensive application understanding",
+      icon: "🔍",
+      category: "Data Analysis"
+    },
+    {
+      name: "Match Lens Agent",
+      description: "Intelligent field matching between demographic data and C360 customer fields with automated relationship discovery",
+      icon: "🔗",
+      category: "Data Mapping"
+    },
+    {
+      name: "Knowledge Agent",
+      description: "Document intelligence and Q&A system with Confluence integration, PDF processing, and intelligent knowledge extraction",
+      icon: "📚",
+      category: "Knowledge Management"
+    },
+    {
+      name: "Data Lens Agent",
+      description: "Big Data intelligence agent for analyzing large-scale datasets, data lakes, and distributed computing environments",
+      icon: "📊",
+      category: "Big Data Analytics"
+    },
+    {
+      name: "Codeshift Lens Agent",
+      description: "Multi-language code conversion agent for transforming source code between programming languages while preserving logic",
+      icon: "🔄",
+      category: "Code Transformation"
     }
   ];
 
@@ -87,7 +130,7 @@ export default function About() {
             </h1>
           </div>
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Enterprise Application Intelligence Platform
+            Enterprise Application Agents
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Transform your codebase understanding with AI-powered analysis, interactive visualizations, 
@@ -130,25 +173,61 @@ export default function About() {
           </CardContent>
         </Card>
 
-        {/* AI Agents */}
+        {/* Project AI Agents */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Bot className="h-6 w-6 text-blue-600 mr-2" />
-              Specialized AI Agents
+              <Code className="h-6 w-6 text-blue-600 mr-2" />
+              Project AI Agents
             </CardTitle>
             <CardDescription>
-              Four specialized agents for comprehensive code analysis
+              Multi-language codebase analysis supporting enterprise frameworks
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-4">
-              {agents.map((agent, index) => (
-                <div key={index} className="flex items-center space-x-3 p-3 border rounded-lg">
-                  <span className="text-2xl">{agent.icon}</span>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{agent.name}</h3>
-                    <p className="text-sm text-gray-600">{agent.description}</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {projectAIAgents.map((agent, index) => (
+                <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start space-x-3">
+                    <span className="text-2xl">{agent.icon}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-gray-900">{agent.name}</h3>
+                        <Badge variant="outline" className="text-xs">{agent.category}</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">{agent.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Diamond Project AI Agents */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Bot className="h-6 w-6 text-emerald-600 mr-2" />
+              AI Agents for Diamond Project
+            </CardTitle>
+            <CardDescription>
+              Specialized AI agents for advanced analysis and processing
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {diamondProjectAgents.map((agent, index) => (
+                <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start space-x-3">
+                    <span className="text-2xl">{agent.icon}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-gray-900">{agent.name}</h3>
+                        <Badge variant="outline" className="text-xs">{agent.category}</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">{agent.description}</p>
+                    </div>
                   </div>
                 </div>
               ))}

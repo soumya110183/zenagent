@@ -73,7 +73,7 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
 
   const navigation = [
     {
-      name: 'AI Agent',
+      name: 'AI Agents',
       href: '/',
       icon: Bot,
       current: location === '/'
@@ -124,7 +124,7 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
             
             {/* Center - Zengent AI Text */}
             <div className="flex-1 text-center">
-              <h2 className="text-lg font-medium">Zengent AI - Enterprise Application Intelligence Platform</h2>
+              <h2 className="text-lg font-medium">Zengent AI - Enterprise Application Agents</h2>
             </div>
             
             {/* Right side - AI Settings, User Profile and other buttons */}
