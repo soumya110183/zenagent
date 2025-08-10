@@ -261,48 +261,42 @@ export default function About() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 font-semibold text-gray-900">Name</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-900">Role</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-900">Specialization</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-gray-900">Kaushik Saha</td>
-                    <td className="py-3 px-4 text-blue-600">Project Manager</td>
-                    <td className="py-3 px-4 text-gray-600">-</td>
-                  </tr>
-                  <tr className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-gray-900">Sameer Kumar Sharma</td>
-                    <td className="py-3 px-4 text-blue-600">Engineering Manager</td>
-                    <td className="py-3 px-4 text-gray-600">-</td>
-                  </tr>
-                  <tr className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-gray-900">Piyush Gupta</td>
-                    <td className="py-3 px-4 text-blue-600">Onsite Manager</td>
-                    <td className="py-3 px-4 text-gray-600">Code Lens, Match Lens, Validator Agent</td>
-                  </tr>
-                  <tr className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-gray-900">Ullas Krishnan</td>
-                    <td className="py-3 px-4 text-blue-600">Solution Architect</td>
-                    <td className="py-3 px-4 text-gray-600">-</td>
-                  </tr>
-                  <tr className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-gray-900">Hrushikesh Nalwade</td>
-                    <td className="py-3 px-4 text-blue-600">Java Architect</td>
-                    <td className="py-3 px-4 text-gray-600">Frameworks, Microservices</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="py-3 px-4 text-gray-900">Pavan Luka</td>
-                    <td className="py-3 px-4 text-blue-600">IBM Expert</td>
-                    <td className="py-3 px-4 text-gray-600">Mainframe, COBOL, Batch Processing</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Kaushik Saha</h3>
+                <p className="text-blue-600 font-medium mb-2">Project Manager</p>
+                <p className="text-gray-600 text-sm">AI, Migration Process</p>
+              </div>
+              
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Sameer Kumar Sharma</h3>
+                <p className="text-blue-600 font-medium mb-2">Technical Manager</p>
+                <p className="text-gray-600 text-sm">AI, Migration Process</p>
+              </div>
+              
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Piyush Gupta</h3>
+                <p className="text-blue-600 font-medium mb-2">Onsite Manager</p>
+                <p className="text-gray-600 text-sm">Big Data Analyst<br/>Code Lens, Match Lens, Validator Agent</p>
+              </div>
+              
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Ullas Krishnan</h3>
+                <p className="text-blue-600 font-medium mb-2">AI Solution Architect</p>
+                <p className="text-gray-600 text-sm">Agentic AI Solutions</p>
+              </div>
+              
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Hrushikesh Nalwade</h3>
+                <p className="text-blue-600 font-medium mb-2">Java Architect</p>
+                <p className="text-gray-600 text-sm">AI, Frameworks</p>
+              </div>
+              
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Pavan Luka</h3>
+                <p className="text-blue-600 font-medium mb-2">IBM Architect</p>
+                <p className="text-gray-600 text-sm">Mainframe, COBOL, Batch Processing</p>
+              </div>
             </div>
           </CardContent>
         </Card>
