@@ -357,19 +357,6 @@ export default function About() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Footer */}
-        <div className="text-center py-8 border-t">
-          <p className="text-xl text-gray-800 mb-4">
-            <strong>Powered by Zensar Technologies</strong>
-          </p>
-          <p className="text-lg text-gray-600 mb-4">
-            Transforming enterprises through intelligent automation and AI-driven solutions
-          </p>
-          <p className="text-base text-gray-500 mt-2">
-            Built by the Amex Diamond Zensar Team
-          </p>
-        </div>
     </div>
   );
 }

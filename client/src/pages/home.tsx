@@ -380,16 +380,16 @@ export default function Home() {
                       className={`relative group cursor-pointer bg-card rounded-lg border-2 ${type.borderColor} ${type.hoverBgColor} shadow-md hover:shadow-lg transition-all duration-300 p-4`}
                     >
                       <div>
-                        {/* Compact header with logo and name */}
-                        <div className="flex items-center space-x-2 mb-2">
-                          <div className={`inline-flex items-center justify-center bg-background rounded-lg p-1.5 ${type.id === 'pyspark' ? 'w-30 h-18' : 'w-24 h-24'}`}>
+                        {/* Enhanced header with larger logo and name */}
+                        <div className="flex items-center space-x-3 mb-3">
+                          <div className={`inline-flex items-center justify-center bg-background rounded-xl p-2 shadow-sm ${type.id === 'pyspark' ? 'w-36 h-24' : 'w-32 h-32'}`}>
                             <img 
                               src={type.logoSrc} 
                               alt={`${type.name} logo`}
                               className="w-full h-full object-contain"
                             />
                           </div>
-                          <h3 className="text-sm font-semibold text-foreground leading-tight">
+                          <h3 className="text-lg font-bold text-foreground leading-tight">
                             {type.name}
                           </h3>
                         </div>
@@ -486,16 +486,16 @@ export default function Home() {
                       className={`relative group cursor-pointer bg-card rounded-lg border-2 ${type.borderColor} ${type.hoverBgColor} shadow-md hover:shadow-lg transition-all duration-300 p-4`}
                     >
                       <div>
-                        {/* Compact header with logo and name */}
-                        <div className="flex items-center space-x-2 mb-2">
-                          <div className="inline-flex items-center justify-center bg-background rounded-lg p-1.5 w-24 h-24">
+                        {/* Enhanced header with larger logo and name */}
+                        <div className="flex items-center space-x-3 mb-3">
+                          <div className="inline-flex items-center justify-center bg-background rounded-xl p-2 shadow-sm w-32 h-32">
                             <img 
                               src={type.logoSrc} 
                               alt={`${type.name} logo`}
                               className="w-full h-full object-contain"
                             />
                           </div>
-                          <h3 className="text-sm font-semibold text-foreground leading-tight">
+                          <h3 className="text-lg font-bold text-foreground leading-tight">
                             {type.name}
                           </h3>
                         </div>
@@ -640,7 +640,7 @@ export default function Home() {
           <div className="space-y-8">
             {currentProject.analysisData && typeof currentProject.analysisData === 'object' && (
               <>
-                <Dashboard analysisData={currentProject.analysisData} />
+                <Dashboard analysisData={currentProject.analysisData as any} />
                 <AnalysisResults 
                   project={currentProject} 
                   onNewAnalysis={handleNewAnalysis}

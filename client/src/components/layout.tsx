@@ -303,6 +303,19 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
         {/* Main content */}
         <main className="flex-1 relative">
           {children}
+          
+          {/* Zensar Footer */}
+          <div className="text-center py-8 border-t bg-gray-50 mt-12">
+            <p className="text-xl text-gray-800 mb-4">
+              <strong>Powered by Zensar Technologies</strong>
+            </p>
+            <p className="text-lg text-gray-600 mb-4">
+              Transforming enterprises through intelligent automation and AI-driven solutions
+            </p>
+            <p className="text-base text-gray-500 mt-2">
+              Built by the Amex Diamond Zensar Team
+            </p>
+          </div>
         </main>
       </div>
     </div>
