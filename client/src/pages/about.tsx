@@ -272,7 +272,7 @@ export default function About() {
                   <img 
                     src={kaushikPhoto} 
                     alt="Kaushik Saha" 
-                    className="w-24 h-24 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
+                    className="w-24 h-32 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Kaushik Saha</h3>
@@ -287,7 +287,7 @@ export default function About() {
                   <img 
                     src={sameerPhoto} 
                     alt="Sameer Kumar Sharma" 
-                    className="w-24 h-24 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
+                    className="w-24 h-32 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Sameer Kumar Sharma</h3>
@@ -302,7 +302,7 @@ export default function About() {
                   <img 
                     src={piyushPhoto} 
                     alt="Piyush Gupta" 
-                    className="w-24 h-24 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
+                    className="w-24 h-32 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Piyush Gupta</h3>
@@ -332,7 +332,7 @@ export default function About() {
                   <img 
                     src={hrushikeshPhoto} 
                     alt="Hrushikesh Nalwade" 
-                    className="w-24 h-24 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
+                    className="w-24 h-32 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Hrushikesh Nalwade</h3>
