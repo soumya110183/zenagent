@@ -408,6 +408,27 @@ export default function Home() {
                   <p className="text-sm text-gray-600">Specialized AI agents for advanced analysis and processing</p>
                 </div>
               </div>
+              
+              {/* Diamond Project AI Platform Summary */}
+              <div className="bg-gradient-to-r from-emerald-900 to-emerald-800 rounded-xl p-6 mb-8 border border-emerald-600">
+                <div>
+                  <h2 className="text-xl font-bold text-white mb-2">
+                    Diamond Project Intelligence
+                  </h2>
+                  <p className="text-emerald-100 text-sm mb-3">
+                    Advanced AI-powered agents designed for specialized analysis tasks including code matching, knowledge extraction, 
+                    data analysis, and intelligent code transformation. Each agent leverages cutting-edge AI models for precise 
+                    and efficient processing of complex enterprise data and code patterns.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline" className="text-xs text-blue-300 border-blue-300 bg-blue-900/20">Code Analysis</Badge>
+                    <Badge variant="outline" className="text-xs text-purple-300 border-purple-300 bg-purple-900/20">Pattern Matching</Badge>
+                    <Badge variant="outline" className="text-xs text-yellow-300 border-yellow-300 bg-yellow-900/20">Knowledge Mining</Badge>
+                    <Badge variant="outline" className="text-xs text-red-300 border-red-300 bg-red-900/20">Data Intelligence</Badge>
+                    <Badge variant="outline" className="text-xs text-indigo-300 border-indigo-300 bg-indigo-900/20">Code Transformation</Badge>
+                  </div>
+                </div>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {aiAgents.map((type) => {
                   return (
