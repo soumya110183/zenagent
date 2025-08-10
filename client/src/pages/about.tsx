@@ -311,7 +311,7 @@ export default function About() {
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Ullas Krishnan</h3>
                     <p className="text-blue-600 font-medium mb-1">AI Solution Architect</p>
-                    <p className="text-gray-600 text-sm">Agentic AI Solutions</p>
+                    <p className="text-gray-600 text-sm">Agentic AI Solutions, LLM Model, Responsible AI, AI Rules and Regulations</p>
                   </div>
                 </div>
               </div>
