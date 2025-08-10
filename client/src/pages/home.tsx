@@ -14,6 +14,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import Layout from "@/components/layout";
 import { SiPython, SiApachespark } from "react-icons/si";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import zensarLogo from "@assets/Zensar_composite_logo_whit_ai_1754732936523.png";
 import zenagentBanner from "@assets/zenagent_1754759778955.png";
 import agentLogo from "@assets/agent_1754754612491.png";
@@ -263,8 +269,9 @@ export default function Home() {
   );
 
   return (
-    <Layout aiConfigButton={aiConfigButton}>
-      <div className="bg-white font-sans text-foreground min-h-screen">
+    <TooltipProvider>
+      <Layout aiConfigButton={aiConfigButton}>
+        <div className="bg-white font-sans text-foreground min-h-screen">
 
 
 
@@ -416,7 +423,26 @@ export default function Home() {
                             ))}
                             {type.features.length > 3 && (
                               <li className="text-xs text-muted-foreground/60 italic">
-                                +{type.features.length - 3} more features
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="cursor-help hover:text-muted-foreground underline decoration-dotted">
+                                      +{type.features.length - 3} more features
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="max-w-xs">
+                                    <div className="space-y-1">
+                                      <p className="font-semibold text-sm">All {type.name} Features:</p>
+                                      <ul className="space-y-0.5">
+                                        {type.features.slice(3).map((feature, index) => (
+                                          <li key={index} className="text-xs flex items-start">
+                                            <div className="w-1 h-1 bg-primary rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                                            <span>{feature}</span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  </TooltipContent>
+                                </Tooltip>
                               </li>
                             )}
                           </ul>
@@ -569,7 +595,8 @@ export default function Home() {
           </div>
         </div>
       )}
-      </div>
-    </Layout>
+        </div>
+      </Layout>
+    </TooltipProvider>
   );
 }
