@@ -287,7 +287,7 @@ export default function Home() {
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-8 border border-blue-200">
               <div>
                 <h2 className="text-xl font-bold text-gray-900 mb-2">
-                  Enterprise Application Intelligence Platform
+                  Enterprise Application Agents
                 </h2>
                 <p className="text-gray-700 text-sm mb-3">
                   Transform your codebase understanding with 9 specialized AI agents covering multi-language analysis, 
