@@ -167,12 +167,6 @@ export default function LoginForm() {
                   {loginMutation.isPending ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
-
-              <div className="mt-8 text-center">
-                <p className="text-sm text-gray-500">
-                  Test credentials: <span className="font-medium">amex</span> / <span className="font-medium">zensar</span>
-                </p>
-              </div>
             </CardContent>
           </Card>
         </div>
