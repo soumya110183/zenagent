@@ -178,8 +178,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId!;
       const file = req.file;
       
+      console.log(`Avatar upload attempt for user ID: ${userId}`);
+      
       if (!file) {
         return res.status(400).json({ message: "No image file provided" });
+      }
+      
+      // Check if user exists first
+      const existingUser = await storage.getUser(userId);
+      if (!existingUser) {
+        console.error(`User not found with ID: ${userId}`);
+        return res.status(404).json({ message: "User not found" });
       }
       
       // Convert image to base64 for storage
@@ -190,7 +199,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const { password, ...userWithoutPassword } = updatedUser;
         res.json(userWithoutPassword);
       } else {
-        res.status(404).json({ message: "User not found" });
+        res.status(404).json({ message: "Failed to update user profile" });
       }
     } catch (error) {
       console.error("Error uploading profile image:", error);
