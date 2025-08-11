@@ -98,7 +98,7 @@ export default function LoginForm() {
           <Card className="shadow-2xl border-0 bg-white">
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-3xl font-bold text-gray-900">
-                Welcome Back
+                Zengent AI
               </CardTitle>
               <CardDescription className="text-gray-600 mt-2 text-lg">
                 Sign in to access your enterprise AI platform
