@@ -11,7 +11,7 @@ import type { LoginInput } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import zenagentImage from '@assets/zenagentw_1754916187232.png';
-import zensarLogo from '@assets/Zensar composite_logo_whit_png_1754917009834.png';
+import zensarLogo from '@assets/Zensar_composite_logo_whit_ai_1754917811230.png';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
