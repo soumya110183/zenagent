@@ -98,9 +98,9 @@ export default function LoginForm() {
         </div>
       </div>
 
-      {/* Right Panel - White Background with Login Form */}
-      <div className="flex-1 flex items-center justify-center bg-white px-4 sm:px-6 lg:px-20 xl:px-24">
-        <div className="w-full max-w-md">
+      {/* Right Panel - Clean Login Form */}
+      <div className="flex-1 flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-12">
+        <div className="w-full max-w-sm">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
             <img 
@@ -111,93 +111,104 @@ export default function LoginForm() {
             <h1 className="text-2xl font-bold text-gray-900">Zengent AI</h1>
           </div>
 
-          <Card className="shadow-2xl border-0 bg-white">
-            <CardHeader className="text-center pb-6">
-              <CardTitle className="text-3xl font-bold text-gray-900">
-                Zengent AI
-              </CardTitle>
-              <CardDescription className="text-gray-600 mt-2 text-lg">
-                Sign in to access your enterprise AI platform
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="px-8 pb-8">
-              <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="username" className="text-sm font-semibold text-gray-700">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    {...loginForm.register('username')}
-                    placeholder="Enter your username"
-                    disabled={loginMutation.isPending}
-                    className="h-12 px-4 text-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
-                  />
-                  {loginForm.formState.errors.username && (
-                    <p className="text-sm text-red-600">
-                      {loginForm.formState.errors.username.message}
-                    </p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
-                    Password
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      {...loginForm.register('password')}
-                      placeholder="Enter your password"
-                      disabled={loginMutation.isPending}
-                      className="h-12 px-4 text-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg pr-12"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
-                      )}
-                    </Button>
-                  </div>
-                  {loginForm.formState.errors.password && (
-                    <p className="text-sm text-red-600">
-                      {loginForm.formState.errors.password.message}
-                    </p>
-                  )}
-                </div>
-                
-                <Button
-                  type="submit"
-                  disabled={loginMutation.isPending}
-                  className="w-full h-12 text-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
-                >
-                  <LogIn className="w-5 h-5 mr-2" />
-                  {loginMutation.isPending ? "Signing in..." : "Sign In"}
-                </Button>
-              </form>
+          {/* Login Form */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                ZENGENT AI
+              </h1>
+              <p className="text-sm text-gray-600">
+                Secure platform access
+              </p>
+            </div>
 
-              <div className="mt-8 text-center text-sm text-gray-500">
-                <div className="flex justify-center space-x-4 mb-2">
-                  <a href="/terms" className="hover:text-blue-600">
-                    Terms of Service
-                  </a>
-                  <span>•</span>
-                  <a href="/privacy" className="hover:text-blue-600">
-                    Privacy Policy
-                  </a>
-                </div>
-                <p>&copy; 2025 Zensar Technologies. All rights reserved.</p>
+            <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-6">
+              <div>
+                <Label htmlFor="username" className="text-sm font-medium text-gray-700 mb-2 block">
+                  Username
+                </Label>
+                <Input
+                  id="username"
+                  {...loginForm.register('username')}
+                  placeholder="Enter your username"
+                  disabled={loginMutation.isPending}
+                  className="h-11 px-3 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+                {loginForm.formState.errors.username && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {loginForm.formState.errors.username.message}
+                  </p>
+                )}
               </div>
-            </CardContent>
-          </Card>
+              
+              <div>
+                <Label htmlFor="password" className="text-sm font-medium text-gray-700 mb-2 block">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    {...loginForm.register('password')}
+                    placeholder="Enter your password"
+                    disabled={loginMutation.isPending}
+                    className="h-11 px-3 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </Button>
+                </div>
+                {loginForm.formState.errors.password && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {loginForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Remember me and Forgot password */}
+              <div className="flex items-center justify-between text-sm">
+                <label className="flex items-center">
+                  <input type="checkbox" className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded" />
+                  <span className="text-gray-700">Remember me</span>
+                </label>
+                <a href="#" className="text-blue-600 hover:text-blue-500">
+                  Forgot Password?
+                </a>
+              </div>
+              
+              <Button
+                type="submit"
+                disabled={loginMutation.isPending}
+                className="w-full h-11 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200"
+              >
+                {loginMutation.isPending ? "SIGNING IN..." : "LOGIN"}
+              </Button>
+            </form>
+
+            {/* Footer */}
+            <div className="mt-8 text-center">
+              <p className="text-xs text-gray-500 mb-3">
+                Prepared by Diamond Zensar Team
+              </p>
+              <div className="flex justify-center space-x-1 text-xs text-gray-500">
+                <span>© 2025 |</span>
+                <a href="/terms" className="hover:text-blue-600">Terms of use</a>
+                <span>|</span>
+                <a href="/privacy" className="hover:text-blue-600">Privacy Policy</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
