@@ -19,7 +19,7 @@ import {
 import ullasPhoto from "@assets/ullas_1754848831242.png";
 import kaushikPhoto from "@assets/kaushik_1754851074835.png";
 import sameerPhoto from "@assets/sameer_1754851092170.png";
-import piyushPhoto from "@assets/piyush_1754851116404.jpg";
+import piyushPhoto from "@assets/piyush_1754876944912.jpg";
 import hrushikeshPhoto from "@assets/hri_1754851135645.png";
 
 
@@ -306,7 +306,7 @@ export default function TeamBehind() {
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">Piyush Gupta</h3>
-                    <p className="text-blue-600 font-medium mb-1">Onsite Manager</p>
+                    <p className="text-blue-600 font-medium mb-1">Technical Manager - Onsite</p>
                     <p className="text-gray-600 text-sm">Big Data Analyst<br/>Code Lens, Match Lens, Validator Agent</p>
                   </div>
                 </div>
