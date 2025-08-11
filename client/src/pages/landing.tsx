@@ -48,7 +48,7 @@ export default function Landing() {
       <div className="w-96 bg-white flex flex-col justify-center items-center p-8 shadow-2xl">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">ZENGENT AI</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: 'Eras Bold ITC, Arial Black, sans-serif' }}>ZENGENT AI</h3>
             <p className="text-gray-600">Secure platform access</p>
           </div>
           
