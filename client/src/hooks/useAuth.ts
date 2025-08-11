@@ -6,6 +6,22 @@ export function useAuth() {
   const { data: user, isLoading, error } = useQuery<User>({
     queryKey: ['/api/auth/user'],
     retry: false,
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/auth/user', {
+          credentials: 'include',
+        });
+        if (response.status === 401) {
+          return null;
+        }
+        if (!response.ok) {
+          throw new Error('Failed to fetch user');
+        }
+        return await response.json();
+      } catch (error) {
+        return null;
+      }
+    },
   });
 
   return {
@@ -21,7 +37,8 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (data: LoginInput) => {
-      return await apiRequest('POST', '/api/auth/login', data);
+      const response = await apiRequest('POST', '/api/auth/login', data);
+      return await response.json();
     },
     onSuccess: (data) => {
       if (data.success) {
@@ -39,7 +56,8 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: async () => {
-      return await apiRequest('POST', '/api/auth/logout');
+      const response = await apiRequest('POST', '/api/auth/logout');
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.setQueryData(['/api/auth/user'], null);
