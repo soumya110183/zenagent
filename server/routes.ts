@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupSession, requireAuth, optionalAuth } from "./auth";
-import { loginSchema, registerSchema } from "@shared/schema";
+import { loginSchema } from "@shared/schema";
 import { insertProjectSchema } from "@shared/schema";
 import { analyzeJavaProject } from "./services/javaAnalyzer";
 import { analyzeGithubRepository, isValidGithubUrl } from "./services/githubService";
@@ -70,39 +70,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Session middleware
   setupSession(app);
 
-  // Auth routes
-  app.post('/api/auth/register', async (req, res) => {
-    try {
-      const userData = registerSchema.parse(req.body);
-      
-      // Check if username already exists
-      const existingUser = await storage.getUserByUsername(userData.username);
-      if (existingUser) {
-        return res.status(400).json({ success: false, message: 'Username already exists' });
-      }
-      
-      // Create new user
-      const newUser = await storage.createUser({
-        username: userData.username,
-        password: userData.password,
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        position: userData.position,
-      });
-      
-      // Log in the user automatically
-      if (req.session) {
-        req.session.user = newUser;
-      }
-      
-      const { password, ...userWithoutPassword } = newUser;
-      res.status(201).json({ success: true, user: userWithoutPassword });
-    } catch (error) {
-      console.error('Registration error:', error);
-      res.status(400).json({ success: false, message: 'Registration failed' });
-    }
-  });
+  // Auth routes (login only - registration removed)
 
   app.post('/api/auth/login', async (req, res) => {
     try {
