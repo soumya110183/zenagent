@@ -63,15 +63,15 @@ export default function LoginForm() {
       {/* Left Panel - Blue Background with Zengent AI Agents Image */}
       <div className="hidden lg:flex lg:w-[60%] bg-gradient-to-br from-blue-600 to-blue-800 items-center justify-center p-12">
         <div className="text-center max-w-lg">
+          <p className="text-xl text-white font-semibold leading-relaxed mb-8 uppercase">
+            Enterprise Application Intelligence Platform
+          </p>
           <img 
             src={zenagentImage} 
             alt="Zengent AI Agents" 
-            className="mx-auto mb-8 w-full h-auto"
+            className="mx-auto mb-12 w-full h-auto"
             style={{ maxHeight: '400px' }}
           />
-          <p className="text-xl text-white font-semibold leading-relaxed mb-12 uppercase">
-            Enterprise Application Intelligence Platform
-          </p>
           <img 
             src={zensarLogo} 
             alt="Zensar - An RPG Company" 
