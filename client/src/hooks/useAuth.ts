@@ -45,10 +45,10 @@ export function useLogin() {
     },
     onSuccess: async (data) => {
       if (data.success && data.user) {
+        // Clear the cache first to force fresh fetch
+        queryClient.removeQueries({ queryKey: ['/api/auth/user'] });
         // Set the user data in cache immediately
         queryClient.setQueryData(['/api/auth/user'], data.user);
-        // Force refetch to ensure consistency
-        await queryClient.refetchQueries({ queryKey: ['/api/auth/user'] });
       }
     },
   });

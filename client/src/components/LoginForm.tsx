@@ -34,10 +34,8 @@ export default function LoginForm() {
           title: "Success",
           description: "Logged in successfully!",
         });
-        // Small delay to ensure session is set properly
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
+        // Force reload to clear any cached authentication state
+        window.location.href = '/';
       } else {
         toast({
           title: "Error",
