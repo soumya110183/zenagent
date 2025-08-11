@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import ullasPhoto from "@assets/ullas_1754848831242.png";
 import kaushikPhoto from "@assets/kaushik_1754851074835.png";
-import sameerPhoto from "@assets/sameer_1754851092170.png";
+import sameerPhoto from "@assets/1689870392558_E1_1754893889727.JPG";
 import piyushPhoto from "@assets/piyush_1754876944912.jpg";
 import hrushikeshPhoto from "@assets/hri_1754851135645.png";
 
