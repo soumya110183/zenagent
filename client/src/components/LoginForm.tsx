@@ -28,11 +28,16 @@ export default function LoginForm() {
   const onLogin = async (data: LoginInput) => {
     try {
       const result = await loginMutation.mutateAsync(data);
+      console.log('Login result:', result);
       if (result.success) {
         toast({
           title: "Success",
           description: "Logged in successfully!",
         });
+        // Small delay to ensure session is set properly
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       } else {
         toast({
           title: "Error",
@@ -41,6 +46,7 @@ export default function LoginForm() {
         });
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "Error",
         description: "Login failed. Please check your credentials.",

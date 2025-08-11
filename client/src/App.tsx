@@ -21,12 +21,7 @@ import ZenVectorAgent from "@/pages/zenvector-agent";
 import Layout from "@/components/layout";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  // Show login form if not authenticated
-  if (!isLoading && !isAuthenticated) {
-    return <LoginForm />;
-  }
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   // Show loading state
   if (isLoading) {
@@ -38,6 +33,11 @@ function Router() {
         </div>
       </div>
     );
+  }
+
+  // Show login form if not authenticated
+  if (!isAuthenticated || !user) {
+    return <LoginForm />;
   }
 
   // Show authenticated routes

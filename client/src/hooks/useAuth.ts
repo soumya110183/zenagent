@@ -3,9 +3,11 @@ import { apiRequest } from '@/lib/queryClient';
 import type { User, LoginInput } from '@shared/schema';
 
 export function useAuth() {
-  const { data: user, isLoading, error } = useQuery<User>({
+  const { data: user, isLoading, error } = useQuery<User | null>({
     queryKey: ['/api/auth/user'],
     retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
     queryFn: async () => {
       try {
         const response = await fetch('/api/auth/user', {
@@ -19,13 +21,14 @@ export function useAuth() {
         }
         return await response.json();
       } catch (error) {
+        console.error('Auth fetch error:', error);
         return null;
       }
     },
   });
 
   return {
-    user,
+    user: user || null,
     isLoading,
     isAuthenticated: !!user,
     error,
@@ -40,10 +43,12 @@ export function useLogin() {
       const response = await apiRequest('POST', '/api/auth/login', data);
       return await response.json();
     },
-    onSuccess: (data) => {
-      if (data.success) {
+    onSuccess: async (data) => {
+      if (data.success && data.user) {
+        // Set the user data in cache immediately
         queryClient.setQueryData(['/api/auth/user'], data.user);
-        queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+        // Force refetch to ensure consistency
+        await queryClient.refetchQueries({ queryKey: ['/api/auth/user'] });
       }
     },
   });
