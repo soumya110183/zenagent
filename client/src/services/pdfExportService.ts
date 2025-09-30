@@ -376,11 +376,13 @@ export class PDFExportService {
 
   private async captureDiagram(type: string): Promise<void> {
     try {
-      // Trigger diagram type change
-      const tabTrigger = document.querySelector(`[value="${type}"]`) as HTMLElement;
+      // Trigger diagram type change - Radix UI uses data-value attribute
+      const tabTrigger = document.querySelector(`[data-value="${type}"]`) as HTMLElement;
       if (tabTrigger) {
         tabTrigger.click();
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for diagram to render
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for diagram to render
+      } else {
+        console.warn(`Could not find tab trigger for diagram type: ${type}`);
       }
 
       const diagramElement = document.querySelector('.react-flow') as HTMLElement;
