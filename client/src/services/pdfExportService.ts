@@ -77,15 +77,22 @@ export class PDFExportService {
       this.addCodeStructure(analysisData);
     });
 
+    // Project Structure
+    if (structureData) {
+      this.addSection('5. Project Structure', () => {
+        this.addProjectStructure(structureData);
+      });
+    }
+
     // AI Insights
     if (aiInsights) {
-      this.addSection('5. AI-Powered Insights', () => {
+      this.addSection('6. AI-Powered Insights', () => {
         this.addAIInsights(aiInsights);
       });
     }
 
     // Diagrams Section
-    this.addSection('6. Architecture Diagrams', () => {
+    this.addSection('7. Architecture Diagrams', () => {
       this.addText('The following diagrams provide visual representations of the project architecture:');
       this.addSpace(10);
     });
@@ -221,8 +228,9 @@ export class PDFExportService {
       '2. Project Analysis Details .................................................... 4',
       '3. Architecture Analysis ....................................................... 5',
       '4. Code Structure ............................................................... 6',
-      '5. AI-Powered Insights ......................................................... 7',
-      '6. Architecture Diagrams ....................................................... 8'
+      '5. Project Structure ............................................................ 7',
+      '6. AI-Powered Insights ......................................................... 8',
+      '7. Architecture Diagrams ....................................................... 9'
     ];
     
     contents.forEach(item => {
@@ -283,7 +291,7 @@ export class PDFExportService {
   }
 
   private addArchitectureAnalysis(analysisData: AnalysisData): void {
-    this.addSubtitle('Architecture Patterns');
+    this.addSubtitle('Detected Patterns');
     
     const hasControllers = analysisData.classes.some(c => c.type === 'controller');
     const hasServices = analysisData.classes.some(c => c.type === 'service');
@@ -301,6 +309,25 @@ export class PDFExportService {
     if (springAnnotations.length > 0) {
       this.addText('✓ Spring Framework Annotations Used');
       this.addText('✓ Dependency Injection Pattern');
+    }
+    
+    this.addSpace(10);
+    
+    // Annotations Found
+    this.addSubtitle('Annotations Found');
+    const annotations = analysisData.classes
+      .flatMap((c: any) => c.annotations || [])
+      .filter((a: string, i: number, arr: string[]) => arr.indexOf(a) === i); // unique
+    
+    if (annotations.length > 0) {
+      annotations.slice(0, 15).forEach(annotation => {
+        this.addText(`• ${annotation}`);
+      });
+      if (annotations.length > 15) {
+        this.addText(`  ... and ${annotations.length - 15} more`);
+      }
+    } else {
+      this.addText('No annotations found');
     }
     
     this.addSpace(10);
@@ -341,6 +368,41 @@ export class PDFExportService {
         this.addText(`• ${type.charAt(0).toUpperCase() + type.slice(1)}: ${count} classes`);
       }
     });
+  }
+
+  private addProjectStructure(structureData: any): void {
+    this.addSubtitle('Directory Structure');
+    this.addText('Overview of the project directory organization:');
+    this.addSpace(5);
+    
+    if (structureData.structure) {
+      let itemCount = 0;
+      const maxItems = 50; // Limit for PDF to avoid overflow
+      
+      const renderStructure = (item: any, level: number = 0): void => {
+        if (itemCount >= maxItems) return;
+        
+        const indent = '  '.repeat(level);
+        const icon = item.type === 'directory' ? '📁' : '📄';
+        const suffix = item.type === 'directory' ? '/' : '';
+        
+        this.addText(`${indent}${icon} ${item.name}${suffix}`);
+        itemCount++;
+        
+        if (item.children && item.children.length > 0 && itemCount < maxItems) {
+          item.children.forEach((child: any) => {
+            renderStructure(child, level + 1);
+          });
+        }
+      };
+      
+      renderStructure(structureData.structure);
+      
+      if (itemCount >= maxItems) {
+        this.addSpace(5);
+        this.addText('... (structure truncated for brevity)');
+      }
+    }
   }
 
   private addAIInsights(aiInsights: any): void {

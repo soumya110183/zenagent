@@ -374,19 +374,29 @@ export class DOCExportService {
       .flatMap((c: any) => c.annotations || [])
       .filter((a: string, i: number, arr: string[]) => arr.indexOf(a) === i); // unique
     
+    sections.push(
+      new Paragraph({
+        text: "Annotations Found",
+        heading: HeadingLevel.HEADING_2,
+        spacing: { before: 200, after: 100 },
+      })
+    );
+    
     if (annotations.length > 0) {
       sections.push(
-        new Paragraph({
-          text: "Annotations Found",
-          heading: HeadingLevel.HEADING_2,
-          spacing: { before: 200, after: 100 },
-        }),
         ...annotations.map((annotation: string) => 
           new Paragraph({
             text: `• ${annotation}`,
             spacing: { after: 50 },
           })
-        ),
+        )
+      );
+    } else {
+      sections.push(
+        new Paragraph({
+          text: "No annotations found",
+          spacing: { after: 100 },
+        })
       );
     }
 
@@ -561,54 +571,59 @@ export class DOCExportService {
     }
 
     // 6. Project Structure
-    if (structureData) {
+    sections.push(
+      new Paragraph({
+        text: "",
+        pageBreakBefore: true,
+      }),
+      new Paragraph({
+        text: "6. Project Structure",
+        heading: HeadingLevel.HEADING_1,
+        spacing: { before: 200, after: 200 },
+      }),
+      new Paragraph({
+        text: "This section provides an overview of the project's directory structure and organization.",
+        spacing: { after: 200 },
+      }),
+    );
+
+    if (structureData && structureData.structure) {
+      const renderStructure = (item: any, level: number = 0): Paragraph[] => {
+        const paragraphs: Paragraph[] = [];
+        const indent = "  ".repeat(level);
+        
+        if (item.type === 'file') {
+          paragraphs.push(
+            new Paragraph({
+              text: `${indent}📄 ${item.name}`,
+              spacing: { after: 50 },
+            })
+          );
+        } else if (item.type === 'directory') {
+          paragraphs.push(
+            new Paragraph({
+              text: `${indent}📁 ${item.name}/`,
+              spacing: { after: 50 },
+            })
+          );
+          if (item.children && item.children.length > 0) {
+            item.children.forEach((child: any) => {
+              paragraphs.push(...renderStructure(child, level + 1));
+            });
+          }
+        }
+        
+        return paragraphs;
+      };
+
+      sections.push(...renderStructure(structureData.structure).slice(0, 100)); // Limit to 100 items
+    } else {
       sections.push(
         new Paragraph({
-          text: "",
-          pageBreakBefore: true,
-        }),
-        new Paragraph({
-          text: "6. Project Structure",
-          heading: HeadingLevel.HEADING_1,
-          spacing: { before: 200, after: 200 },
-        }),
-        new Paragraph({
-          text: "This section provides an overview of the project's directory structure and organization.",
-          spacing: { after: 200 },
-        }),
+          text: "No structure data available",
+          spacing: { after: 100 },
+        })
       );
-
-      if (structureData.structure) {
-        const renderStructure = (item: any, level: number = 0): Paragraph[] => {
-          const paragraphs: Paragraph[] = [];
-          const indent = "  ".repeat(level);
-          
-          if (item.type === 'file') {
-            paragraphs.push(
-              new Paragraph({
-                text: `${indent}📄 ${item.name}`,
-                spacing: { after: 50 },
-              })
-            );
-          } else if (item.type === 'directory') {
-            paragraphs.push(
-              new Paragraph({
-                text: `${indent}📁 ${item.name}/`,
-                spacing: { after: 50 },
-              })
-            );
-            if (item.children && item.children.length > 0) {
-              item.children.forEach((child: any) => {
-                paragraphs.push(...renderStructure(child, level + 1));
-              });
-            }
-          }
-          
-          return paragraphs;
-        };
-
-        sections.push(...renderStructure(structureData.structure).slice(0, 100)); // Limit to 100 items
-      }
     }
 
     // 7. Code Quality Analysis
