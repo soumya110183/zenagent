@@ -7,8 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DiagramCanvas from "@/components/diagram-canvas";
 import ComprehensiveAnalysis from "@/components/comprehensive-analysis";
-import { pdfExportService } from "@/services/pdfExportService";
-import { docExportService } from "@/services/docExportService";
+import ReportPreview from "@/components/report-preview";
 import { 
   FolderOpen, 
   Download, 
@@ -39,8 +38,7 @@ interface AnalysisResultsProps {
 
 export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResultsProps) {
   const [activeDiagram, setActiveDiagram] = useState<DiagramType>('flow');
-  const [isExportingPDF, setIsExportingPDF] = useState(false);
-  const [isExportingDOC, setIsExportingDOC] = useState(false);
+  const [showReportPreview, setShowReportPreview] = useState(false);
   const analysisData = project.analysisData as AnalysisData | null;
 
   // Fetch comprehensive analysis data
@@ -63,49 +61,6 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
     queryKey: ['/api/projects', project.id, 'comprehensive'],
     enabled: !!project.id,
   });
-
-  const handlePDFExport = async () => {
-    if (!analysisData) return;
-    
-    setIsExportingPDF(true);
-    try {
-      await pdfExportService.exportProjectAnalysis({
-        project,
-        analysisData,
-        includeAllDiagrams: true,
-        sonarAnalysis: sonarData,
-        swaggerData,
-        comprehensiveData,
-        structureData
-      });
-    } catch (error) {
-      console.error('PDF export failed:', error);
-      alert('PDF export failed. Please try again.');
-    } finally {
-      setIsExportingPDF(false);
-    }
-  };
-
-  const handleDOCExport = async () => {
-    if (!analysisData) return;
-    
-    setIsExportingDOC(true);
-    try {
-      await docExportService.exportProjectAnalysis({
-        project,
-        analysisData,
-        sonarAnalysis: sonarData,
-        swaggerData,
-        comprehensiveData,
-        structureData
-      });
-    } catch (error) {
-      console.error('DOC export failed:', error);
-      alert('DOC export failed. Please try again.');
-    } finally {
-      setIsExportingDOC(false);
-    }
-  };
 
   if (!analysisData) {
     return (
@@ -148,24 +103,12 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
               <Button 
                 variant="default" 
                 size="sm"
-                onClick={handleDOCExport}
-                disabled={isExportingDOC}
-                className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
-                data-testid="button-export-doc"
+                onClick={() => setShowReportPreview(true)}
+                className="bg-primary hover:bg-primary/90 text-white"
+                data-testid="button-view-report"
               >
                 <FileText className="w-4 h-4 mr-2" />
-                {isExportingDOC ? 'Generating DOC...' : 'Export DOC'}
-              </Button>
-              <Button 
-                variant="default" 
-                size="sm"
-                onClick={handlePDFExport}
-                disabled={isExportingPDF}
-                className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
-                data-testid="button-export-pdf"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                {isExportingPDF ? 'Generating PDF...' : 'Export PDF'}
+                View Report
               </Button>
               <Button variant="ghost" size="sm">
                 <Share2 className="w-4 h-4" />
@@ -512,6 +455,18 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
           <ComprehensiveAnalysis project={project} />
         </CardContent>
       </Card>
+
+      {/* Report Preview Dialog */}
+      <ReportPreview
+        open={showReportPreview}
+        onClose={() => setShowReportPreview(false)}
+        project={project}
+        analysisData={analysisData}
+        sonarData={sonarData}
+        swaggerData={swaggerData}
+        comprehensiveData={comprehensiveData}
+        structureData={structureData}
+      />
     </div>
   );
 }
