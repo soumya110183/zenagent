@@ -439,9 +439,310 @@ export default function ReportPreview({
               </div>
             </section>
 
-            {/* 12. Non-Functional Requirements */}
+            {/* 12. Module Analysis */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">12. Non-Functional Requirements</h2>
+              <h2 className="text-2xl font-bold mb-4">12. Module Analysis</h2>
+              
+              {comprehensiveData?.modules && comprehensiveData.modules.length > 0 ? (
+                <div className="space-y-6">
+                  {comprehensiveData.modules.map((module: any, idx: number) => (
+                    <div key={idx} className="border-l-4 border-l-blue-500 pl-4">
+                      <h3 className="text-lg font-semibold mb-2">
+                        {module.name}
+                        <span className="ml-2 text-sm font-normal text-muted-foreground">({module.type?.toUpperCase()})</span>
+                      </h3>
+                      
+                      {module.purpose && (
+                        <div className="mb-3">
+                          <span className="font-medium">Purpose: </span>
+                          <span className="text-muted-foreground">{module.purpose}</span>
+                        </div>
+                      )}
+                      
+                      {module.description && (
+                        <div className="mb-3">
+                          <span className="font-medium">Description: </span>
+                          <span className="text-muted-foreground">{module.description}</span>
+                        </div>
+                      )}
+                      
+                      {module.responsibilities && module.responsibilities.length > 0 && (
+                        <div className="mb-3">
+                          <span className="font-medium">Responsibilities:</span>
+                          <ul className="list-disc pl-6 mt-1">
+                            {module.responsibilities.map((resp: string, ridx: number) => (
+                              <li key={ridx} className="text-sm text-muted-foreground">{resp}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {module.classes && module.classes.length > 0 && (
+                        <div className="mb-3">
+                          <span className="font-medium">Classes: </span>
+                          <span className="text-sm text-muted-foreground">{module.classes.join(', ')}</span>
+                        </div>
+                      )}
+                      
+                      {module.methods && module.methods.length > 0 && (
+                        <div className="mb-3">
+                          <span className="font-medium">Key Methods:</span>
+                          <ul className="list-disc pl-6 mt-1">
+                            {module.methods.slice(0, 5).map((method: any, midx: number) => (
+                              <li key={midx} className="text-sm text-muted-foreground">
+                                {typeof method === 'string' ? method : method.name}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {module.dependencies && module.dependencies.length > 0 && (
+                        <div className="mb-3">
+                          <span className="font-medium">Dependencies: </span>
+                          <span className="text-sm text-muted-foreground">{module.dependencies.join(', ')}</span>
+                        </div>
+                      )}
+                      
+                      {module.businessLogic && (
+                        <div className="mb-3">
+                          <span className="font-medium">Business Logic: </span>
+                          <span className="text-muted-foreground">{module.businessLogic}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground">No module analysis available for this project.</p>
+              )}
+            </section>
+
+            {/* 13. Code Quality Analysis */}
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">13. Code Quality Analysis</h2>
+              
+              {comprehensiveData?.qualityMetrics ? (
+                <>
+                  <h3 className="text-xl font-semibold mb-3">Quality Metrics Overview</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Maintainability</div>
+                      <div className="text-2xl font-bold">{comprehensiveData.qualityMetrics.maintainability || 'N/A'}</div>
+                    </div>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Testability</div>
+                      <div className="text-2xl font-bold">{comprehensiveData.qualityMetrics.testability || 'N/A'}</div>
+                    </div>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Documentation</div>
+                      <div className="text-2xl font-bold">{comprehensiveData.qualityMetrics.documentation || 'N/A'}</div>
+                    </div>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Complexity</div>
+                      <div className="text-2xl font-bold">{comprehensiveData.qualityMetrics.complexity || 'N/A'}</div>
+                    </div>
+                  </div>
+                </>
+              ) : null}
+              
+              {sonarData?.summary ? (
+                <>
+                  <h3 className="text-xl font-semibold mb-3">SonarQube Analysis</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Bugs</div>
+                      <div className="text-2xl font-bold text-red-600">{sonarData.summary.bugs || 0}</div>
+                    </div>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Vulnerabilities</div>
+                      <div className="text-2xl font-bold text-orange-600">{sonarData.summary.vulnerabilities || 0}</div>
+                    </div>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Code Smells</div>
+                      <div className="text-2xl font-bold text-yellow-600">{sonarData.summary.codeSmells || 0}</div>
+                    </div>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Quality Gate</div>
+                      <div className="text-lg font-bold text-green-600">{sonarData.summary.qualityGate || 'N/A'}</div>
+                    </div>
+                  </div>
+                  
+                  {sonarData.metrics && (
+                    <>
+                      <h3 className="text-xl font-semibold mb-3">Detailed Metrics</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div className="p-3 bg-muted rounded-lg">
+                          <div className="text-sm text-muted-foreground">Lines of Code</div>
+                          <div className="text-xl font-semibold">{sonarData.metrics.linesOfCode?.toLocaleString() || 'N/A'}</div>
+                        </div>
+                        <div className="p-3 bg-muted rounded-lg">
+                          <div className="text-sm text-muted-foreground">Complexity</div>
+                          <div className="text-xl font-semibold">{sonarData.metrics.complexity || 'N/A'}</div>
+                        </div>
+                        <div className="p-3 bg-muted rounded-lg">
+                          <div className="text-sm text-muted-foreground">Test Coverage</div>
+                          <div className="text-xl font-semibold">{sonarData.metrics.testCoverage || 0}%</div>
+                        </div>
+                        <div className="p-3 bg-muted rounded-lg">
+                          <div className="text-sm text-muted-foreground">Duplications</div>
+                          <div className="text-xl font-semibold">{sonarData.metrics.duplications || 0}%</div>
+                        </div>
+                        <div className="p-3 bg-muted rounded-lg">
+                          <div className="text-sm text-muted-foreground">Technical Debt</div>
+                          <div className="text-xl font-semibold">{sonarData.metrics.technicalDebt || 'N/A'}</div>
+                        </div>
+                        <div className="p-3 bg-muted rounded-lg">
+                          <div className="text-sm text-muted-foreground">Security Rating</div>
+                          <div className="text-xl font-semibold">{sonarData.metrics.securityRating || 'N/A'}</div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <p className="text-muted-foreground">No SonarQube analysis data available.</p>
+              )}
+              
+              {sonarData?.issues && sonarData.issues.length > 0 && (
+                <>
+                  <h3 className="text-xl font-semibold mb-3">Top Issues</h3>
+                  <div className="space-y-2">
+                    {sonarData.issues.slice(0, 10).map((issue: any, idx: number) => (
+                      <div key={idx} className="p-3 bg-muted rounded-lg text-sm">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <span className="font-bold text-red-600">[{issue.severity}]</span>
+                            <span className="ml-2">{issue.message}</span>
+                          </div>
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">{issue.component}</div>
+                      </div>
+                    ))}
+                    {sonarData.issues.length > 10 && (
+                      <p className="text-sm text-muted-foreground">... and {sonarData.issues.length - 10} more issues</p>
+                    )}
+                  </div>
+                </>
+              )}
+            </section>
+
+            {/* 14. Project Structure */}
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">14. Project Structure</h2>
+              
+              {structureData?.structure && structureData.structure.length > 0 ? (
+                <div className="space-y-3">
+                  {structureData.structure.map((item: any, idx: number) => (
+                    <div key={idx} className="p-3 bg-muted rounded-lg">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <span className="font-semibold">{item.name}</span>
+                        {item.importance && (
+                          <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded">
+                            {item.importance}
+                          </span>
+                        )}
+                      </div>
+                      {item.description && (
+                        <p className="text-sm text-muted-foreground">{item.description}</p>
+                      )}
+                      {item.children && item.children.length > 0 && (
+                        <div className="mt-2 ml-4 space-y-1">
+                          {item.children.slice(0, 10).map((child: any, cidx: number) => (
+                            <div key={cidx} className="text-sm">
+                              <span className="text-muted-foreground">├─ {child.name}</span>
+                              {child.description && (
+                                <span className="text-xs text-muted-foreground ml-2">({child.description})</span>
+                              )}
+                            </div>
+                          ))}
+                          {item.children.length > 10 && (
+                            <div className="text-sm text-muted-foreground">... and {item.children.length - 10} more files</div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground">No detailed project structure available.</p>
+              )}
+            </section>
+
+            {/* 15. Technology Stack Details */}
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">15. Technology Stack Details</h2>
+              
+              {comprehensiveData?.technologySummary ? (
+                <>
+                  <div className="mb-6">
+                    <h3 className="text-xl font-semibold mb-3">Architecture & Framework</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-3 bg-muted rounded-lg">
+                        <div className="text-sm text-muted-foreground">Architecture</div>
+                        <div className="font-semibold">{comprehensiveData.technologySummary.architecture || 'N/A'}</div>
+                      </div>
+                      <div className="p-3 bg-muted rounded-lg">
+                        <div className="text-sm text-muted-foreground">Framework</div>
+                        <div className="font-semibold">{comprehensiveData.technologySummary.framework || 'N/A'}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {comprehensiveData.technologySummary.patterns && comprehensiveData.technologySummary.patterns.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-xl font-semibold mb-3">Design Patterns</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {comprehensiveData.technologySummary.patterns.map((pattern: string, idx: number) => (
+                          <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                            {pattern}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {comprehensiveData.technologySummary.dependencies && comprehensiveData.technologySummary.dependencies.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-xl font-semibold mb-3">Key Dependencies</h3>
+                      <div className="space-y-2">
+                        {comprehensiveData.technologySummary.dependencies.slice(0, 20).map((dep: any, idx: number) => (
+                          <div key={idx} className="flex items-center justify-between p-2 bg-muted rounded text-sm">
+                            <div>
+                              <span className="font-medium">{dep.name}</span>
+                              {dep.version && <span className="text-muted-foreground ml-2">v{dep.version}</span>}
+                            </div>
+                            {dep.scope && (
+                              <span className="text-xs px-2 py-1 bg-gray-200 rounded">{dep.scope}</span>
+                            )}
+                          </div>
+                        ))}
+                        {comprehensiveData.technologySummary.dependencies.length > 20 && (
+                          <p className="text-sm text-muted-foreground">... and {comprehensiveData.technologySummary.dependencies.length - 20} more dependencies</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {comprehensiveData.technologySummary.securityFeatures && comprehensiveData.technologySummary.securityFeatures.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-xl font-semibold mb-3">Security Features</h3>
+                      <ul className="list-disc pl-6">
+                        {comprehensiveData.technologySummary.securityFeatures.map((feature: string, idx: number) => (
+                          <li key={idx} className="text-sm">{feature}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="text-muted-foreground">No detailed technology stack information available.</p>
+              )}
+            </section>
+
+            {/* 16. Non-Functional Requirements */}
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">16. Non-Functional Requirements</h2>
               {comprehensiveData?.nonFunctionalRequirements && comprehensiveData.nonFunctionalRequirements.length > 0 ? (
                 <ul className="list-disc pl-6 mb-4">
                   {comprehensiveData.nonFunctionalRequirements.map((nfr: string, idx: number) => (
