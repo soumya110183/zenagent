@@ -11,6 +11,8 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@antv/x6": "^2.18.1",
+    "@antv/x6-react-shape": "^2.2.3",
     "@hookform/resolvers": "^3.10.0",
     "@huggingface/transformers": "^3.7.1",
     "@jridgewell/trace-mapping": "^0.3.25",

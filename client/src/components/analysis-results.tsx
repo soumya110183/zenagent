@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DiagramCanvas from "@/components/diagram-canvas";
+import DiagramCanvasX6 from "@/components/diagram-canvas-x6";
 import ComprehensiveAnalysis from "@/components/comprehensive-analysis";
 import ReportPreview from "@/components/report-preview";
 import { 
@@ -293,19 +293,19 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
           </div>
 
           <TabsContent value="flow" className="mt-0">
-            <DiagramCanvas 
+            <DiagramCanvasX6 
               type="flow" 
               analysisData={analysisData} 
             />
           </TabsContent>
           <TabsContent value="component" className="mt-0">
-            <DiagramCanvas 
+            <DiagramCanvasX6 
               type="component" 
               analysisData={analysisData} 
             />
           </TabsContent>
           <TabsContent value="class" className="mt-0">
-            <DiagramCanvas 
+            <DiagramCanvasX6 
               type="class" 
               analysisData={analysisData} 
             />
