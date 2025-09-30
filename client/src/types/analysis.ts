@@ -28,4 +28,4 @@ export interface DiagramEdge {
   style?: Record<string, any>;
 }
 
-export type DiagramType = 'flow' | 'component' | 'sequence' | 'class' | 'er';
+export type DiagramType = 'flow' | 'component' | 'class';

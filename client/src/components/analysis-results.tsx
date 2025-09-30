@@ -255,17 +255,9 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
                 <Boxes className="w-4 h-4" />
                 <span>Component Diagram</span>
               </TabsTrigger>
-              <TabsTrigger value="sequence" className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
-                <ListOrdered className="w-4 h-4" />
-                <span>Sequence Diagram</span>
-              </TabsTrigger>
               <TabsTrigger value="class" className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
                 <Network className="w-4 h-4" />
                 <span>Class Diagram</span>
-              </TabsTrigger>
-              <TabsTrigger value="er" className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
-                <Database className="w-4 h-4" />
-                <span>ER Diagram</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -337,18 +329,6 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
           <TabsContent value="class" className="mt-0">
             <DiagramCanvas 
               type="class" 
-              analysisData={analysisData} 
-            />
-          </TabsContent>
-          <TabsContent value="sequence" className="mt-0">
-            <DiagramCanvas 
-              type="sequence" 
-              analysisData={analysisData} 
-            />
-          </TabsContent>
-          <TabsContent value="er" className="mt-0">
-            <DiagramCanvas 
-              type="er" 
               analysisData={analysisData} 
             />
           </TabsContent>
