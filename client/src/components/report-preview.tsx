@@ -147,7 +147,7 @@ export default function ReportPreview({
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="p-4 bg-muted rounded-lg">
                   <div className="text-sm text-muted-foreground">Source Files</div>
-                  <div className="text-2xl font-bold">{analysisData.structure.sourceFiles.length}</div>
+                  <div className="text-2xl font-bold">{analysisData.structure?.sourceFiles?.length || 0}</div>
                 </div>
                 <div className="p-4 bg-muted rounded-lg">
                   <div className="text-sm text-muted-foreground">Controllers</div>
@@ -167,7 +167,7 @@ export default function ReportPreview({
                 </div>
                 <div className="p-4 bg-muted rounded-lg">
                   <div className="text-sm text-muted-foreground">Dependencies</div>
-                  <div className="text-2xl font-bold">{analysisData.dependencies.length}</div>
+                  <div className="text-2xl font-bold">{analysisData.dependencies?.length || 0}</div>
                 </div>
               </div>
             </section>
@@ -185,16 +185,24 @@ export default function ReportPreview({
                 
                 <h3 className="text-xl font-semibold mb-2">Implemented Features</h3>
                 <ul className="list-disc pl-6 mb-4">
-                  {projectDetails.implementedFeatures.map((feature: string, idx: number) => (
-                    <li key={idx}>{feature}</li>
-                  ))}
+                  {projectDetails.implementedFeatures && projectDetails.implementedFeatures.length > 0 ? (
+                    projectDetails.implementedFeatures.map((feature: string, idx: number) => (
+                      <li key={idx}>{feature}</li>
+                    ))
+                  ) : (
+                    <li>No features listed</li>
+                  )}
                 </ul>
                 
                 <h3 className="text-xl font-semibold mb-2">Modules or Services Covered</h3>
                 <ul className="list-disc pl-6 mb-4">
-                  {projectDetails.modulesServices.map((module: string, idx: number) => (
-                    <li key={idx}>{module}</li>
-                  ))}
+                  {projectDetails.modulesServices && projectDetails.modulesServices.length > 0 ? (
+                    projectDetails.modulesServices.map((module: string, idx: number) => (
+                      <li key={idx}>{module}</li>
+                    ))
+                  ) : (
+                    <li>No modules listed</li>
+                  )}
                 </ul>
               </section>
             )}
@@ -205,11 +213,15 @@ export default function ReportPreview({
               
               <h3 className="text-xl font-semibold mb-2">Detected Patterns</h3>
               <div className="mb-4">
-                {analysisData.patterns.map((pattern: any, idx: number) => (
-                  <div key={idx} className="mb-2">
-                    <strong>{pattern.name}:</strong> {pattern.description} ({pattern.classes.length} classes)
-                  </div>
-                ))}
+                {analysisData.patterns && analysisData.patterns.length > 0 ? (
+                  analysisData.patterns.map((pattern: any, idx: number) => (
+                    <div key={idx} className="mb-2">
+                      <strong>{pattern.name}:</strong> {pattern.description} ({pattern.classes?.length || 0} classes)
+                    </div>
+                  ))
+                ) : (
+                  <p>No architectural patterns detected</p>
+                )}
               </div>
 
               <h3 className="text-xl font-semibold mb-2">Annotations Found</h3>
