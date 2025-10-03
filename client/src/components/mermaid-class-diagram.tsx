@@ -51,30 +51,29 @@ function generateMermaidClassDiagram(analysisData: AnalysisData): string {
 
   // Add classes with their members
   analysisData.classes.forEach(cls => {
+    // Clean class name - replace problematic characters
+    const cleanClassName = cls.name.replace(/[^a-zA-Z0-9_]/g, '_');
+    
     // Class definition with stereotype
-    lines.push(`  class ${cls.name} {`);
+    lines.push(`  class ${cleanClassName} {`);
     lines.push(`    <<${cls.type}>>`);
     
-    // Add fields (limit to 8 for readability)
+    // Add fields (limit to 6 for readability)
     if (cls.fields && cls.fields.length > 0) {
-      cls.fields.slice(0, 8).forEach(field => {
-        // Clean type name - remove generic brackets for display
-        const cleanType = field.type.replace(/[<>]/g, '_');
-        lines.push(`    -${cleanType} ${field.name}`);
+      cls.fields.slice(0, 6).forEach(field => {
+        // Clean type and field names - remove generic brackets and special chars
+        const cleanType = field.type.replace(/[<>[\]]/g, '').substring(0, 20);
+        const cleanFieldName = field.name.replace(/[^a-zA-Z0-9_]/g, '_');
+        lines.push(`    -${cleanType} ${cleanFieldName}`);
       });
-      if (cls.fields.length > 8) {
-        lines.push(`    ... ${cls.fields.length - 8} more fields`);
-      }
     }
     
-    // Add methods (limit to 8 for readability)
+    // Add methods (limit to 6 for readability)
     if (cls.methods && cls.methods.length > 0) {
-      cls.methods.slice(0, 8).forEach(method => {
-        lines.push(`    +${method.name}()`);
+      cls.methods.slice(0, 6).forEach(method => {
+        const cleanMethodName = method.name.replace(/[^a-zA-Z0-9_]/g, '_');
+        lines.push(`    +${cleanMethodName}()`);
       });
-      if (cls.methods.length > 8) {
-        lines.push(`    ... ${cls.methods.length - 8} more methods`);
-      }
     }
     
     lines.push(`  }`);
@@ -82,6 +81,9 @@ function generateMermaidClassDiagram(analysisData: AnalysisData): string {
 
   // Add relationships
   analysisData.relationships.forEach(rel => {
+    const cleanFrom = rel.from.replace(/[^a-zA-Z0-9_]/g, '_');
+    const cleanTo = rel.to.replace(/[^a-zA-Z0-9_]/g, '_');
+    
     // Map relationship types to Mermaid syntax
     let mermaidRel = '-->';
     switch (rel.type) {
@@ -105,7 +107,7 @@ function generateMermaidClassDiagram(analysisData: AnalysisData): string {
         mermaidRel = '-->'; // Default association
     }
     
-    lines.push(`  ${rel.from} ${mermaidRel} ${rel.to} : ${rel.type}`);
+    lines.push(`  ${cleanFrom} ${mermaidRel} ${cleanTo}`);
   });
 
   return lines.join('\n');
