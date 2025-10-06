@@ -80,53 +80,77 @@ function StatCard({ title, value, change, trend, icon, color = 'blue' }: StatCar
 }
 
 interface AIInsightCardProps {
-  title: string;
-  content: string;
-  confidence: number;
-  tags: string[];
-  type: string;
+  moduleName: string;
+  insight: {
+    description: string;
+    components: string[];
+    patterns: string[];
+    suggestions: string[];
+  };
 }
 
-function AIInsightCard({ title, content, confidence, tags, type }: AIInsightCardProps) {
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'overview': return <Brain className="w-4 h-4" />;
-      case 'architecture_suggestion': return <Lightbulb className="w-4 h-4" />;
-      case 'module_description': return <Code className="w-4 h-4" />;
-      default: return <Target className="w-4 h-4" />;
-    }
-  };
-
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.8) return 'text-green-600';
-    if (confidence >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
-  };
+function AIInsightCard({ moduleName, insight }: AIInsightCardProps) {
+  if (!insight) {
+    return null;
+  }
 
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 shadow-sm">
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            {getTypeIcon(type)}
-            <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <div className="flex items-center space-x-2">
+          <div className="w-6 h-6 flex items-center justify-center bg-white rounded-full shadow-sm">
+            <Code className="w-4 h-4 text-green-600" />
           </div>
-          <div className="flex items-center space-x-2">
-            <span className={`text-xs ${getConfidenceColor(confidence)}`}>
-              {Math.round(confidence * 100)}% confidence
-            </span>
-          </div>
+          <CardTitle className="text-sm font-semibold">{moduleName}</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="pt-0">
-        <p className="text-sm text-gray-600 mb-3">{content}</p>
-        <div className="flex flex-wrap gap-1">
-          {tags.map((tag, index) => (
-            <Badge key={index} variant="secondary" className="text-xs">
-              {tag}
-            </Badge>
-          ))}
-        </div>
+      <CardContent className="pt-0 space-y-3">
+        {/* Description */}
+        {insight.description && (
+          <div>
+            <FormattedAIContent content={insight.description} />
+          </div>
+        )}
+        
+        {/* Components */}
+        {insight.components && insight.components.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold text-gray-700 mb-1.5">Components:</p>
+            <div className="flex flex-wrap gap-1.5">
+              {insight.components.map((component, index) => (
+                <Badge key={index} variant="secondary" className="text-xs px-2 py-0.5">
+                  {component}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Patterns */}
+        {insight.patterns && insight.patterns.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold text-gray-700 mb-1.5">Patterns:</p>
+            <div className="flex flex-wrap gap-1.5">
+              {insight.patterns.map((pattern, index) => (
+                <Badge key={index} variant="outline" className="text-xs px-2 py-0.5 border-blue-300 text-blue-700">
+                  {pattern}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Suggestions */}
+        {insight.suggestions && insight.suggestions.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold text-gray-700 mb-1.5">Suggestions:</p>
+            <ul className="list-disc list-inside space-y-1">
+              {insight.suggestions.map((suggestion, index) => (
+                <li key={index} className="text-sm text-gray-700">{suggestion}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -215,7 +239,7 @@ export default function Dashboard({ analysisData }: DashboardProps) {
     repositories: analysisData.classes.filter(c => c.type === 'repository').length,
     entities: analysisData.entities.length,
     relationships: analysisData.relationships.length,
-    totalMethods: analysisData.classes.reduce((sum, c) => sum + c.methods.length, 0),
+    totalMethods: analysisData.classes.reduce((sum, c) => sum + (c.methods?.length || 0), 0),
     packages: analysisData.structure.packages.length,
   };
 
@@ -320,6 +344,12 @@ export default function Dashboard({ analysisData }: DashboardProps) {
         setShowProgressModal(false);
         setAiAnalysis({
           projectOverview: "Unable to generate AI analysis at this time. Please check your AI configuration and try again.",
+          projectDetails: {
+            projectDescription: "Error",
+            projectType: "unknown",
+            implementedFeatures: [],
+            modulesServices: []
+          },
           architectureInsights: [],
           moduleInsights: {},
           suggestions: [],
@@ -583,14 +613,11 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
             <div>
               <h3 className="text-lg font-semibold mb-4">Module Insights</h3>
               <ScrollArea className="h-96">
-                {aiAnalysis?.moduleInsights ? Object.values(aiAnalysis.moduleInsights).map((insight, index) => (
+                {aiAnalysis?.moduleInsights ? Object.entries(aiAnalysis.moduleInsights).map(([moduleName, insight]) => (
                   <AIInsightCard
-                    key={index}
-                    title={insight.title}
-                    content={insight.content}
-                    confidence={insight.confidence}
-                    tags={insight.tags}
-                    type={insight.type}
+                    key={moduleName}
+                    moduleName={moduleName}
+                    insight={insight}
                   />
                 )) : (
                   <div className="text-center py-8 text-gray-500">
