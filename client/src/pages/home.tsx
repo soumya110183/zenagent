@@ -375,16 +375,17 @@ export default function Home() {
               </div>
               
               {/* Enterprise AI Platform Summary */}
-              <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-3 mb-6 border border-blue-600">
+              <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-xl p-6 mb-8 border border-blue-600">
                 <div>
-                  <h2 className="text-base font-bold text-white mb-1">
+                  <h2 className="text-xl font-bold text-white mb-2">
                     Enterprise Application Agents
                   </h2>
-                  <p className="text-blue-100 text-xs mb-2">
+                  <p className="text-blue-100 text-sm mb-3">
                     Transform your codebase understanding with 11 specialized AI agents covering multi-language analysis, 
-                    vector database intelligence, and enterprise-grade document processing.
+                    vector database intelligence, and enterprise-grade document processing. Each agent provides unique 
+                    capabilities for comprehensive application intelligence and code analysis.
                   </p>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     <Badge variant="outline" className="text-xs text-emerald-300 border-emerald-300 bg-emerald-900/20">Java & Spring Boot</Badge>
                     <Badge variant="outline" className="text-xs text-blue-300 border-blue-300 bg-blue-800/30">Python & Django</Badge>
                     <Badge variant="outline" className="text-xs text-orange-300 border-orange-300 bg-orange-900/20">PySpark & Big Data</Badge>
@@ -400,30 +401,30 @@ export default function Home() {
                     <div
                       key={type.id}
                       onClick={() => handleAgentClick(type.id)}
-                      className={`relative group cursor-pointer bg-card rounded-lg border-2 ${type.borderColor} ${type.hoverBgColor} shadow-md hover:shadow-lg transition-all duration-300 p-4`}
+                      className={`relative group cursor-pointer bg-card rounded-lg border-2 ${type.borderColor} ${type.hoverBgColor} shadow-md hover:shadow-lg transition-all duration-300 p-3`}
                     >
                       <div>
-                        {/* Enhanced header with larger logo and name */}
-                        <div className="flex items-center space-x-3 mb-3">
-                          <div className={`inline-flex items-center justify-center bg-background rounded-xl p-2 shadow-sm ${type.id === 'pyspark' ? 'w-36 h-24' : 'w-32 h-32'}`}>
+                        {/* Enhanced header with smaller logo and name */}
+                        <div className="flex items-center space-x-2 mb-2">
+                          <div className={`inline-flex items-center justify-center bg-background rounded-lg p-1.5 shadow-sm ${type.id === 'pyspark' ? 'w-20 h-14' : 'w-20 h-20'}`}>
                             <img 
                               src={type.logoSrc} 
                               alt={`${type.name} logo`}
                               className="w-full h-full object-contain"
                             />
                           </div>
-                          <h3 className="text-lg font-bold text-foreground leading-tight">
+                          <h3 className="text-sm font-bold text-foreground leading-tight">
                             {type.name}
                           </h3>
                         </div>
                         
                         {/* Compact description */}
-                        <p className="text-muted-foreground text-xs mb-2 line-clamp-2">
+                        <p className="text-muted-foreground text-xs mb-1.5 line-clamp-2">
                           {type.description}
                         </p>
                         
                         {/* Complete feature list - show all features */}
-                        <div className={`${type.bgColor} rounded-lg p-2`}>
+                        <div className={`${type.bgColor} rounded-md p-1.5`}>
                           <ul className="space-y-0.5">
                             {type.features.map((feature, index) => (
                               <li key={index} className="text-xs text-foreground/70 flex items-start">
@@ -482,30 +483,30 @@ export default function Home() {
                     <div
                       key={type.id}
                       onClick={() => handleAgentClick(type.id)}
-                      className={`relative group cursor-pointer bg-card rounded-lg border-2 ${type.borderColor} ${type.hoverBgColor} shadow-md hover:shadow-lg transition-all duration-300 p-4`}
+                      className={`relative group cursor-pointer bg-card rounded-lg border-2 ${type.borderColor} ${type.hoverBgColor} shadow-md hover:shadow-lg transition-all duration-300 p-3`}
                     >
                       <div>
-                        {/* Enhanced header with larger logo and name */}
-                        <div className="flex items-center space-x-3 mb-3">
-                          <div className="inline-flex items-center justify-center bg-background rounded-xl p-2 shadow-sm w-32 h-32">
+                        {/* Enhanced header with smaller logo and name */}
+                        <div className="flex items-center space-x-2 mb-2">
+                          <div className="inline-flex items-center justify-center bg-background rounded-lg p-1.5 shadow-sm w-20 h-20">
                             <img 
                               src={type.logoSrc} 
                               alt={`${type.name} logo`}
                               className="w-full h-full object-contain"
                             />
                           </div>
-                          <h3 className="text-lg font-bold text-foreground leading-tight">
+                          <h3 className="text-sm font-bold text-foreground leading-tight">
                             {type.name}
                           </h3>
                         </div>
                         
                         {/* Compact description */}
-                        <p className="text-muted-foreground text-xs mb-2 line-clamp-2">
+                        <p className="text-muted-foreground text-xs mb-1.5 line-clamp-2">
                           {type.description}
                         </p>
                         
                         {/* Complete feature list - show all features */}
-                        <div className={`${type.bgColor} rounded-lg p-2`}>
+                        <div className={`${type.bgColor} rounded-md p-1.5`}>
                           <ul className="space-y-0.5">
                             {type.features.map((feature, index) => (
                               <li key={index} className="text-xs text-foreground/70 flex items-start">
