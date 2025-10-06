@@ -375,17 +375,16 @@ export default function Home() {
               </div>
               
               {/* Enterprise AI Platform Summary */}
-              <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-xl p-6 mb-8 border border-blue-600">
+              <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-3 mb-6 border border-blue-600">
                 <div>
-                  <h2 className="text-xl font-bold text-white mb-2">
+                  <h2 className="text-base font-bold text-white mb-1">
                     Enterprise Application Agents
                   </h2>
-                  <p className="text-blue-100 text-sm mb-3">
+                  <p className="text-blue-100 text-xs mb-2">
                     Transform your codebase understanding with 11 specialized AI agents covering multi-language analysis, 
-                    vector database intelligence, and enterprise-grade document processing. Each agent provides unique 
-                    capabilities for comprehensive application intelligence and code analysis.
+                    vector database intelligence, and enterprise-grade document processing.
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5">
                     <Badge variant="outline" className="text-xs text-emerald-300 border-emerald-300 bg-emerald-900/20">Java & Spring Boot</Badge>
                     <Badge variant="outline" className="text-xs text-blue-300 border-blue-300 bg-blue-800/30">Python & Django</Badge>
                     <Badge variant="outline" className="text-xs text-orange-300 border-orange-300 bg-orange-900/20">PySpark & Big Data</Badge>
