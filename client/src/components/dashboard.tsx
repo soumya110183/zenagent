@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { type AnalysisData, type AIAnalysisResult } from '@shared/schema';
 import AIProgressModal, { type AIProgressStep } from './ai-progress-modal';
+import FormattedAIContent from './formatted-ai-content';
 
 interface DashboardProps {
   analysisData: AnalysisData;
@@ -540,13 +541,17 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
               <CardTitle>Architecture Patterns</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {aiAnalysis?.architectureInsights.map((insight, index) => (
-                  <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
-                    <CheckCircle className="w-5 h-5 text-blue-600" />
-                    <span className="text-sm">{insight}</span>
-                  </div>
-                )) || (
+              <div className="space-y-3">
+                {aiAnalysis?.architectureInsights && aiAnalysis.architectureInsights.length > 0 ? (
+                  aiAnalysis.architectureInsights.map((insight, index) => (
+                    <div key={index} className="flex items-start space-x-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100 shadow-sm">
+                      <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <FormattedAIContent content={insight} />
+                      </div>
+                    </div>
+                  ))
+                ) : (
                   <div className="text-center py-8 text-gray-500">
                     <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>Generate AI analysis to see architecture insights</p>
@@ -563,7 +568,9 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
               <h3 className="text-lg font-semibold mb-4">Project Overview</h3>
               <Card>
                 <CardContent className="p-6">
-                  {aiAnalysis?.projectOverview || (
+                  {aiAnalysis?.projectOverview ? (
+                    <FormattedAIContent content={aiAnalysis.projectOverview} />
+                  ) : (
                     <div className="text-center py-8 text-gray-500">
                       <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>Generate AI analysis to see project overview</p>
@@ -606,15 +613,19 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {aiAnalysis?.suggestions.map((suggestion, index) => (
-                  <div key={index} className="flex items-start space-x-3 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-yellow-800">Improvement Suggestion</p>
-                      <p className="text-sm text-yellow-700 mt-1">{suggestion}</p>
+                {aiAnalysis?.suggestions && aiAnalysis.suggestions.length > 0 ? (
+                  aiAnalysis.suggestions.map((suggestion, index) => (
+                    <div key={index} className="flex items-start space-x-3 p-4 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg border border-yellow-200 shadow-sm">
+                      <div className="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-yellow-900 mb-2">Recommendation #{index + 1}</p>
+                        <FormattedAIContent content={suggestion} />
+                      </div>
                     </div>
-                  </div>
-                )) || (
+                  ))
+                ) : (
                   <div className="text-center py-8 text-gray-500">
                     <Lightbulb className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>Generate AI analysis to see recommendations</p>
