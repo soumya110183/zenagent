@@ -15,6 +15,7 @@ import { z } from "zod";
 import os from "os";
 import zenVectorRoutes from "./routes/zenVectorRoutes";
 import knowledgeAgentRoutes from "./routes/knowledgeAgentRoutes";
+import { demographicScanner } from "./services/demographicScanner";
 
 interface AIModelConfig {
   type: 'openai' | 'local';
@@ -791,6 +792,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching admin statistics:", error);
       res.status(500).json({ error: "Failed to fetch admin statistics" });
+    }
+  });
+
+  // Demographic Field Scanning API
+  app.get('/api/demographic/patterns', requireAuth, async (req, res) => {
+    try {
+      const fields = demographicScanner.getFieldDefinitions();
+      const documentation = demographicScanner.generatePatternDocumentation();
+      
+      res.json({
+        success: true,
+        totalFields: fields.length,
+        fields: fields.map(f => ({
+          category: f.category,
+          fieldName: f.fieldName,
+          description: f.description,
+          examples: f.examples,
+          patternCount: f.patterns.length
+        })),
+        documentation
+      });
+    } catch (error) {
+      console.error('Error getting demographic patterns:', error);
+      res.status(500).json({ error: 'Failed to get demographic patterns' });
+    }
+  });
+
+  app.post('/api/projects/:id/scan-demographics', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const project = await storage.getProject(id);
+      
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      // Get project files from parsed data
+      const parsedData = project.parsedData as any;
+      const files: { path: string; content: string }[] = [];
+
+      // Extract file information from classes, methods, etc.
+      if (parsedData?.classes) {
+        parsedData.classes.forEach((cls: any) => {
+          const content = [
+            `class ${cls.name} {`,
+            ...cls.fields?.map((f: any) => `  ${f.type} ${f.name};`) || [],
+            ...cls.methods?.map((m: any) => `  ${m.returnType || 'void'} ${m.name}();`) || [],
+            '}'
+          ].join('\n');
+          
+          files.push({
+            path: `${cls.package || 'unknown'}/${cls.name}.java`,
+            content
+          });
+        });
+      }
+
+      const scanReport = await demographicScanner.scanRepository(files);
+      
+      res.json({
+        success: true,
+        projectId: id,
+        projectName: project.name,
+        report: scanReport
+      });
+    } catch (error) {
+      console.error('Error scanning demographics:', error);
+      res.status(500).json({ error: 'Failed to scan demographics' });
     }
   });
 
