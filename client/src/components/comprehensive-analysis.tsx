@@ -259,52 +259,62 @@ export default function ComprehensiveAnalysis({ project }: ComprehensiveAnalysis
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      {comprehensiveData.requestMappings.map((mapping: any, index: number) => (
-                        <Card key={index} className="border-l-4 border-l-blue-200">
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between mb-3">
-                              <div className="flex items-center space-x-3">
-                                <Badge className={getHttpMethodColor(mapping.httpMethod)}>
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="border-b bg-gray-50">
+                            <th className="text-left p-3 font-semibold text-sm">Method</th>
+                            <th className="text-left p-3 font-semibold text-sm">Endpoint</th>
+                            <th className="text-left p-3 font-semibold text-sm">Description</th>
+                            <th className="text-left p-3 font-semibold text-sm">Controller</th>
+                            <th className="text-left p-3 font-semibold text-sm">Service</th>
+                            <th className="text-left p-3 font-semibold text-sm">Parameters</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {comprehensiveData.requestMappings.map((mapping: any, index: number) => (
+                            <tr key={index} className="border-b hover:bg-gray-50">
+                              <td className="p-3">
+                                <Badge className={getHttpMethodColor(mapping.httpMethod)} data-testid={`badge-method-${index}`}>
                                   {mapping.httpMethod}
                                 </Badge>
-                                <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                              </td>
+                              <td className="p-3">
+                                <code className="bg-gray-100 px-2 py-1 rounded text-sm" data-testid={`text-endpoint-${index}`}>
                                   {mapping.endpoint}
                                 </code>
-                              </div>
-                              <Badge variant="outline">{mapping.controllerClass}</Badge>
-                            </div>
-                            <div className="space-y-2">
-                              <div>
-                                <span className="text-sm font-medium">Description: </span>
-                                <span className="text-sm text-gray-600">{mapping.description}</span>
-                              </div>
-                              <div>
-                                <span className="text-sm font-medium">Controller Method: </span>
-                                <code className="text-sm bg-gray-100 px-1 rounded">{mapping.controllerMethod}</code>
-                              </div>
-                              {mapping.serviceCalled && (
-                                <div>
-                                  <span className="text-sm font-medium">Service Called: </span>
-                                  <code className="text-sm bg-gray-100 px-1 rounded">{mapping.serviceCalled}</code>
+                              </td>
+                              <td className="p-3 text-sm text-gray-600" data-testid={`text-description-${index}`}>
+                                {mapping.description}
+                              </td>
+                              <td className="p-3">
+                                <div className="text-sm" data-testid={`text-controller-${index}`}>
+                                  <div className="font-medium">{mapping.controllerClass}</div>
+                                  <code className="text-xs text-gray-500">{mapping.controllerMethod}</code>
                                 </div>
-                              )}
-                              {mapping.parameters && mapping.parameters.length > 0 && (
-                                <div>
-                                  <span className="text-sm font-medium">Parameters: </span>
-                                  <div className="flex flex-wrap gap-1 mt-1">
+                              </td>
+                              <td className="p-3">
+                                {mapping.serviceCalled && (
+                                  <code className="text-sm bg-gray-100 px-1 rounded" data-testid={`text-service-${index}`}>
+                                    {mapping.serviceCalled}
+                                  </code>
+                                )}
+                              </td>
+                              <td className="p-3">
+                                {mapping.parameters && mapping.parameters.length > 0 && (
+                                  <div className="flex flex-wrap gap-1">
                                     {mapping.parameters.map((param: any, pIndex: number) => (
-                                      <Badge key={pIndex} variant="secondary" className="text-xs">
+                                      <Badge key={pIndex} variant="secondary" className="text-xs" data-testid={`badge-param-${index}-${pIndex}`}>
                                         {param.name}: {param.type}
                                       </Badge>
                                     ))}
                                   </div>
-                                </div>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </CardContent>
                 </Card>
