@@ -16,6 +16,7 @@ import {
   GitBranch,
   Bug,
   Shield,
+  FileCode,
   Activity,
   Layers,
   BookOpen,

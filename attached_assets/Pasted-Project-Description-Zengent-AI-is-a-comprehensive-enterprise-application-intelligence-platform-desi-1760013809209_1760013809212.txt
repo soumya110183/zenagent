@@ -1,0 +1,16 @@
+Project Description
+Zengent AI is a comprehensive enterprise application intelligence platform designed to analyze and visualize multi-language project architectures from ZIP uploads and GitHub repositories. The platform supports Java, Python, PySpark, and Mainframe codebases, providing intelligent code analysis through advanced AI models (OpenAI GPT-4o and local LLMs via Ollama) to extract architectural patterns, dependencies, and relationships. It delivers interactive visual diagrams using Mermaid.js and AntV X6, demographic field scanning with 39 regex patterns across 5 categories, and generates professional PDF/DOC reports with HTML preview. With enterprise-grade features including SonarQube integration for code quality analysis, Swagger API documentation, vector database intelligence using ChromaDB for semantic code search, and document intelligence with Confluence integration, Zengent AI empowers development teams with AI-driven insights for complex enterprise applications, supporting development, refactoring, and strategic planning decisions.
+
+Key Features
+Multi-Language Code Analysis: Support for Java (Spring Boot, JPA, MVC), Python (Django/Flask), PySpark (DataFrame, job flow), and Mainframe (COBOL, JCL) projects
+AI-Powered Insights: Integration with OpenAI GPT-4o and local LLMs (Code Llama, Deepseek Coder, StarCoder, Llama 3, Mistral) via Ollama for privacy-first analysis
+Interactive Visualizations: Multiple diagram types including Flow, Component, Sequence, and UML Class diagrams using Mermaid.js and AntV X6
+Demographic Field Scanning: Advanced regex-based scanning with 39 patterns across 5 categories for data sensitivity detection
+Code Quality Analysis: SonarQube integration for static code analysis, quality metrics, and technical debt assessment
+Comprehensive Documentation: Automatic generation of Swagger API documentation with detailed endpoint analysis
+Professional Reports: Export capabilities to PDF and DOC formats with HTML preview and corporate branding
+Vector Database Intelligence: ChromaDB-powered semantic search for code similarity detection and intelligent querying
+Document Intelligence: Confluence integration and IBM Doclinq for PDF processing with LangChain and LangGraph orchestration
+Enterprise Security: Database-based authentication with bcrypt encryption and session management
+Multi-Tenant Support: User-based project association for team collaboration
+C360 Integration Process: Comprehensive visualization of customer 360 integration workflows
