@@ -79,22 +79,119 @@ export default function MermaidSequenceDiagram({ analysisData }: MermaidSequence
 }
 
 function generateSequenceDiagram(analysisData: AnalysisData): string {
-  const controllers = analysisData.classes.filter(c => c.type === 'controller').slice(0, 3);
-  const services = analysisData.classes.filter(c => c.type === 'service').slice(0, 3);
-  const repositories = analysisData.classes.filter(c => c.type === 'repository').slice(0, 3);
+  const controllers = analysisData.classes.filter(c => c.type === 'controller');
+  const services = analysisData.classes.filter(c => c.type === 'service');
+  const repositories = analysisData.classes.filter(c => c.type === 'repository');
+  const entities = analysisData.entities || [];
   
   let sequence = 'sequenceDiagram\n';
   sequence += '  participant User\n';
-  sequence += '  participant Client\n';
   
-  if (controllers.length > 0) {
-    const controller = controllers[0];
-    const ctrlName = sanitizeName(controller.name);
-    sequence += `  participant ${ctrlName}\n`;
+  // Analyze relationships to find actual flows
+  const flows = findActualFlows(analysisData);
+  
+  if (flows.length > 0) {
+    // Use the first identified flow
+    const flow = flows[0];
     
-    if (services.length > 0) {
-      const service = services[0];
-      const svcName = sanitizeName(service.name);
+    // Add participants based on actual flow
+    const participants = new Set<string>();
+    participants.add('User');
+    
+    if (flow.controller) {
+      const ctrlName = sanitizeName(flow.controller.name);
+      participants.add(ctrlName);
+      sequence += `  participant ${ctrlName}\n`;
+    }
+    
+    if (flow.service) {
+      const svcName = sanitizeName(flow.service.name);
+      participants.add(svcName);
+      sequence += `  participant ${svcName}\n`;
+    }
+    
+    if (flow.repository) {
+      const repoName = sanitizeName(flow.repository.name);
+      participants.add(repoName);
+      sequence += `  participant ${repoName}\n`;
+    }
+    
+    if (flow.repository || entities.length > 0) {
+      sequence += '  participant Database\n';
+    }
+    
+    sequence += '\n';
+    
+    // Generate actual flow
+    sequence += '  User->>User: Initiate Request\n';
+    
+    if (flow.controller) {
+      const ctrlName = sanitizeName(flow.controller.name);
+      const method = flow.controllerMethod || (flow.controller.methods && flow.controller.methods[0]);
+      
+      if (method) {
+        const methodName = sanitizeName(method.name);
+        const httpMethod = detectHttpMethod(method);
+        sequence += `  User->>${ctrlName}: ${httpMethod} Request\n`;
+        sequence += `  activate ${ctrlName}\n`;
+        sequence += `  Note over ${ctrlName}: ${methodName}()\n`;
+      } else {
+        sequence += `  User->>${ctrlName}: HTTP Request\n`;
+        sequence += `  activate ${ctrlName}\n`;
+      }
+      
+      if (flow.service) {
+        const svcName = sanitizeName(flow.service.name);
+        const svcMethod = flow.serviceMethod || (flow.service.methods && flow.service.methods[0]);
+        
+        sequence += `  ${ctrlName}->>${svcName}: Delegate to Service\n`;
+        sequence += `  activate ${svcName}\n`;
+        
+        if (svcMethod) {
+          sequence += `  Note over ${svcName}: ${sanitizeName(svcMethod.name)}()\n`;
+        }
+        
+        if (flow.repository) {
+          const repoName = sanitizeName(flow.repository.name);
+          const repoMethod = flow.repositoryMethod || (flow.repository.methods && flow.repository.methods[0]);
+          
+          sequence += `  ${svcName}->>${repoName}: Data Access\n`;
+          sequence += `  activate ${repoName}\n`;
+          
+          if (repoMethod) {
+            sequence += `  Note over ${repoName}: ${sanitizeName(repoMethod.name)}()\n`;
+          }
+          
+          sequence += `  ${repoName}->>Database: SQL Query\n`;
+          sequence += '  activate Database\n';
+          
+          if (flow.entity) {
+            sequence += `  Database-->>${repoName}: ${sanitizeName(flow.entity.name)} Data\n`;
+          } else {
+            sequence += `  Database-->>${repoName}: Query Result\n`;
+          }
+          
+          sequence += '  deactivate Database\n';
+          sequence += `  ${repoName}-->>${svcName}: Entity/DTO\n`;
+          sequence += `  deactivate ${repoName}\n`;
+        }
+        
+        sequence += `  ${svcName}-->>${ctrlName}: Business Data\n`;
+        sequence += `  deactivate ${svcName}\n`;
+      }
+      
+      sequence += `  ${ctrlName}-->>User: JSON Response\n`;
+      sequence += `  deactivate ${ctrlName}\n`;
+    }
+  } else {
+    // Fallback to basic structure if no flows detected
+    if (controllers.length > 0 && services.length > 0) {
+      const ctrl = controllers[0];
+      const svc = services[0];
+      const ctrlName = sanitizeName(ctrl.name);
+      const svcName = sanitizeName(svc.name);
+      
+      sequence += `  participant ${ctrlName}\n`;
       sequence += `  participant ${svcName}\n`;
       
       if (repositories.length > 0) {
@@ -103,79 +200,112 @@ function generateSequenceDiagram(analysisData: AnalysisData): string {
         sequence += `  participant ${repoName}\n`;
         sequence += '  participant Database\n\n';
         
-        sequence += '  User->>Client: Send Request\n';
-        sequence += `  Client->>${ctrlName}: HTTP Request\n`;
-        sequence += `  activate ${ctrlName}\n`;
-        
-        if (controller.methods && controller.methods.length > 0) {
-          const method = controller.methods[0];
-          sequence += `  Note over ${ctrlName}: ${sanitizeName(method.name)}()\n`;
-        }
-        
-        sequence += `  ${ctrlName}->>${svcName}: Call Business Logic\n`;
-        sequence += `  activate ${svcName}\n`;
-        
-        if (service.methods && service.methods.length > 0) {
-          const method = service.methods[0];
-          sequence += `  Note over ${svcName}: ${sanitizeName(method.name)}()\n`;
-        }
-        
-        sequence += `  ${svcName}->>${repoName}: Query Data\n`;
-        sequence += `  activate ${repoName}\n`;
-        
-        sequence += `  ${repoName}->>Database: Execute Query\n`;
-        sequence += '  activate Database\n';
-        sequence += `  Database-->>${repoName}: Return Data\n`;
-        sequence += '  deactivate Database\n';
-        
-        sequence += `  ${repoName}-->>${svcName}: Entity Objects\n`;
-        sequence += `  deactivate ${repoName}\n`;
-        
-        sequence += `  ${svcName}-->>${ctrlName}: Processed Data\n`;
-        sequence += `  deactivate ${svcName}\n`;
-        
-        sequence += `  ${ctrlName}-->>Client: HTTP Response\n`;
-        sequence += `  deactivate ${ctrlName}\n`;
-        sequence += '  Client-->>User: Display Result\n';
+        sequence += '  User->>User: Initiate Request\n';
+        sequence += `  User->>${ctrlName}: HTTP Request\n`;
+        sequence += `  ${ctrlName}->>${svcName}: Process\n`;
+        sequence += `  ${svcName}->>${repoName}: Query\n`;
+        sequence += `  ${repoName}->>Database: SQL\n`;
+        sequence += `  Database-->>${repoName}: Data\n`;
+        sequence += `  ${repoName}-->>${svcName}: Entity\n`;
+        sequence += `  ${svcName}-->>${ctrlName}: Result\n`;
+        sequence += `  ${ctrlName}-->>User: Response\n`;
       } else {
-        sequence += '\n';
-        sequence += '  User->>Client: Send Request\n';
-        sequence += `  Client->>${ctrlName}: HTTP Request\n`;
-        sequence += `  ${ctrlName}->>${svcName}: Process Logic\n`;
-        sequence += `  ${svcName}-->>${ctrlName}: Return Result\n`;
-        sequence += `  ${ctrlName}-->>Client: HTTP Response\n`;
-        sequence += '  Client-->>User: Display Result\n';
+        sequence += '\n  User->>User: Initiate Request\n';
+        sequence += `  User->>${ctrlName}: HTTP Request\n`;
+        sequence += `  ${ctrlName}->>${svcName}: Process\n`;
+        sequence += `  ${svcName}-->>${ctrlName}: Result\n`;
+        sequence += `  ${ctrlName}-->>User: Response\n`;
       }
-    } else if (repositories.length > 0) {
-      const repo = repositories[0];
-      const repoName = sanitizeName(repo.name);
-      sequence += `  participant ${repoName}\n`;
-      sequence += '  participant Database\n\n';
-      
-      sequence += '  User->>Client: Send Request\n';
-      sequence += `  Client->>${ctrlName}: HTTP Request\n`;
-      sequence += `  ${ctrlName}->>${repoName}: Query Data\n`;
-      sequence += `  ${repoName}->>Database: Execute Query\n`;
-      sequence += `  Database-->>${repoName}: Return Data\n`;
-      sequence += `  ${repoName}-->>${ctrlName}: Entity Objects\n`;
-      sequence += `  ${ctrlName}-->>Client: HTTP Response\n`;
-      sequence += '  Client-->>User: Display Result\n';
     } else {
-      sequence += '\n';
-      sequence += '  User->>Client: Send Request\n';
-      sequence += `  Client->>${ctrlName}: HTTP Request\n`;
-      sequence += `  ${ctrlName}-->>Client: HTTP Response\n`;
-      sequence += '  Client-->>User: Display Result\n';
+      sequence += '  participant Application\n\n';
+      sequence += '  User->>Application: Request\n';
+      sequence += '  Application-->>User: Response\n';
     }
-  } else {
-    sequence += '  participant Server\n\n';
-    sequence += '  User->>Client: Send Request\n';
-    sequence += '  Client->>Server: HTTP Request\n';
-    sequence += '  Server-->>Client: HTTP Response\n';
-    sequence += '  Client-->>User: Display Result\n';
   }
   
   return sequence;
+}
+
+function findActualFlows(analysisData: AnalysisData): any[] {
+  const flows: any[] = [];
+  const controllers = analysisData.classes.filter(c => c.type === 'controller');
+  
+  controllers.forEach(controller => {
+    // Find services this controller depends on
+    const controllerDeps = controller.dependencies || [];
+    const services = analysisData.classes.filter(c => 
+      c.type === 'service' && controllerDeps.some(dep => dep.includes(c.name))
+    );
+    
+    services.forEach(service => {
+      // Find repositories this service depends on
+      const serviceDeps = service.dependencies || [];
+      const repositories = analysisData.classes.filter(c => 
+        c.type === 'repository' && serviceDeps.some(dep => dep.includes(c.name))
+      );
+      
+      if (repositories.length > 0) {
+        const repo = repositories[0];
+        // Find related entity
+        const entity = analysisData.entities?.find(e => 
+          repo.name.toLowerCase().includes(e.name.toLowerCase()) ||
+          e.name.toLowerCase().includes(repo.name.toLowerCase().replace('repository', ''))
+        );
+        
+        flows.push({
+          controller,
+          controllerMethod: controller.methods?.[0],
+          service,
+          serviceMethod: service.methods?.[0],
+          repository: repo,
+          repositoryMethod: repo.methods?.[0],
+          entity
+        });
+      } else {
+        flows.push({
+          controller,
+          controllerMethod: controller.methods?.[0],
+          service,
+          serviceMethod: service.methods?.[0]
+        });
+      }
+    });
+    
+    // If controller has no service dependencies, check for direct repository access
+    if (services.length === 0) {
+      const repositories = analysisData.classes.filter(c => 
+        c.type === 'repository' && controllerDeps.some(dep => dep.includes(c.name))
+      );
+      
+      if (repositories.length > 0) {
+        flows.push({
+          controller,
+          controllerMethod: controller.methods?.[0],
+          repository: repositories[0],
+          repositoryMethod: repositories[0].methods?.[0]
+        });
+      }
+    }
+  });
+  
+  return flows;
+}
+
+function detectHttpMethod(method: any): string {
+  const name = method.name.toLowerCase();
+  const annotations = method.annotations || [];
+  
+  if (annotations.some((a: string) => a.includes('GetMapping') || a.includes('GET'))) return 'GET';
+  if (annotations.some((a: string) => a.includes('PostMapping') || a.includes('POST'))) return 'POST';
+  if (annotations.some((a: string) => a.includes('PutMapping') || a.includes('PUT'))) return 'PUT';
+  if (annotations.some((a: string) => a.includes('DeleteMapping') || a.includes('DELETE'))) return 'DELETE';
+  
+  if (name.startsWith('get') || name.startsWith('find') || name.startsWith('list')) return 'GET';
+  if (name.startsWith('create') || name.startsWith('add') || name.startsWith('save')) return 'POST';
+  if (name.startsWith('update') || name.startsWith('modify')) return 'PUT';
+  if (name.startsWith('delete') || name.startsWith('remove')) return 'DELETE';
+  
+  return 'GET';
 }
 
 function sanitizeName(name: string): string {

@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Graph, Shape } from '@antv/x6';
 import type { AnalysisData } from '@shared/schema';
 import type { DiagramType } from '@/types/analysis';
+import { Button } from '@/components/ui/button';
+import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import {
   adaptToFlowChart,
   adaptToClassDiagram,
@@ -22,6 +24,32 @@ export default function DiagramCanvasX6({ type, analysisData }: DiagramCanvasX6P
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<Graph | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+
+  const handleZoomIn = () => {
+    if (graphRef.current) {
+      const currentZoom = graphRef.current.zoom();
+      const newZoom = Math.min(currentZoom + 0.1, 2);
+      graphRef.current.zoom(newZoom);
+      setZoomLevel(newZoom);
+    }
+  };
+
+  const handleZoomOut = () => {
+    if (graphRef.current) {
+      const currentZoom = graphRef.current.zoom();
+      const newZoom = Math.max(currentZoom - 0.1, 0.5);
+      graphRef.current.zoom(newZoom);
+      setZoomLevel(newZoom);
+    }
+  };
+
+  const handleZoomToFit = () => {
+    if (graphRef.current) {
+      graphRef.current.zoomToFit({ padding: 20, maxScale: 1 });
+      setZoomLevel(graphRef.current.zoom());
+    }
+  };
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -114,6 +142,43 @@ export default function DiagramCanvasX6({ type, analysisData }: DiagramCanvasX6P
   return (
     <div className="relative w-full bg-white dark:bg-card" data-testid={`diagram-${type}`}>
       <div ref={containerRef} className="w-full h-[600px]" />
+      
+      {/* Zoom Controls */}
+      {isReady && (
+        <div className="absolute top-4 right-4 flex flex-col gap-2 bg-white dark:bg-card border rounded-lg shadow-lg p-1">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleZoomIn}
+            data-testid="button-zoom-in"
+            title="Zoom In (Ctrl + Mouse Wheel Up)"
+          >
+            <ZoomIn className="w-4 h-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleZoomOut}
+            data-testid="button-zoom-out"
+            title="Zoom Out (Ctrl + Mouse Wheel Down)"
+          >
+            <ZoomOut className="w-4 h-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleZoomToFit}
+            data-testid="button-zoom-fit"
+            title="Fit to Screen"
+          >
+            <Maximize2 className="w-4 h-4" />
+          </Button>
+          <div className="text-xs text-center text-muted-foreground px-1">
+            {Math.round(zoomLevel * 100)}%
+          </div>
+        </div>
+      )}
+      
       {!isReady && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-card/80">
           <div className="text-center">
