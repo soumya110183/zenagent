@@ -18,7 +18,8 @@ import {
   ChevronDown,
   Info,
   FileText,
-  HelpCircle
+  HelpCircle,
+  Cpu
 } from "lucide-react";
 import zensarLogo from "@assets/Zensar_composite_logo_whit_ai_1754732936523.png";
 
@@ -77,7 +78,12 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
       icon: Bot,
       current: location === '/'
     },
-
+    {
+      name: 'Technology & Flow',
+      href: '/technology-flow',
+      icon: Cpu,
+      current: location === '/technology-flow'
+    },
     {
       name: 'Usage Statistics',
       href: '/usage-statistics',
