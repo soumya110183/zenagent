@@ -40,6 +40,13 @@ export interface RequestMapping {
   responseType: string;
   description: string;
   javadoc?: string;
+  requestBody?: string;
+  responseBody?: string;
+  statusCodes: Array<{
+    code: number;
+    description: string;
+  }>;
+  authRequired: boolean;
 }
 
 export interface MethodComment {
@@ -381,16 +388,29 @@ export class SwaggerGenerator {
       endpoint
     });
 
+    const parameters = this.extractMethodParameters(method);
+    const hasRequestBody = parameters.some(p => p.location === 'body');
+    const responseType = method.returnType || 'void';
+
     return {
       httpMethod,
       endpoint,
       controllerClass: controller.name,
       controllerMethod: method.name,
       serviceCalled: this.findServiceCall(method, controller),
-      parameters: this.extractMethodParameters(method),
-      responseType: method.returnType || 'void',
+      parameters,
+      responseType,
       description: this.generateMethodDescription(method, httpMethod),
-      javadoc: this.extractMethodJavaDoc(method)
+      javadoc: this.extractMethodJavaDoc(method),
+      requestBody: hasRequestBody ? JSON.stringify({ [method.name]: "request data" }, null, 2) : undefined,
+      responseBody: responseType !== 'void' ? JSON.stringify({ type: responseType }, null, 2) : undefined,
+      statusCodes: [
+        { code: 200, description: "Success" },
+        { code: 400, description: "Bad Request" },
+        { code: 401, description: "Unauthorized" },
+        { code: 500, description: "Internal Server Error" }
+      ],
+      authRequired: true
     };
   }
 

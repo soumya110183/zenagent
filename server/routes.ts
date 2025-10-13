@@ -606,18 +606,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         path: mapping.endpoint,
         description: mapping.description,
         requestParameters: mapping.parameters,
-        requestBody: mapping.parameters.some(p => p.location === 'body') 
-          ? JSON.stringify({ [mapping.controllerMethod]: "request data" }, null, 2)
-          : "",
-        responseBody: mapping.responseType !== 'void' 
-          ? JSON.stringify({ type: mapping.responseType }, null, 2)
-          : "",
-        statusCodes: [
-          { code: 200, description: "Success" },
-          { code: 400, description: "Bad Request" },
-          { code: 500, description: "Internal Server Error" }
-        ],
-        authRequired: true,
+        requestBody: mapping.requestBody || "",
+        responseBody: mapping.responseBody || "",
+        statusCodes: mapping.statusCodes,
+        authRequired: mapping.authRequired,
         module: mapping.controllerClass
       }));
 
