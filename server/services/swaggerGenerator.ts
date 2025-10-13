@@ -341,8 +341,9 @@ export class SwaggerGenerator {
   }
 
   private extractBaseMapping(controller: any): string {
+    // Look specifically for @RequestMapping first (not @RestController)
     const requestMapping = controller.annotations?.find((a: string) => 
-      a.includes('RequestMapping') || a.includes('RestController')
+      a.startsWith('@RequestMapping')
     );
     
     if (requestMapping) {

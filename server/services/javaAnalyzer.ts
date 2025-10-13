@@ -241,7 +241,7 @@ function extractMethods(content: string): AnalysisData['classes'][0]['methods'] 
     
     // Extract method annotations (look backwards from method)
     const methodStart = match.index;
-    const beforeMethod = content.substring(Math.max(0, methodStart - 200), methodStart);
+    const beforeMethod = content.substring(Math.max(0, methodStart - 1000), methodStart);
     const methodAnnotations = extractAnnotations(beforeMethod);
     
     // Parse parameters
