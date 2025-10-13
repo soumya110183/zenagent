@@ -5,6 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { 
   ChevronDown, 
   ChevronRight, 
@@ -21,7 +29,8 @@ import {
   Layers,
   BookOpen,
   Target,
-  Zap
+  Zap,
+  Info
 } from "lucide-react";
 import { type Project } from "@shared/schema";
 
@@ -199,7 +208,77 @@ export default function ComprehensiveAnalysis({ project }: ComprehensiveAnalysis
 
                   <Card>
                     <CardHeader>
-                      <CardTitle>Quality Metrics</CardTitle>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Quality Metrics</CardTitle>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="icon" data-testid="button-metrics-info">
+                              <Info className="w-5 h-5 text-blue-500" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl" data-testid="dialog-metrics-info">
+                            <DialogHeader>
+                              <DialogTitle>How Metrics Are Calculated</DialogTitle>
+                              <DialogDescription>
+                                Understanding code quality metrics calculations
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 mt-4">
+                              <div className="border-l-4 border-blue-500 pl-4">
+                                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                  <Activity className="w-4 h-4" />
+                                  Complexity
+                                </h4>
+                                <p className="text-sm text-gray-600 mb-2">
+                                  Code complexity is measured using Cyclomatic Complexity, which counts the number of independent paths through the code.
+                                </p>
+                                <div className="bg-gray-50 p-3 rounded-lg text-sm space-y-1">
+                                  <p><strong>Formula:</strong> M = E - N + 2P</p>
+                                  <ul className="list-disc list-inside ml-2 space-y-1">
+                                    <li>E = number of edges in the control flow graph</li>
+                                    <li>N = number of nodes in the control flow graph</li>
+                                    <li>P = number of connected components (usually 1)</li>
+                                  </ul>
+                                  <p className="mt-2"><strong>In practice:</strong> Each decision point (if, while, for, case, &&, ||) adds +1 to complexity</p>
+                                  <p className="mt-2"><strong>Interpretation:</strong></p>
+                                  <ul className="list-disc list-inside ml-2">
+                                    <li>1-10: Simple, low risk</li>
+                                    <li>11-20: Moderate complexity</li>
+                                    <li>21-50: High complexity, higher risk</li>
+                                    <li>50+: Very high complexity, difficult to test</li>
+                                  </ul>
+                                </div>
+                              </div>
+
+                              <div className="border-l-4 border-green-500 pl-4">
+                                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                  <Shield className="w-4 h-4" />
+                                  Test Coverage
+                                </h4>
+                                <p className="text-sm text-gray-600 mb-2">
+                                  Test coverage measures the percentage of code executed during automated tests.
+                                </p>
+                                <div className="bg-gray-50 p-3 rounded-lg text-sm space-y-1">
+                                  <p><strong>Formula:</strong> Coverage = (Lines Executed / Total Lines) × 100</p>
+                                  <p className="mt-2"><strong>Types of Coverage:</strong></p>
+                                  <ul className="list-disc list-inside ml-2 space-y-1">
+                                    <li><strong>Line Coverage:</strong> % of code lines executed by tests</li>
+                                    <li><strong>Branch Coverage:</strong> % of decision branches (if/else) tested</li>
+                                    <li><strong>Function Coverage:</strong> % of functions called by tests</li>
+                                  </ul>
+                                  <p className="mt-2"><strong>Interpretation:</strong></p>
+                                  <ul className="list-disc list-inside ml-2">
+                                    <li>80-100%: Excellent coverage</li>
+                                    <li>60-79%: Good coverage</li>
+                                    <li>40-59%: Moderate coverage</li>
+                                    <li>&lt;40%: Poor coverage, needs improvement</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
