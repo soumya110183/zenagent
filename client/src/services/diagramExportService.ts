@@ -344,63 +344,16 @@ function sanitizeName(name: string): string {
     .substring(0, 20);
 }
 
-// Helper to render SVG to data URL
+// Helper to render SVG to data URL (base64 encoded SVG)
 async function svgToDataUrl(svgString: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    try {
-      // Create a container to parse the SVG
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(svgString, 'image/svg+xml');
-      const svgElement = doc.documentElement;
-      
-      if (!svgElement || svgElement.nodeName !== 'svg') {
-        reject(new Error('Invalid SVG'));
-        return;
-      }
-      
-      // Get SVG dimensions
-      const svgWidth = svgElement.getAttribute('width') || '800';
-      const svgHeight = svgElement.getAttribute('height') || '600';
-      const width = parseInt(svgWidth);
-      const height = parseInt(svgHeight);
-      
-      // Create canvas
-      const canvas = document.createElement('canvas');
-      canvas.width = width * 2; // 2x for better quality
-      canvas.height = height * 2;
-      const ctx = canvas.getContext('2d');
-      
-      if (!ctx) {
-        reject(new Error('Could not get canvas context'));
-        return;
-      }
-      
-      // Fill white background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Create image from SVG
-      const img = new Image();
-      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-      const url = URL.createObjectURL(svgBlob);
-      
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/png');
-        URL.revokeObjectURL(url);
-        resolve(dataUrl);
-      };
-      
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error('Failed to load SVG image'));
-      };
-      
-      img.src = url;
-    } catch (error) {
-      reject(error);
-    }
-  });
+  try {
+    // Clean and encode SVG as base64
+    const base64 = btoa(unescape(encodeURIComponent(svgString)));
+    return `data:image/svg+xml;base64,${base64}`;
+  } catch (error) {
+    console.error('Error encoding SVG:', error);
+    throw error;
+  }
 }
 
 // Main export function
