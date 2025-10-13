@@ -14,8 +14,8 @@ interface GithubInputProps {
 }
 
 export default function GithubInput({ onRepoAnalyzed }: GithubInputProps) {
-  const [githubUrl, setGithubUrl] = useState("");
-  const [projectName, setProjectName] = useState("");
+  const [githubUrl, setGithubUrl] = useState("https://github.com/kartik1502/Spring-Boot-Microservices-Banking-Application");
+  const [projectName, setProjectName] = useState("Spring-Boot-Microservices-Banking-Application");
   const [branch, setBranch] = useState("main");
   const { toast } = useToast();
 
@@ -30,9 +30,9 @@ export default function GithubInput({ onRepoAnalyzed }: GithubInputProps) {
         description: "Your repository is being cloned and analyzed...",
       });
       onRepoAnalyzed(project);
-      // Reset form
-      setGithubUrl("");
-      setProjectName("");
+      // Reset form to defaults
+      setGithubUrl("https://github.com/kartik1502/Spring-Boot-Microservices-Banking-Application");
+      setProjectName("Spring-Boot-Microservices-Banking-Application");
       setBranch("main");
     },
     onError: (error: Error) => {
