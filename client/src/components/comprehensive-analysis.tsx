@@ -619,6 +619,23 @@ export default function ComprehensiveAnalysis({ project }: ComprehensiveAnalysis
                           </div>
                         </div>
                       </div>
+
+                      <div>
+                        <h4 className="font-semibold mb-3 flex items-center gap-2">
+                          <Shield className="w-4 h-4 text-blue-600" />
+                          Code Quality & Analysis Tools
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {comprehensiveData.technologySummary.codeQualityTools?.map((tool: string, index: number) => (
+                            <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                              {tool}
+                            </Badge>
+                          ))}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2">
+                          These tools are used to analyze code quality, complexity, and identify potential issues in your codebase.
+                        </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

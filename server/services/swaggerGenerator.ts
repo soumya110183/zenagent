@@ -86,6 +86,7 @@ export interface TechnologySummary {
   databases: string[];
   securityFrameworks: string[];
   webFrameworks: string[];
+  codeQualityTools: string[];
 }
 
 export class SwaggerGenerator {
@@ -220,8 +221,31 @@ export class SwaggerGenerator {
       testingFrameworks: this.identifyTestingFrameworks(analysisData),
       databases: this.identifyDatabases(analysisData),
       securityFrameworks: this.identifySecurityFrameworks(analysisData),
-      webFrameworks: this.identifyWebFrameworks(analysisData)
+      webFrameworks: this.identifyWebFrameworks(analysisData),
+      codeQualityTools: this.identifyCodeQualityTools(analysisData)
     };
+  }
+
+  private identifyCodeQualityTools(analysisData: AnalysisData): string[] {
+    const tools: string[] = [];
+    
+    // Check for SonarQube configuration
+    const allFiles = analysisData.classes.map(c => c.filePath || '').join(' ');
+    if (allFiles.includes('sonar-project.properties') || allFiles.includes('sonar')) {
+      tools.push('SonarQube (Static Code Analysis)');
+    }
+    
+    // Always include static analysis as fallback
+    if (tools.length === 0) {
+      tools.push('Static Code Analysis (Fallback)');
+      tools.push('Cyclomatic Complexity Analysis');
+      tools.push('Code Pattern Detection');
+    } else {
+      tools.push('Cyclomatic Complexity Analysis');
+      tools.push('Code Pattern Detection');
+    }
+    
+    return tools;
   }
 
   private generateTags(controllers: any[]): Array<{ name: string; description: string }> {
