@@ -672,7 +672,7 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
               <Card>
                 <CardContent className="p-6">
                   {aiAnalysis?.projectOverview ? (
-                    <FormattedAIContent content={aiAnalysis.projectOverview} />
+                    <FormattedAIContent content={aiAnalysis.projectOverview} variant="architecture" />
                   ) : (
                     <div className="text-center py-8 text-gray-500">
                       <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
@@ -688,11 +688,36 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
               <ScrollArea className="h-96">
                 {aiAnalysis?.moduleInsights && Object.keys(aiAnalysis.moduleInsights).length > 0 ? (
                   Object.entries(aiAnalysis.moduleInsights).map(([moduleName, insight]) => (
-                    <AIInsightCard
-                      key={moduleName}
-                      moduleName={moduleName}
-                      insight={insight}
-                    />
+                    <Card key={moduleName} className="mb-4">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-6 h-6 flex items-center justify-center bg-blue-100 rounded-full">
+                            <Code className="w-4 h-4 text-blue-600" />
+                          </div>
+                          <CardTitle className="text-sm font-semibold">{moduleName}</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0 space-y-3">
+                        {insight.description && (
+                          <div>
+                            <FormattedAIContent content={insight.description} />
+                          </div>
+                        )}
+                        
+                        {insight.components && insight.components.length > 0 && (
+                          <div>
+                            <p className="text-xs font-semibold text-gray-700 mb-1.5">Components:</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {insight.components.map((component: string, index: number) => (
+                                <Badge key={index} variant="secondary" className="text-xs px-2 py-0.5">
+                                  {component}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
                   ))
                 ) : (
                   <div className="text-center py-8 text-gray-500">

@@ -1,9 +1,55 @@
 interface FormattedAIContentProps {
   content: string;
+  variant?: 'default' | 'architecture';
 }
 
-export default function FormattedAIContent({ content }: FormattedAIContentProps) {
+export default function FormattedAIContent({ content, variant = 'default' }: FormattedAIContentProps) {
   if (!content) return null;
+
+  // Special handling for architecture overview - convert to table
+  if (variant === 'architecture') {
+    const lines = content.split('\n').filter(line => line.trim());
+    const architectureItems: { label: string; value: string }[] = [];
+
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      // Remove numbers like "1.", "2.", etc.
+      const withoutNumber = trimmed.replace(/^\d+\.\s*/, '');
+      // Remove bold markdown **
+      const withoutBold = withoutNumber.replace(/\*\*/g, '');
+      
+      // Check if line contains a colon (label: value pattern)
+      if (withoutBold.includes(':')) {
+        const [label, ...valueParts] = withoutBold.split(':');
+        const value = valueParts.join(':').trim();
+        if (label && value) {
+          architectureItems.push({ label: label.trim(), value });
+        }
+      } else if (withoutBold && !withoutBold.startsWith('#')) {
+        // Treat as a general description if it doesn't have a colon
+        architectureItems.push({ label: 'Description', value: withoutBold });
+      }
+    });
+
+    if (architectureItems.length === 0) {
+      return (
+        <div className="text-gray-700 leading-relaxed">
+          {content.replace(/\*\*/g, '').replace(/^\d+\.\s*/gm, '')}
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-3">
+        {architectureItems.map((item, index) => (
+          <div key={index} className="border-l-4 border-blue-400 pl-4 py-2 bg-blue-50/50">
+            <div className="text-sm font-semibold text-gray-800 mb-1">{item.label}</div>
+            <div className="text-sm text-gray-700 leading-relaxed">{item.value}</div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   const formatContent = (text: string) => {
     const lines = text.split('\n');
@@ -61,43 +107,23 @@ export default function FormattedAIContent({ content }: FormattedAIContentProps)
           </h2>
         );
       }
-      // Numbered lists
+      // Numbered lists - remove numbers
       else if (/^\d+\.\s/.test(trimmed)) {
-        flushList(); // Flush any bullet list first
-        const text = trimmed.replace(/^\d+\.\s*/, '');
-        if (listItems.length === 0) {
-          // Check if this is continuing a numbered list
-          const prevElement = elements[elements.length - 1];
-          if (prevElement?.type === 'ol') {
-            elements.pop(); // Remove previous ol to add to it
-            const prevItems = prevElement.props.children;
-            listItems = prevItems.map((child: any) => child.props.children);
-          }
-        }
+        const text = trimmed.replace(/^\d+\.\s*/, '').replace(/\*\*/g, '');
         listItems.push(text);
-        elements.push(
-          <ol key={`ol-${index}`} start={listItems.length - listItems.length + 1} className="list-decimal list-inside space-y-2 mb-4 ml-4">
-            {listItems.map((item, idx) => (
-              <li key={idx} className="text-gray-700 leading-relaxed">{item}</li>
-            ))}
-          </ol>
-        );
-        listItems = [];
       }
       // Bullet lists (-, *, •)
       else if (/^[-*•]\s/.test(trimmed)) {
-        const text = trimmed.replace(/^[-*•]\s*/, '');
+        const text = trimmed.replace(/^[-*•]\s*/, '').replace(/\*\*/g, '');
         listItems.push(text);
       }
-      // Bold text (**text**)
+      // Bold text (**text**) - just remove the markers, don't make bold
       else if (trimmed.includes('**')) {
         flushList();
-        const formattedText = trimmed.split('**').map((part, idx) => 
-          idx % 2 === 1 ? <strong key={idx} className="font-semibold text-gray-900">{part}</strong> : part
-        );
+        const cleanText = trimmed.replace(/\*\*/g, '');
         elements.push(
           <p key={`p-${index}`} className="text-gray-700 leading-relaxed mb-3">
-            {formattedText}
+            {cleanText}
           </p>
         );
       }
