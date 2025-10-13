@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Download, FileText, X } from "lucide-react";
 import type { Project, AnalysisData } from "@shared/schema";
-import { pdfExportService } from "@/services/pdfExportService";
-import { docExportService } from "@/services/docExportService";
+import { htmlExportService } from "@/services/htmlExportService";
 import html2canvas from "html2canvas";
 
 interface ReportPreviewProps {
@@ -71,14 +70,9 @@ export default function ReportPreview({
   const handlePDFExport = async () => {
     setIsExportingPDF(true);
     try {
-      await pdfExportService.exportProjectAnalysis({
-        project,
-        analysisData,
-        sonarAnalysis: sonarData,
-        swaggerData,
-        comprehensiveData,
-        structureData
-      });
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
+      const filename = `${project.name.replace(/\s+/g, '-')}-Analysis-${timestamp}.pdf`;
+      await htmlExportService.exportToPDF('report-content', filename);
     } catch (error) {
       console.error('PDF export failed:', error);
       alert('PDF export failed. Please try again.');
@@ -90,14 +84,9 @@ export default function ReportPreview({
   const handleDOCExport = async () => {
     setIsExportingDOC(true);
     try {
-      await docExportService.exportProjectAnalysis({
-        project,
-        analysisData,
-        sonarAnalysis: sonarData,
-        swaggerData,
-        comprehensiveData,
-        structureData
-      });
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
+      const filename = `${project.name.replace(/\s+/g, '-')}-Analysis-${timestamp}.docx`;
+      await htmlExportService.exportToDOCX('report-content', filename);
     } catch (error) {
       console.error('DOC export failed:', error);
       alert('DOC export failed. Please try again.');
@@ -146,7 +135,7 @@ export default function ReportPreview({
         </DialogHeader>
         
         <ScrollArea className="flex-1 px-6 pb-6">
-          <div className="prose prose-sm dark:prose-invert max-w-none py-6">
+          <div id="report-content" className="prose prose-sm dark:prose-invert max-w-none py-6">
             {/* Cover Section */}
             <div className="text-center mb-12 pb-12 border-b">
               <h1 className="text-4xl font-bold mb-4">{project.name}</h1>
