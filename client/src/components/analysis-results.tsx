@@ -368,7 +368,7 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
 
           <TabsContent value="api-docs">
             <div className="p-6">
-              <APIDocumentation />
+              <APIDocumentation projectId={project.id} />
             </div>
           </TabsContent>
         </Tabs>

@@ -27,14 +27,77 @@ interface APIEndpoint {
   module: string;
 }
 
-export default function APIDocumentation() {
-  const params = useParams();
-  const projectId = params.id;
+interface APIDocumentationProps {
+  projectId?: string;
+}
 
-  const { data: apiDocs, isLoading } = useQuery<{ endpoints: APIEndpoint[] }>({
-    queryKey: ['/api/projects', projectId, 'api-docs'],
-    enabled: !!projectId
+export default function APIDocumentation({ projectId: propProjectId }: APIDocumentationProps = {}) {
+  const params = useParams();
+  const projectId = propProjectId || params.id;
+
+  const { data: swaggerData, isLoading } = useQuery<
+    { paths?: Record<string, any> },
+    Error,
+    { endpoints: APIEndpoint[] }
+  >({
+    queryKey: ['/api/projects', projectId, 'swagger'],
+    enabled: !!projectId,
+    select: (data) => {
+      // Transform swagger data to APIEndpoint format
+      const endpoints: APIEndpoint[] = [];
+      
+      if (data && data.paths) {
+        Object.entries(data.paths).forEach(([path, methods]) => {
+          Object.entries(methods as Record<string, any>).forEach(([method, details]) => {
+            if (typeof details === 'object' && details !== null) {
+              // Extract parameters
+              const requestParameters = (details.parameters || []).map((param: any) => ({
+                name: param.name || '',
+                type: param.schema?.type || 'string',
+                required: param.required || false,
+                location: param.in || 'query'
+              }));
+
+              // Extract request body parameters
+              if (details.requestBody?.content?.['application/json']?.schema) {
+                const schema = details.requestBody.content['application/json'].schema;
+                if (schema.properties) {
+                  Object.entries(schema.properties).forEach(([propName, propSchema]: [string, any]) => {
+                    requestParameters.push({
+                      name: propName,
+                      type: propSchema.type || 'string',
+                      required: schema.required?.includes(propName) || false,
+                      location: 'body'
+                    });
+                  });
+                }
+              }
+
+              endpoints.push({
+                apiName: details.operationId || `${method.toUpperCase()} ${path}`,
+                httpMethod: method.toUpperCase(),
+                path: path,
+                description: details.summary || details.description || 'No description available',
+                requestParameters,
+                requestBody: details.requestBody ? 'JSON object' : '',
+                responseBody: details.responses?.['200']?.description || 'Success',
+                statusCodes: Object.entries(details.responses || {}).map(([code, resp]: [string, any]) => ({
+                  code: parseInt(code),
+                  description: resp.description || ''
+                })),
+                authRequired: !!details.security,
+                module: details.tags?.[0] || 'default'
+              });
+            }
+          });
+        });
+      }
+      
+      return { endpoints };
+    }
   });
+
+  const apiDocs = swaggerData;
 
   const getMethodColor = (method: string) => {
     const colors: Record<string, string> = {
