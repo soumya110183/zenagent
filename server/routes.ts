@@ -546,9 +546,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Project not found or not analyzed" });
       }
 
+      console.log('[Comprehensive] Project:', project.name);
+      console.log('[Comprehensive] Total classes:', project.analysisData.classes.length);
+      console.log('[Comprehensive] Controllers:', project.analysisData.classes.filter(c => c.type === 'controller').length);
+      
       const requestMappings = swaggerGenerator.extractRequestMappings(project.analysisData);
       const methodComments = swaggerGenerator.extractMethodComments(project.analysisData);
       const technologySummary = swaggerGenerator.generateTechnologySummary(project.analysisData);
+
+      console.log('[Comprehensive] Request mappings:', requestMappings.length);
 
       const comprehensiveAnalysis = {
         projectOverview: {
