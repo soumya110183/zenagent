@@ -340,8 +340,13 @@ export class SwaggerGenerator {
     );
     
     if (requestMapping) {
-      const pathMatch = requestMapping.match(/(?:value|path)\s*=\s*["']([^"']+)["']/);
-      return pathMatch ? pathMatch[1] : '';
+      // Try named parameters first: value="/path" or path="/path"
+      const namedMatch = requestMapping.match(/(?:value|path)\s*=\s*["']([^"']+)["']/);
+      if (namedMatch) return namedMatch[1];
+      
+      // Try shorthand form: @RequestMapping("/path")
+      const shorthandMatch = requestMapping.match(/\(["']([^"']+)["']\)/);
+      if (shorthandMatch) return shorthandMatch[1];
     }
     
     return '';
@@ -382,8 +387,15 @@ export class SwaggerGenerator {
   }
 
   private extractPath(annotation: string): string {
-    const pathMatch = annotation.match(/(?:value|path)\s*=\s*["']([^"']+)["']/);
-    return pathMatch ? pathMatch[1] : '';
+    // Try named parameters first: value="/path" or path="/path"
+    const namedMatch = annotation.match(/(?:value|path)\s*=\s*["']([^"']+)["']/);
+    if (namedMatch) return namedMatch[1];
+    
+    // Try shorthand form: @GetMapping("/path")
+    const shorthandMatch = annotation.match(/\(["']([^"']+)["']\)/);
+    if (shorthandMatch) return shorthandMatch[1];
+    
+    return '';
   }
 
   private extractMethodParameters(method: any): RequestMapping['parameters'] {
