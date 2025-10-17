@@ -24,12 +24,7 @@ The system supports database-based user authentication with secure password encr
 The core analysis processes Java (Spring Boot, JPA, MVC), Python (Django/Flask), PySpark (DataFrame, job flow), and Mainframe (COBOL, JCL) projects. It supports automatic ZIP extraction and validation. Users can choose between OpenAI GPT-4o (online) or local LLMs via Ollama (Code Llama, Deepseek Coder, StarCoder, Llama 3, Mistral) for privacy-first analysis. The engine builds dependency graphs, architectural relationships, and generates interactive UML-style diagrams with language-specific representations, producing professional PDF reports.
 
 ### AI Insights & Recommendations
-The platform provides comprehensive AI-powered insights displayed in a dedicated AI Insights tab within the Comprehensive Project Analysis section. This includes:
-- **Project Overview**: High-level AI-generated summary of the project's purpose and structure
-- **Architecture Insights**: Detailed analysis of architectural patterns, design decisions, and quality assessment
-- **AI Recommendations**: Actionable suggestions for improving code quality, architecture, and best practices
-- **Quality Assessment**: Overall quality score (0-10) with visual progress indicator
-- **Module-Level Insights**: Detailed analysis of individual classes including role, responsibilities, and improvement opportunities
+The platform provides comprehensive AI-powered insights including project overview, architecture analysis, actionable recommendations, quality assessment scores, and module-level insights for individual classes with improvement opportunities.
 
 ### ZenVector Agent - Vector Database Intelligence
 This advanced AI agent uses ChromaDB for persistent vector storage, enabling code similarity detection, semantic search across codebases, and demographic data analysis. It leverages multi-modal search and sentence transformer models for high-quality semantic understanding.

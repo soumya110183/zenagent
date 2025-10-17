@@ -18,11 +18,7 @@ import {
   Activity,
   Layers,
   BookOpen,
-  Target,
-  Brain,
-  Lightbulb,
-  AlertTriangle,
-  CheckCircle2
+  Target
 } from "lucide-react";
 import { type Project } from "@shared/schema";
 
@@ -76,9 +72,8 @@ export default function ComprehensiveAnalysis({ project }: ComprehensiveAnalysis
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="ai-insights">AI Insights</TabsTrigger>
               <TabsTrigger value="api">API Docs</TabsTrigger>
               <TabsTrigger value="modules">Modules</TabsTrigger>
               <TabsTrigger value="technology">Technology</TabsTrigger>
@@ -146,148 +141,6 @@ export default function ComprehensiveAnalysis({ project }: ComprehensiveAnalysis
                   )}
                 </CardContent>
               </Card>
-            </TabsContent>
-
-            <TabsContent value="ai-insights" className="space-y-6">
-              {project.analysisData?.aiAnalysis && (
-                <>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Brain className="w-5 h-5 text-purple-600" />
-                        Project Overview
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-gray-700 leading-relaxed">
-                        {project.analysisData.aiAnalysis.projectOverview}
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  {project.analysisData.aiAnalysis.architectureInsights && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Layers className="w-5 h-5 text-blue-600" />
-                          Architecture Insights
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-gray-700 leading-relaxed">
-                          {project.analysisData.aiAnalysis.architectureInsights}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {project.analysisData.aiAnalysis.suggestions && project.analysisData.aiAnalysis.suggestions.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Lightbulb className="w-5 h-5 text-yellow-600" />
-                          AI Recommendations
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {project.analysisData.aiAnalysis.suggestions.map((suggestion: string, index: number) => (
-                            <div key={index} className="flex items-start gap-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
-                              <CheckCircle2 className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-                              <p className="text-sm text-gray-700">{suggestion}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {project.analysisData.aiAnalysis.qualityScore && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Activity className="w-5 h-5 text-green-600" />
-                          Quality Assessment
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center gap-4">
-                          <div className="text-center">
-                            <div className="text-4xl font-bold text-green-600">
-                              {project.analysisData.aiAnalysis.qualityScore}/10
-                            </div>
-                            <div className="text-sm text-gray-600 mt-1">Overall Score</div>
-                          </div>
-                          <div className="flex-1">
-                            <div className="w-full bg-gray-200 rounded-full h-3">
-                              <div 
-                                className="bg-green-600 h-3 rounded-full transition-all" 
-                                style={{ width: `${(project.analysisData.aiAnalysis.qualityScore / 10) * 100}%` }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {project.analysisData.aiAnalysis.moduleInsights && project.analysisData.aiAnalysis.moduleInsights.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <FileCode className="w-5 h-5 text-indigo-600" />
-                          Module-Level Insights
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {project.analysisData.aiAnalysis.moduleInsights.slice(0, 5).map((insight: any, index: number) => (
-                            <Collapsible key={index}>
-                              <CollapsibleTrigger asChild>
-                                <div className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50" data-testid={`collapsible-module-${index}`}>
-                                  <div className="flex items-center gap-2">
-                                    <Code className="w-4 h-4 text-indigo-600" />
-                                    <span className="font-medium">{insight.className}</span>
-                                  </div>
-                                  <ChevronDown className="w-4 h-4" />
-                                </div>
-                              </CollapsibleTrigger>
-                              <CollapsibleContent>
-                                <div className="p-4 bg-gray-50 border-t space-y-2">
-                                  <div>
-                                    <span className="text-sm font-medium text-gray-700">Role: </span>
-                                    <span className="text-sm text-gray-600">{insight.role}</span>
-                                  </div>
-                                  <div>
-                                    <span className="text-sm font-medium text-gray-700">Responsibilities: </span>
-                                    <span className="text-sm text-gray-600">{insight.responsibilities}</span>
-                                  </div>
-                                  {insight.improvements && (
-                                    <div>
-                                      <span className="text-sm font-medium text-gray-700">Improvements: </span>
-                                      <span className="text-sm text-gray-600">{insight.improvements}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </CollapsibleContent>
-                            </Collapsible>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-                </>
-              )}
-
-              {!project.analysisData?.aiAnalysis && (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600">No AI insights available for this project.</p>
-                    <p className="text-sm text-gray-500 mt-2">AI analysis may not have been performed yet.</p>
-                  </CardContent>
-                </Card>
-              )}
             </TabsContent>
 
             <TabsContent value="api" className="space-y-6">
