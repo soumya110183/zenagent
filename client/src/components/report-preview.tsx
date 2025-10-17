@@ -36,6 +36,7 @@ export default function ReportPreview({
     sequence: null,
     class: null
   });
+  const [demographicData, setDemographicData] = useState<any>(null);
 
   const aiInsights = analysisData.aiAnalysis;
   const projectDetails = aiInsights?.projectDetails;
@@ -49,10 +50,11 @@ export default function ReportPreview({
     .flatMap((c: any) => c.annotations || [])
     .filter((a: string, i: number, arr: string[]) => arr.indexOf(a) === i);
 
-  // Capture diagrams when modal opens
+  // Capture diagrams and fetch demographic data when modal opens
   useEffect(() => {
     if (open) {
       captureDiagrams();
+      fetchDemographicData();
     }
   }, [open]);
 
@@ -63,6 +65,18 @@ export default function ReportPreview({
       setDiagramImages(images);
     } catch (error) {
       console.error('Error capturing diagrams:', error);
+    }
+  };
+
+  const fetchDemographicData = async () => {
+    try {
+      const response = await fetch(`/api/projects/${project.id}/demographics`);
+      if (response.ok) {
+        const data = await response.json();
+        setDemographicData(data);
+      }
+    } catch (error) {
+      console.error('Error fetching demographic data:', error);
     }
   };
 
@@ -960,6 +974,110 @@ export default function ReportPreview({
                     )}
                   </div>
                 </>
+              )}
+            </section>
+
+            {/* 17. Demographic Scan Results */}
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">17. Demographic Scan Results</h2>
+              
+              {demographicData?.report ? (
+                <>
+                  <h3 className="text-xl font-semibold mb-3">Scan Summary</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Total Files Scanned</div>
+                      <div className="text-2xl font-bold">{demographicData.report.summary.totalFiles}</div>
+                    </div>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Total Matches</div>
+                      <div className="text-2xl font-bold">{demographicData.report.summary.totalMatches}</div>
+                    </div>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Fields Found</div>
+                      <div className="text-2xl font-bold">{demographicData.report.summary.fieldsFound}</div>
+                    </div>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <div className="text-sm text-muted-foreground">Scan Date</div>
+                      <div className="text-sm font-semibold">
+                        {new Date(demographicData.report.summary.scanDate).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  {demographicData.report.summary.totalMatches > 0 ? (
+                    <>
+                      <h3 className="text-xl font-semibold mb-3">Detected Demographic Fields</h3>
+                      <div className="space-y-4 mb-6">
+                        {Object.entries(demographicData.report.fieldResults).map(([fieldName, results]: [string, any], idx: number) => (
+                          <div key={idx} className="border-l-4 border-l-orange-500 pl-4">
+                            <h4 className="font-semibold text-lg mb-2">{fieldName}</h4>
+                            <div className="text-sm text-muted-foreground mb-2">
+                              Found {results.length} occurrence{results.length !== 1 ? 's' : ''}
+                            </div>
+                            <div className="space-y-2">
+                              {results.slice(0, 5).map((result: any, ridx: number) => (
+                                <div key={ridx} className="p-3 bg-muted rounded-lg text-sm">
+                                  <div className="font-medium mb-1">
+                                    📄 {result.file} <span className="text-muted-foreground">(Line {result.line})</span>
+                                  </div>
+                                  <code className="text-xs bg-background px-2 py-1 rounded block mt-1">
+                                    {result.context}
+                                  </code>
+                                </div>
+                              ))}
+                              {results.length > 5 && (
+                                <p className="text-sm text-muted-foreground">
+                                  ... and {results.length - 5} more occurrence{results.length - 5 !== 1 ? 's' : ''}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <h3 className="text-xl font-semibold mb-3">Coverage Analysis</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 border rounded-lg">
+                          <h4 className="font-semibold mb-2 text-green-600">✓ Found Fields ({demographicData.report.coverage.foundFields.length})</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {demographicData.report.coverage.foundFields.map((field: string, idx: number) => (
+                              <span key={idx} className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
+                                {field}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="p-4 border rounded-lg">
+                          <h4 className="font-semibold mb-2 text-gray-600">✗ Missing Fields ({demographicData.report.coverage.missingFields.length})</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {demographicData.report.coverage.missingFields.slice(0, 15).map((field: string, idx: number) => (
+                              <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                                {field}
+                              </span>
+                            ))}
+                            {demographicData.report.coverage.missingFields.length > 15 && (
+                              <span className="text-xs text-muted-foreground">
+                                +{demographicData.report.coverage.missingFields.length - 15} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="p-4 bg-muted rounded-lg text-center">
+                      <p className="text-muted-foreground">
+                        No demographic fields detected in the scanned files. 
+                        The codebase does not appear to contain sensitive personal data fields.
+                      </p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="p-4 bg-muted rounded-lg">
+                  <p className="text-muted-foreground">Loading demographic scan results...</p>
+                </div>
               )}
             </section>
           </div>

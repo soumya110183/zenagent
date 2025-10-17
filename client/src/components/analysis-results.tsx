@@ -12,6 +12,7 @@ import MermaidSequenceDiagram from "@/components/mermaid-sequence-diagram";
 import DemographicScanTab from "@/components/demographic-scan-tab";
 import ComprehensiveAnalysis from "@/components/comprehensive-analysis";
 import ReportPreview from "@/components/report-preview";
+import DemographicReportPreview from "@/components/demographic-report-preview";
 import { 
   FolderOpen, 
   Download, 
@@ -45,6 +46,7 @@ interface AnalysisResultsProps {
 export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResultsProps) {
   const [activeDiagram, setActiveDiagram] = useState<DiagramType>('flow');
   const [showReportPreview, setShowReportPreview] = useState(false);
+  const [showDemographicReport, setShowDemographicReport] = useState(false);
   const analysisData = project.analysisData as AnalysisData | null;
 
   // Fetch comprehensive analysis data
@@ -115,6 +117,16 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
               >
                 <FileText className="w-4 h-4 mr-2" />
                 View Report
+              </Button>
+              <Button 
+                variant="default" 
+                size="sm"
+                onClick={() => setShowDemographicReport(true)}
+                className="bg-orange-600 hover:bg-orange-700 text-white"
+                data-testid="button-view-demographic-report"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Demographic Report
               </Button>
               <Button variant="ghost" size="sm">
                 <Share2 className="w-4 h-4" />
@@ -515,6 +527,13 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
         swaggerData={swaggerData}
         comprehensiveData={comprehensiveData}
         structureData={structureData}
+      />
+
+      {/* Demographic Report Preview Dialog */}
+      <DemographicReportPreview
+        open={showDemographicReport}
+        onClose={() => setShowDemographicReport(false)}
+        project={project}
       />
     </div>
   );
