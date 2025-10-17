@@ -9,7 +9,6 @@ import DiagramCanvasX6 from "@/components/diagram-canvas-x6";
 import MermaidClassDiagram from "@/components/mermaid-class-diagram";
 import MermaidFlowDiagram from "@/components/mermaid-flow-diagram";
 import MermaidSequenceDiagram from "@/components/mermaid-sequence-diagram";
-import DemographicScanTab from "@/components/demographic-scan-tab";
 import ComprehensiveAnalysis from "@/components/comprehensive-analysis";
 import ReportPreview from "@/components/report-preview";
 import { 
@@ -254,10 +253,6 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
                 <FileCode className="w-4 h-4 mr-2" />
                 Class Diagram
               </TabsTrigger>
-              <TabsTrigger value="demographic" className="data-[state=active]:bg-background">
-                <Database className="w-4 h-4 mr-2" />
-                Demographic Scan
-              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -354,10 +349,6 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
             </div>
 
             <MermaidClassDiagram analysisData={analysisData} />
-          </TabsContent>
-
-          <TabsContent value="demographic">
-            <DemographicScanTab projectId={project.id} />
           </TabsContent>
         </Tabs>
       </Card>
