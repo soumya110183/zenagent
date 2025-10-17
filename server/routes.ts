@@ -6,7 +6,6 @@ import { loginSchema, insertProjectSchema, githubProjectSchema } from "@shared/s
 import { analyzeJavaProject } from "./services/javaAnalyzer";
 import { analyzeGithubRepository, isValidGithubUrl } from "./services/githubService";
 import { aiAnalysisService, getGlobalUsageStats } from "./services/aiAnalysisService";
-import { sonarAnalyzer } from "./services/sonarAnalyzer";
 import { swaggerGenerator } from "./services/swaggerGenerator";
 import { projectStructureAnalyzer } from "./services/projectStructureAnalyzer";
 import swaggerUi from "swagger-ui-express";
