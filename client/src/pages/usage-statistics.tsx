@@ -17,20 +17,11 @@ import {
 } from "lucide-react";
 
 interface UsageStats {
-  tokens: {
-    used: number;
-    limit: number;
-    cost: number;
-  };
-  dataTransfer: {
-    uploaded: number;
-    downloaded: number;
-    totalBandwidth: number;
-  };
   openaiUsage: {
     requests: number;
     tokens: number;
     cost: number;
+    averageResponseTime: number;
     models: Record<string, number>;
   };
   analysisStats: {
@@ -44,40 +35,9 @@ interface UsageStats {
 export default function UsageStatistics() {
   const [refreshing, setRefreshing] = useState(false);
 
-  // Mock data - in production this would come from your API
+  // Fetch real usage statistics from API
   const { data: stats, refetch } = useQuery<UsageStats>({
     queryKey: ['/api/usage-statistics'],
-    queryFn: async () => {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return {
-        tokens: {
-          used: 85420,
-          limit: 100000,
-          cost: 12.45
-        },
-        dataTransfer: {
-          uploaded: 2.3, // GB
-          downloaded: 1.8, // GB
-          totalBandwidth: 10.0 // GB limit
-        },
-        openaiUsage: {
-          requests: 247,
-          tokens: 45680,
-          cost: 8.92,
-          models: {
-            'gpt-4o': 35240,
-            'gpt-4o-mini': 10440
-          }
-        },
-        analysisStats: {
-          totalProjects: 18,
-          completedAnalyses: 16,
-          averageProcessingTime: 3.2,
-          successRate: 88.9
-        }
-      } as UsageStats;
-    }
   });
 
   const handleRefresh = async () => {
@@ -99,8 +59,9 @@ export default function UsageStatistics() {
     );
   }
 
-  const tokenUsagePercent = (stats.tokens.used / stats.tokens.limit) * 100;
-  const dataUsagePercent = ((stats.dataTransfer.uploaded + stats.dataTransfer.downloaded) / stats.dataTransfer.totalBandwidth) * 100;
+  // Calculate estimated monthly token usage (assuming 100k limit)
+  const monthlyTokenLimit = 100000;
+  const tokenUsagePercent = (stats.openaiUsage.tokens / monthlyTokenLimit) * 100;
 
   return (
     <div className="container mx-auto px-6 py-8">
@@ -110,7 +71,7 @@ export default function UsageStatistics() {
             Usage Statistics
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
-            Monitor your token usage, data transfer, and OpenAI API consumption
+            Monitor your AI analysis usage, LLM token consumption, and project statistics
           </p>
         </div>
         <Button 
@@ -125,181 +86,244 @@ export default function UsageStatistics() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="tokens">Token Usage</TabsTrigger>
-          <TabsTrigger value="data">Data Transfer</TabsTrigger>
-          <TabsTrigger value="openai">OpenAI Usage</TabsTrigger>
+          <TabsTrigger value="llm">LLM Usage</TabsTrigger>
+          <TabsTrigger value="projects">Project Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
+            <Card className="border-l-4 border-blue-500">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Token Usage</CardTitle>
-                <Zap className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">LLM Requests</CardTitle>
+                <Zap className="h-4 w-4 text-blue-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.tokens.used.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-blue-600">{stats.openaiUsage.requests}</div>
                 <p className="text-xs text-muted-foreground">
-                  of {stats.tokens.limit.toLocaleString()} tokens
+                  AI analysis requests
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-purple-500">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Tokens Used</CardTitle>
+                <Database className="h-4 w-4 text-purple-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-purple-600">{stats.openaiUsage.tokens.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">
+                  {tokenUsagePercent.toFixed(1)}% of monthly limit
                 </p>
                 <Progress value={tokenUsagePercent} className="mt-2" />
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-l-4 border-green-500">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Data Transfer</CardTitle>
-                <Database className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Total Cost</CardTitle>
+                <TrendingUp className="h-4 w-4 text-green-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{(stats.dataTransfer.uploaded + stats.dataTransfer.downloaded).toFixed(1)} GB</div>
+                <div className="text-2xl font-bold text-green-600">${stats.openaiUsage.cost.toFixed(2)}</div>
                 <p className="text-xs text-muted-foreground">
-                  of {stats.dataTransfer.totalBandwidth} GB limit
-                </p>
-                <Progress value={dataUsagePercent} className="mt-2" />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">OpenAI Cost</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">${stats.openaiUsage.cost.toFixed(2)}</div>
-                <p className="text-xs text-muted-foreground">
-                  {stats.openaiUsage.requests} requests
+                  ${(stats.openaiUsage.cost / stats.openaiUsage.requests).toFixed(3)} avg/request
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-l-4 border-orange-500">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-                <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                <BarChart3 className="h-4 w-4 text-orange-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.analysisStats.successRate}%</div>
+                <div className="text-2xl font-bold text-orange-600">{stats.analysisStats.successRate}%</div>
                 <p className="text-xs text-muted-foreground">
-                  {stats.analysisStats.completedAnalyses} of {stats.analysisStats.totalProjects} projects
+                  {stats.analysisStats.completedAnalyses}/{stats.analysisStats.totalProjects} completed
                 </p>
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
 
-        <TabsContent value="tokens" className="space-y-6">
+          {/* Response Time Stats */}
           <Card>
             <CardHeader>
-              <CardTitle>Token Usage Details</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-indigo-600" />
+                Average Response Time
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Used Tokens</span>
-                <span className="text-sm text-muted-foreground">{stats.tokens.used.toLocaleString()}</span>
+            <CardContent>
+              <div className="text-4xl font-bold text-indigo-600">
+                {(stats.openaiUsage.averageResponseTime / 1000).toFixed(2)}s
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Available Tokens</span>
-                <span className="text-sm text-muted-foreground">{(stats.tokens.limit - stats.tokens.used).toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Total Cost</span>
-                <span className="text-sm text-muted-foreground">${stats.tokens.cost.toFixed(2)}</span>
-              </div>
-              <Progress value={tokenUsagePercent} className="mt-4" />
-              <p className="text-xs text-muted-foreground text-center">
-                {tokenUsagePercent.toFixed(1)}% of monthly token limit used
+              <p className="text-sm text-muted-foreground mt-2">
+                Average time for AI to generate insights per request
               </p>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="data" className="space-y-6">
+        <TabsContent value="llm" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
+            <Card className="border-t-4 border-purple-500">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Upload className="w-4 h-4" />
-                  <span>Data Uploaded</span>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-purple-600" />
+                  LLM API Usage
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-blue-600">
-                  {stats.dataTransfer.uploaded.toFixed(1)} GB
+              <CardContent className="space-y-4">
+                <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                  <span className="text-sm font-medium">Total AI Requests</span>
+                  <span className="text-lg font-bold text-purple-600">{stats.openaiUsage.requests}</span>
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Project files and assets
-                </p>
+                <div className="flex justify-between items-center p-3 bg-indigo-50 rounded-lg">
+                  <span className="text-sm font-medium">Tokens Consumed</span>
+                  <span className="text-lg font-bold text-indigo-600">{stats.openaiUsage.tokens.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                  <span className="text-sm font-medium">Total API Cost</span>
+                  <span className="text-lg font-bold text-green-600">${stats.openaiUsage.cost.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                  <span className="text-sm font-medium">Average Cost/Request</span>
+                  <span className="text-lg font-bold text-blue-600">${(stats.openaiUsage.cost / stats.openaiUsage.requests).toFixed(3)}</span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+                  <span className="text-sm font-medium">Avg Response Time</span>
+                  <span className="text-lg font-bold text-orange-600">{(stats.openaiUsage.averageResponseTime / 1000).toFixed(2)}s</span>
+                </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-t-4 border-blue-500">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Download className="w-4 h-4" />
-                  <span>Data Downloaded</span>
+                <CardTitle className="flex items-center gap-2">
+                  <Database className="w-5 h-5 text-blue-600" />
+                  Model Usage Breakdown
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-600">
-                  {stats.dataTransfer.downloaded.toFixed(1)} GB
+              <CardContent className="space-y-4">
+                {Object.entries(stats.openaiUsage.models).map(([model, tokens]) => (
+                  <div key={model} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-semibold">{model}</span>
+                      <span className="text-sm font-bold text-blue-600">{tokens.toLocaleString()} tokens</span>
+                    </div>
+                    <Progress 
+                      value={(tokens / stats.openaiUsage.tokens) * 100} 
+                      className="h-3" 
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {((tokens / stats.openaiUsage.tokens) * 100).toFixed(1)}% of total usage
+                    </p>
+                  </div>
+                ))}
+                <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-gray-700">
+                    <strong>Note:</strong> All requests use GPT-4o model for high-quality AI insights and analysis.
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Reports and analysis results
-                </p>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
-        <TabsContent value="openai" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
+        <TabsContent value="projects" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="border-l-4 border-indigo-500">
               <CardHeader>
-                <CardTitle>OpenAI API Usage</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-indigo-600" />
+                  Total Projects
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Total Requests</span>
-                  <span className="text-sm text-muted-foreground">{stats.openaiUsage.requests}</span>
+              <CardContent>
+                <div className="text-4xl font-bold text-indigo-600">
+                  {stats.analysisStats.totalProjects}
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Tokens Used</span>
-                  <span className="text-sm text-muted-foreground">{stats.openaiUsage.tokens.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Total Cost</span>
-                  <span className="text-sm text-muted-foreground">${stats.openaiUsage.cost.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Average Cost/Request</span>
-                  <span className="text-sm text-muted-foreground">${(stats.openaiUsage.cost / stats.openaiUsage.requests).toFixed(3)}</span>
-                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Projects analyzed with Zengent AI
+                </p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-l-4 border-green-500">
               <CardHeader>
-                <CardTitle>Model Usage Breakdown</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-green-600" />
+                  Completed
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {Object.entries(stats.openaiUsage.models).map(([model, tokens]) => (
-                  <div key={model} className="space-y-1">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">{model}</span>
-                      <span className="text-sm text-muted-foreground">{tokens.toLocaleString()} tokens</span>
-                    </div>
-                    <Progress 
-                      value={(tokens / stats.openaiUsage.tokens) * 100} 
-                      className="h-2" 
-                    />
-                  </div>
-                ))}
+              <CardContent>
+                <div className="text-4xl font-bold text-green-600">
+                  {stats.analysisStats.completedAnalyses}
+                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Successfully completed analyses
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-orange-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-orange-600" />
+                  Avg Processing Time
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-orange-600">
+                  {stats.analysisStats.averageProcessingTime.toFixed(1)}s
+                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Average analysis duration
+                </p>
               </CardContent>
             </Card>
           </div>
+
+          <Card className="border-t-4 border-green-500">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                Success Rate Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-5xl font-bold text-green-600">{stats.analysisStats.successRate}%</p>
+                    <p className="text-sm text-muted-foreground mt-1">Overall success rate</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-gray-700">
+                      {stats.analysisStats.completedAnalyses} / {stats.analysisStats.totalProjects}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">Completed projects</p>
+                  </div>
+                </div>
+                <Progress value={stats.analysisStats.successRate} className="h-4" />
+                <div className="grid grid-cols-2 gap-4 mt-6">
+                  <div className="p-3 bg-green-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Successful</p>
+                    <p className="text-2xl font-bold text-green-600">{stats.analysisStats.completedAnalyses}</p>
+                  </div>
+                  <div className="p-3 bg-red-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Failed</p>
+                    <p className="text-2xl font-bold text-red-600">
+                      {stats.analysisStats.totalProjects - stats.analysisStats.completedAnalyses}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

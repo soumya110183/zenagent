@@ -390,6 +390,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get LLM usage statistics
+  app.get("/api/usage-statistics", async (req, res) => {
+    try {
+      const llmStats = getGlobalUsageStats();
+      const projects = await storage.getAllProjects();
+      
+      const completedProjects = projects.filter(p => p.status === 'completed').length;
+      const totalProjects = projects.length;
+      
+      res.json({
+        openaiUsage: {
+          requests: llmStats.openai.requests,
+          tokens: llmStats.openai.tokens,
+          cost: llmStats.openai.cost,
+          averageResponseTime: llmStats.openai.averageResponseTime,
+          models: {
+            'gpt-4o': llmStats.openai.tokens // All tokens are from gpt-4o
+          }
+        },
+        analysisStats: {
+          totalProjects: totalProjects,
+          completedAnalyses: completedProjects,
+          averageProcessingTime: llmStats.openai.averageResponseTime / 1000, // Convert to seconds
+          successRate: totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100 * 10) / 10 : 0
+        }
+      });
+    } catch (error) {
+      console.error('Error getting usage statistics:', error);
+      res.status(500).json({ error: 'Failed to get usage statistics' });
+    }
+  });
+
   // Get Swagger documentation for a project
   app.get("/api/projects/:id/swagger", async (req, res) => {
     try {
