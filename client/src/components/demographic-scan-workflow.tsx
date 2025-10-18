@@ -157,15 +157,15 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <Brain className={iconStyle} />
           <div>
-            <div className="font-bold text-white">TensorFlow ML</div>
-            <div className="text-xs text-white opacity-90">Code Lens LLM - Fine Tuned</div>
+            <div className="font-bold text-white">Code Lens ML</div>
+            <div className="text-xs text-white opacity-90">[TensorFlow Custom Model]</div>
           </div>
         </div>
       )
     },
     position: { x: 570, y: 175 },
     style: { 
-      background: '#06b6d4',
+      background: '#f97316',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
