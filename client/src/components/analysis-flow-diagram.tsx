@@ -258,7 +258,7 @@ export default function AnalysisFlowDiagram() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   return (
-    <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden shadow-lg" style={{ height: '500px' }}>
+    <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden shadow-lg" style={{ height: '320px' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
