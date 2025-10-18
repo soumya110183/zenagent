@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import ReactFlow, {
   Node,
   Edge,
@@ -6,8 +6,10 @@ import ReactFlow, {
   Background,
   useNodesState,
   useEdgesState,
+  useReactFlow,
   MarkerType,
   BackgroundVariant,
+  ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { FileSearch, Database, Search, AlertTriangle, FileText, BarChart3, Brain } from 'lucide-react';
@@ -278,31 +280,47 @@ const initialEdges: Edge[] = [
   },
 ];
 
-export default function DemographicScanWorkflow() {
+function FlowContent() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { fitView } = useReactFlow();
+
+  useEffect(() => {
+    setTimeout(() => {
+      fitView({ padding: 0.2, duration: 300 });
+    }, 0);
+  }, [fitView]);
 
   return (
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      fitView
+      fitViewOptions={{ padding: 0.2, duration: 300 }}
+      attributionPosition="bottom-left"
+      proOptions={{ hideAttribution: true }}
+      nodesDraggable={true}
+      nodesConnectable={false}
+      elementsSelectable={true}
+      zoomOnScroll={true}
+      panOnScroll={true}
+      panOnDrag={true}
+      zoomOnPinch={true}
+    >
+      <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#e5e7eb" />
+      <Controls />
+    </ReactFlow>
+  );
+}
+
+export default function DemographicScanWorkflow() {
+  return (
     <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden shadow-lg" style={{ height: '300px' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        fitView
-        attributionPosition="bottom-left"
-        proOptions={{ hideAttribution: true }}
-        nodesDraggable={true}
-        nodesConnectable={false}
-        elementsSelectable={true}
-        zoomOnScroll={true}
-        panOnScroll={true}
-        panOnDrag={true}
-        zoomOnPinch={true}
-      >
-        <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#e5e7eb" />
-        <Controls />
-      </ReactFlow>
+      <ReactFlowProvider>
+        <FlowContent />
+      </ReactFlowProvider>
     </div>
   );
 }

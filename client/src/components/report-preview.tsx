@@ -1067,6 +1067,12 @@ export default function ReportPreview({
                 </div>
               )}
             </section>
+
+            {/* Footer */}
+            <div className="text-center text-sm text-gray-600 pt-8 border-t-2 border-gray-300 mt-12">
+              <p className="font-semibold">Developed by: Ullas Krishnan, Sr Solution Architect</p>
+              <p className="mt-1">Copyright © Project Diamond Zensar team</p>
+            </div>
           </div>
         </ScrollArea>
       </DialogContent>
