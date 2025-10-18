@@ -31,7 +31,7 @@ const initialNodes: Node[] = [
     },
     position: { x: 50, y: 50 },
     style: { 
-      background: '#d4af37',
+      background: '#b8860b',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
