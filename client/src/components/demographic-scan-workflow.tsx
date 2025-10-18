@@ -10,7 +10,7 @@ import ReactFlow, {
   BackgroundVariant,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { FileSearch, Database, Search, AlertTriangle, FileText, BarChart3 } from 'lucide-react';
+import { FileSearch, Database, Search, AlertTriangle, FileText, BarChart3, Brain } from 'lucide-react';
 
 const iconStyle = "w-5 h-5";
 
@@ -31,7 +31,7 @@ const initialNodes: Node[] = [
     },
     position: { x: 50, y: 50 },
     style: { 
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: '#1e40af',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
@@ -56,7 +56,7 @@ const initialNodes: Node[] = [
     },
     position: { x: 50, y: 180 },
     style: { 
-      background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      background: '#2563eb',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
@@ -81,7 +81,7 @@ const initialNodes: Node[] = [
     },
     position: { x: 320, y: 50 },
     style: { 
-      background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      background: '#3b82f6',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
@@ -106,7 +106,7 @@ const initialNodes: Node[] = [
     },
     position: { x: 320, y: 180 },
     style: { 
-      background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      background: '#1e40af',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
@@ -131,7 +131,7 @@ const initialNodes: Node[] = [
     },
     position: { x: 590, y: 50 },
     style: { 
-      background: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+      background: '#2563eb',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
@@ -143,22 +143,47 @@ const initialNodes: Node[] = [
   },
   {
     id: '6',
-    type: 'output',
     data: { 
       label: (
         <div className="flex items-center gap-2 px-4 py-2">
-          <FileText className={iconStyle} />
+          <Brain className={iconStyle} />
           <div>
-            <div className="font-bold text-gray-900">Compliance Report</div>
-            <div className="text-xs text-gray-700">PDF with detailed findings</div>
+            <div className="font-bold text-white">LLM Analysis</div>
+            <div className="text-xs text-white opacity-90">AI-powered insights on findings</div>
           </div>
         </div>
       )
     },
     position: { x: 590, y: 180 },
     style: { 
-      background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-      color: '#1a202c',
+      background: '#3b82f6',
+      color: 'white',
+      border: 'none',
+      borderRadius: '12px',
+      padding: '10px',
+      width: 220,
+      fontSize: '14px',
+      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+    },
+  },
+  {
+    id: '7',
+    type: 'output',
+    data: { 
+      label: (
+        <div className="flex items-center gap-2 px-4 py-2">
+          <FileText className={iconStyle} />
+          <div>
+            <div className="font-bold text-white">Compliance Report</div>
+            <div className="text-xs text-white opacity-90">PDF with detailed findings</div>
+          </div>
+        </div>
+      )
+    },
+    position: { x: 860, y: 115 },
+    style: { 
+      background: '#60a5fa',
+      color: 'white',
       border: 'none',
       borderRadius: '12px',
       padding: '10px',
@@ -175,40 +200,48 @@ const initialEdges: Edge[] = [
     source: '1', 
     target: '3',
     animated: true,
-    style: { stroke: '#667eea', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#667eea' },
+    style: { stroke: '#3b82f6', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
   { 
     id: 'e2-3', 
     source: '2', 
     target: '3',
     animated: true,
-    style: { stroke: '#f093fb', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#f093fb' },
+    style: { stroke: '#3b82f6', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
   { 
     id: 'e3-4', 
     source: '3', 
     target: '4',
     animated: true,
-    style: { stroke: '#4facfe', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#4facfe' },
+    style: { stroke: '#3b82f6', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
   { 
     id: 'e4-5', 
     source: '4', 
     target: '5',
     animated: true,
-    style: { stroke: '#fa709a', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#fa709a' },
+    style: { stroke: '#3b82f6', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
   { 
     id: 'e5-6', 
     source: '5', 
     target: '6',
     animated: true,
-    style: { stroke: '#30cfd0', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#30cfd0' },
+    style: { stroke: '#3b82f6', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
+  },
+  { 
+    id: 'e6-7', 
+    source: '6', 
+    target: '7',
+    animated: true,
+    style: { stroke: '#3b82f6', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
 ];
 
