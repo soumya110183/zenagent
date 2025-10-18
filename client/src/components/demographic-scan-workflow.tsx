@@ -17,6 +17,7 @@ import { FileSearch, Database, Search, AlertTriangle, FileText, BarChart3, Brain
 const iconStyle = "w-5 h-5";
 
 const initialNodes: Node[] = [
+  // Input nodes
   {
     id: '1',
     type: 'input',
@@ -31,7 +32,7 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 50, y: 20 },
+    position: { x: 50, y: 50 },
     style: { 
       background: '#b8860b',
       color: 'white',
@@ -45,18 +46,19 @@ const initialNodes: Node[] = [
   },
   {
     id: '2',
+    type: 'input',
     data: { 
       label: (
         <div className="flex items-center gap-2 px-4 py-2">
           <Database className={iconStyle} />
           <div>
-            <div className="font-bold text-white">Pattern Library</div>
-            <div className="text-xs text-white opacity-90">39 regex patterns + custom</div>
+            <div className="font-bold text-white">Regex Patterns</div>
+            <div className="text-xs text-white opacity-90">39 patterns + custom</div>
           </div>
         </div>
       )
     },
-    position: { x: 50, y: 130 },
+    position: { x: 50, y: 150 },
     style: { 
       background: '#8b8d90',
       color: 'white',
@@ -82,7 +84,7 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 50, y: 260 },
+    position: { x: 50, y: 250 },
     style: { 
       background: '#b8860b',
       color: 'white',
@@ -94,6 +96,8 @@ const initialNodes: Node[] = [
       boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
     },
   },
+  
+  // Scanning methods
   {
     id: '3',
     data: { 
@@ -101,13 +105,13 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <Search className={iconStyle} />
           <div>
-            <div className="font-bold text-white">Regex Scanning</div>
-            <div className="text-xs text-white opacity-90">Pattern-based PII/PHI</div>
+            <div className="font-bold text-white">Regex Scan</div>
+            <div className="text-xs text-white opacity-90">Pattern matching</div>
           </div>
         </div>
       )
     },
-    position: { x: 320, y: 20 },
+    position: { x: 320, y: 100 },
     style: { 
       background: '#3b82f6',
       color: 'white',
@@ -126,13 +130,13 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <FileSpreadsheet className={iconStyle} />
           <div>
-            <div className="font-bold text-white">Field Parsing</div>
-            <div className="text-xs text-white opacity-90">Extract table.field pairs</div>
+            <div className="font-bold text-white">Excel Field Scan</div>
+            <div className="text-xs text-white opacity-90">100% exact match</div>
           </div>
         </div>
       )
     },
-    position: { x: 320, y: 260 },
+    position: { x: 320, y: 250 },
     style: { 
       background: '#3b82f6',
       color: 'white',
@@ -144,145 +148,49 @@ const initialNodes: Node[] = [
       boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
     },
   },
+  
+  // TensorFlow processing (SINGLE - merges both)
   {
     id: '4',
-    data: { 
-      label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <AlertTriangle className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Regex Results</div>
-            <div className="text-xs text-white opacity-90">Found demographic fields</div>
-          </div>
-        </div>
-      )
-    },
-    position: { x: 320, y: 130 },
-    style: { 
-      background: '#1e40af',
-      color: 'white',
-      border: 'none',
-      borderRadius: '12px',
-      padding: '10px',
-      width: 200,
-      fontSize: '14px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-    },
-  },
-  {
-    id: 'excel-3',
-    data: { 
-      label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <Search className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Exact Match Scan</div>
-            <div className="text-xs text-white opacity-90">100% table.field matches</div>
-          </div>
-        </div>
-      )
-    },
-    position: { x: 560, y: 260 },
-    style: { 
-      background: '#3b82f6',
-      color: 'white',
-      border: 'none',
-      borderRadius: '12px',
-      padding: '10px',
-      width: 200,
-      fontSize: '14px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-    },
-  },
-  {
-    id: 'excel-4',
     data: { 
       label: (
         <div className="flex items-center gap-2 px-4 py-2">
           <Brain className={iconStyle} />
           <div>
             <div className="font-bold text-white">TensorFlow ML</div>
-            <div className="text-xs text-white opacity-90">Smart field matching</div>
+            <div className="text-xs text-white opacity-90">Code Lens LLM - Fine Tuned</div>
           </div>
         </div>
       )
     },
-    position: { x: 560, y: 360 },
+    position: { x: 570, y: 175 },
     style: { 
       background: '#06b6d4',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
       padding: '10px',
-      width: 200,
+      width: 220,
       fontSize: '14px',
       boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
     },
   },
+  
+  // Optional LLM processing
   {
     id: '5',
     data: { 
       label: (
         <div className="flex items-center gap-2 px-4 py-2">
-          <BarChart3 className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Categorization</div>
-            <div className="text-xs text-white opacity-90">Group by category</div>
-          </div>
-        </div>
-      )
-    },
-    position: { x: 560, y: 20 },
-    style: { 
-      background: '#2563eb',
-      color: 'white',
-      border: 'none',
-      borderRadius: '12px',
-      padding: '10px',
-      width: 200,
-      fontSize: '14px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-    },
-  },
-  {
-    id: '6',
-    data: { 
-      label: (
-        <div className="flex items-center gap-2 px-4 py-2">
           <Brain className={iconStyle} />
           <div>
-            <div className="font-bold text-white">Code Lens LLM</div>
-            <div className="text-xs text-white opacity-90">Fine-tuned analysis</div>
+            <div className="font-bold text-white">SLM / LLM</div>
+            <div className="text-xs text-white opacity-90">Optional AI enhancement</div>
           </div>
         </div>
       )
     },
-    position: { x: 560, y: 130 },
-    style: { 
-      background: '#3b82f6',
-      color: 'white',
-      border: 'none',
-      borderRadius: '12px',
-      padding: '10px',
-      width: 200,
-      fontSize: '14px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-    },
-  },
-  {
-    id: '7',
-    data: { 
-      label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <Brain className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">SLM or LLM</div>
-            <div className="text-xs text-white opacity-90">AI processing</div>
-          </div>
-        </div>
-      )
-    },
-    position: { x: 800, y: 75 },
+    position: { x: 840, y: 100 },
     style: { 
       background: '#06b6d4',
       color: 'white',
@@ -294,8 +202,10 @@ const initialNodes: Node[] = [
       boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
     },
   },
+  
+  // Report output
   {
-    id: '8',
+    id: '6',
     type: 'output',
     data: { 
       label: (
@@ -303,38 +213,12 @@ const initialNodes: Node[] = [
           <FileText className={iconStyle} />
           <div>
             <div className="font-bold text-white">Compliance Report</div>
-            <div className="text-xs text-white opacity-90">PDF with findings</div>
+            <div className="text-xs text-white opacity-90">PDF/DOCX/HTML export</div>
           </div>
         </div>
       )
     },
-    position: { x: 800, y: 200 },
-    style: { 
-      background: '#60a5fa',
-      color: 'white',
-      border: 'none',
-      borderRadius: '12px',
-      padding: '10px',
-      width: 200,
-      fontSize: '14px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-    },
-  },
-  {
-    id: 'excel-5',
-    type: 'output',
-    data: { 
-      label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <FileText className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Excel Field Report</div>
-            <div className="text-xs text-white opacity-90">Match/unmatch results</div>
-          </div>
-        </div>
-      )
-    },
-    position: { x: 800, y: 310 },
+    position: { x: 840, y: 250 },
     style: { 
       background: '#60a5fa',
       color: 'white',
@@ -349,7 +233,7 @@ const initialNodes: Node[] = [
 ];
 
 const initialEdges: Edge[] = [
-  // Regex Path (Top)
+  // Regex Scan Path
   { 
     id: 'e1-3', 
     source: '1', 
@@ -366,48 +250,8 @@ const initialEdges: Edge[] = [
     style: { stroke: '#3b82f6', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
-  { 
-    id: 'e3-4', 
-    source: '3', 
-    target: '4',
-    animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
-  },
-  { 
-    id: 'e4-5', 
-    source: '4', 
-    target: '5',
-    animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
-  },
-  { 
-    id: 'e5-6', 
-    source: '5', 
-    target: '6',
-    animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
-  },
-  { 
-    id: 'e6-7', 
-    source: '6', 
-    target: '7',
-    animated: true,
-    style: { stroke: '#06b6d4', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
-  },
-  { 
-    id: 'e7-8', 
-    source: '7', 
-    target: '8',
-    animated: true,
-    style: { stroke: '#06b6d4', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
-  },
   
-  // Excel Field Mapping Path (Bottom)
+  // Excel Scan Path  
   { 
     id: 'excel-e1', 
     source: 'excel-1', 
@@ -418,45 +262,61 @@ const initialEdges: Edge[] = [
   },
   { 
     id: 'excel-e2', 
-    source: 'excel-2', 
-    target: 'excel-3',
+    source: '1', 
+    target: 'excel-2',
     animated: true,
     style: { stroke: '#3b82f6', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
+  
+  // Both paths merge into TensorFlow ML
   { 
-    id: 'excel-e3', 
-    source: '1', 
-    target: 'excel-3',
-    animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2, strokeDasharray: '5,5' },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
-    label: 'scan',
-    labelBgPadding: [8, 4],
-    labelBgBorderRadius: 4,
-    labelBgStyle: { fill: '#e0f2fe', fillOpacity: 0.9 },
-    labelStyle: { fontSize: '10px', fill: '#0369a1' },
-  },
-  { 
-    id: 'excel-e4', 
-    source: 'excel-2', 
-    target: 'excel-4',
+    id: 'e3-4', 
+    source: '3', 
+    target: '4',
     animated: true,
     style: { stroke: '#06b6d4', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
   },
   { 
-    id: 'excel-e5', 
-    source: 'excel-3', 
-    target: 'excel-5',
+    id: 'excel-e3', 
+    source: 'excel-2', 
+    target: '4',
     animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
+    style: { stroke: '#06b6d4', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
   },
+  
+  // TensorFlow ML to optional LLM
   { 
-    id: 'excel-e6', 
-    source: 'excel-4', 
-    target: 'excel-5',
+    id: 'e4-5', 
+    source: '4', 
+    target: '5',
+    animated: true,
+    style: { stroke: '#06b6d4', strokeWidth: 2, strokeDasharray: '5,5' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
+    label: 'if needed',
+    labelBgPadding: [8, 4],
+    labelBgBorderRadius: 4,
+    labelBgStyle: { fill: '#cffafe', fillOpacity: 0.9 },
+    labelStyle: { fontSize: '10px', fill: '#0e7490' },
+  },
+  
+  // Direct path from TensorFlow to Report
+  { 
+    id: 'e4-6', 
+    source: '4', 
+    target: '6',
+    animated: true,
+    style: { stroke: '#06b6d4', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
+  },
+  
+  // LLM to Report
+  { 
+    id: 'e5-6', 
+    source: '5', 
+    target: '6',
     animated: true,
     style: { stroke: '#06b6d4', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
@@ -500,7 +360,7 @@ function FlowContent() {
 
 export default function DemographicScanWorkflow() {
   return (
-    <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden shadow-lg" style={{ height: '480px' }}>
+    <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden shadow-lg" style={{ height: '380px' }}>
       <ReactFlowProvider>
         <FlowContent />
       </ReactFlowProvider>
