@@ -23,12 +23,9 @@ const initialNodes: Node[] = [
     type: 'input',
     data: { 
       label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <FileSearch className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Source Code Input</div>
-            <div className="text-xs text-white opacity-90">Parsed code files</div>
-          </div>
+        <div className="px-4 py-3">
+          <div className="font-bold text-white text-lg">Source Code Input</div>
+          <div className="text-sm text-white mt-1">Parsed code files</div>
         </div>
       )
     },
@@ -49,12 +46,9 @@ const initialNodes: Node[] = [
     type: 'input',
     data: { 
       label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <Database className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Regex Patterns</div>
-            <div className="text-xs text-white opacity-90">39 patterns + custom</div>
-          </div>
+        <div className="px-4 py-3">
+          <div className="font-bold text-white text-lg">Regex Patterns</div>
+          <div className="text-sm text-white mt-1">39 patterns + custom</div>
         </div>
       )
     },
@@ -75,12 +69,9 @@ const initialNodes: Node[] = [
     type: 'input',
     data: { 
       label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <Upload className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Excel Upload</div>
-            <div className="text-xs text-white opacity-90">table_name, field_name</div>
-          </div>
+        <div className="px-4 py-3">
+          <div className="font-bold text-white text-lg">Excel Upload</div>
+          <div className="text-sm text-white mt-1">table_name, field_name</div>
         </div>
       )
     },
@@ -102,12 +93,9 @@ const initialNodes: Node[] = [
     id: '3',
     data: { 
       label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <Search className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Regex Scan</div>
-            <div className="text-xs text-white opacity-90">Pattern matching</div>
-          </div>
+        <div className="px-4 py-3">
+          <div className="font-bold text-white text-lg">Regex Scan</div>
+          <div className="text-sm text-white mt-1">Pattern matching</div>
         </div>
       )
     },
@@ -127,12 +115,9 @@ const initialNodes: Node[] = [
     id: 'excel-2',
     data: { 
       label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <FileSpreadsheet className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Excel Field Scan</div>
-            <div className="text-xs text-white opacity-90">100% exact match</div>
-          </div>
+        <div className="px-4 py-3">
+          <div className="font-bold text-white text-lg">Excel Field Scan</div>
+          <div className="text-sm text-white mt-1">100% exact match</div>
         </div>
       )
     },
@@ -178,12 +163,9 @@ const initialNodes: Node[] = [
     id: '5',
     data: { 
       label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <Brain className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">SLM / LLM</div>
-            <div className="text-xs text-white opacity-90">Optional AI enhancement</div>
-          </div>
+        <div className="px-4 py-3">
+          <div className="font-bold text-white text-lg">SLM / LLM</div>
+          <div className="text-sm text-white mt-1">Optional AI enhancement</div>
         </div>
       )
     },
@@ -206,12 +188,9 @@ const initialNodes: Node[] = [
     type: 'output',
     data: { 
       label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <FileText className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Compliance Report</div>
-            <div className="text-xs text-white opacity-90">PDF/DOCX/HTML export</div>
-          </div>
+        <div className="px-4 py-3">
+          <div className="font-bold text-white text-lg">Compliance Report</div>
+          <div className="text-sm text-white mt-1">PDF/DOCX/HTML export</div>
         </div>
       )
     },
