@@ -100,10 +100,14 @@ export default function DemographicScanTab({ projectId }: DemographicScanTabProp
   return (
     <div className="p-6 bg-white">
       <Tabs defaultValue="scan" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-6">
+        <TabsList className="grid w-full grid-cols-3 mb-6">
           <TabsTrigger value="scan" className="flex items-center gap-2">
             <Users className="w-4 h-4" />
-            Scan Results
+            Regex Scan
+          </TabsTrigger>
+          <TabsTrigger value="excel" className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            Excel Field Mapping
           </TabsTrigger>
           <TabsTrigger value="patterns" className="flex items-center gap-2">
             <Settings className="w-4 h-4" />
@@ -305,10 +309,290 @@ export default function DemographicScanTab({ projectId }: DemographicScanTabProp
         )}
       </TabsContent>
 
+      <TabsContent value="excel" className="space-y-6">
+        <ExcelFieldMappingTab projectId={projectId} />
+      </TabsContent>
+
       <TabsContent value="patterns">
         <DemographicPatternsManager />
       </TabsContent>
     </Tabs>
   </div>
+  );
+}
+
+interface ExcelFieldMappingTabProps {
+  projectId: string;
+}
+
+interface ExcelMapping {
+  id: string;
+  fileName: string;
+  uploadedAt: string;
+  totalFields: number;
+  matchedFields: number;
+  status: string;
+  scanResults?: {
+    totalFields: number;
+    matchedFields: number;
+    matches: Array<{
+      tableName: string;
+      fieldName: string;
+      combined: string;
+      matchCount: number;
+      locations: Array<{
+        filePath: string;
+        lineNumber: number;
+        line: string;
+        context: string;
+        matchType: string;
+      }>;
+    }>;
+    unmatchedFields: Array<{
+      tableName: string;
+      fieldName: string;
+      combined: string;
+    }>;
+  };
+}
+
+function ExcelFieldMappingTab({ projectId }: ExcelFieldMappingTabProps) {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const { toast } = useToast();
+
+  const { data: mappingsData, isLoading } = useQuery<{ mappings: ExcelMapping[]; success: boolean }>({
+    queryKey: ['/api/projects', projectId, 'excel-mappings'],
+    enabled: !!projectId,
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('excelFile', file);
+      
+      const response = await fetch(`/api/projects/${projectId}/excel-mapping`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', projectId, 'excel-mappings'] });
+      toast({
+        title: 'Upload Successful',
+        description: 'Excel file uploaded and scanned successfully',
+      });
+      setSelectedFile(null);
+      setUploadProgress(0);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Upload Failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+      setUploadProgress(0);
+    },
+  });
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+        setSelectedFile(file);
+      } else {
+        toast({
+          title: 'Invalid File',
+          description: 'Please select an Excel file (.xlsx or .xls)',
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
+  const handleUpload = () => {
+    if (selectedFile) {
+      setUploadProgress(10);
+      uploadMutation.mutate(selectedFile);
+    }
+  };
+
+  const mappings = mappingsData?.mappings || [];
+  const latestMapping = mappings[0];
+
+  return (
+    <div className="space-y-6">
+      {/* Upload Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="w-5 h-5" />
+            Upload Excel Field Mapping
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Alert>
+            <AlertDescription>
+              Upload an Excel file with two columns: <strong>table_name</strong> and <strong>field_name</strong>. 
+              The system will scan the codebase for 100% matches of table.field combinations.
+            </AlertDescription>
+          </Alert>
+
+          <div className="flex items-center gap-4">
+            <Input
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={handleFileSelect}
+              className="flex-1"
+              data-testid="input-excel-file"
+            />
+            <Button
+              onClick={handleUpload}
+              disabled={!selectedFile || uploadMutation.isPending}
+              data-testid="button-upload-excel"
+            >
+              {uploadMutation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                'Upload & Scan'
+              )}
+            </Button>
+          </div>
+
+          {selectedFile && (
+            <div className="text-sm text-muted-foreground">
+              Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Scan Results */}
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      ) : latestMapping ? (
+        <div className="space-y-4">
+          {/* Summary Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Scan Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-primary">{latestMapping.totalFields}</div>
+                  <div className="text-sm text-muted-foreground">Total Fields</div>
+                </div>
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">{latestMapping.matchedFields}</div>
+                  <div className="text-sm text-muted-foreground">Matched</div>
+                </div>
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-orange-600">
+                    {latestMapping.totalFields - latestMapping.matchedFields}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Unmatched</div>
+                </div>
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {Math.round((latestMapping.matchedFields / latestMapping.totalFields) * 100)}%
+                  </div>
+                  <div className="text-sm text-muted-foreground">Match Rate</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Matched Fields */}
+          {latestMapping.scanResults && latestMapping.scanResults.matches.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  Matched Fields ({latestMapping.scanResults.matches.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {latestMapping.scanResults.matches.map((match, idx) => (
+                    <div key={idx} className="p-3 border rounded-lg bg-green-50">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="font-medium text-sm">
+                          {match.tableName}.{match.fieldName}
+                        </div>
+                        <Badge variant="secondary" className="bg-green-100 text-green-800">
+                          {match.matchCount} {match.matchCount === 1 ? 'match' : 'matches'}
+                        </Badge>
+                      </div>
+                      <div className="space-y-2">
+                        {match.locations.slice(0, 3).map((loc, locIdx) => (
+                          <div key={locIdx} className="text-xs">
+                            <div className="text-muted-foreground">
+                              {loc.filePath}:{loc.lineNumber}
+                            </div>
+                            <code className="block bg-white px-2 py-1 rounded mt-1 text-xs">
+                              {loc.line}
+                            </code>
+                          </div>
+                        ))}
+                        {match.matchCount > 3 && (
+                          <div className="text-xs text-muted-foreground">
+                            +{match.matchCount - 3} more matches
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Unmatched Fields */}
+          {latestMapping.scanResults && latestMapping.scanResults.unmatchedFields.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <XCircle className="w-5 h-5 text-orange-600" />
+                  Unmatched Fields ({latestMapping.scanResults.unmatchedFields.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {latestMapping.scanResults.unmatchedFields.map((field, idx) => (
+                    <div key={idx} className="p-2 border rounded bg-orange-50">
+                      <div className="text-sm font-medium">
+                        {field.tableName}.{field.fieldName}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        No matches found in codebase
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      ) : (
+        <Alert>
+          <AlertDescription>
+            No Excel mappings uploaded yet. Upload an Excel file to start scanning.
+          </AlertDescription>
+        </Alert>
+      )}
+    </div>
   );
 }
