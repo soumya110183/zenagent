@@ -6,6 +6,7 @@ import ProcessingSection from "@/components/processing-section";
 import AnalysisResults from "@/components/analysis-results";
 import Dashboard from "@/components/dashboard";
 import AIModelSelector, { type AIModelConfig } from "@/components/ai-model-selector";
+import AnalysisFlowDiagram from "@/components/analysis-flow-diagram";
 import { Button } from "@/components/ui/button";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { AIAnalysisResult } from "@shared/schema";
@@ -364,6 +365,23 @@ export default function Home() {
     <TooltipProvider>
       <Layout aiConfigButton={aiConfigButton}>
         <div className="bg-white font-sans text-foreground min-h-screen">
+
+      {/* Analysis Workflow Diagram */}
+      <div className="bg-gradient-to-br from-gray-50 to-blue-50 py-8">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Code Repository Analysis Workflow
+            </h2>
+            <p className="text-gray-600 text-sm">
+              End-to-end automated analysis process powered by AI
+            </p>
+          </div>
+          <div className="max-w-6xl mx-auto">
+            <AnalysisFlowDiagram />
+          </div>
+        </div>
+      </div>
 
       <div className="container mx-auto px-6 py-8">
         {appState === 'upload' && !selectedProjectType && (
