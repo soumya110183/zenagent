@@ -154,12 +154,9 @@ const initialNodes: Node[] = [
     id: '4',
     data: { 
       label: (
-        <div className="flex items-center gap-2 px-4 py-2">
-          <Brain className={iconStyle} />
-          <div>
-            <div className="font-bold text-white">Code Lens ML</div>
-            <div className="text-xs text-white opacity-90">[TensorFlow Custom Model]</div>
-          </div>
+        <div className="px-4 py-3">
+          <div className="font-bold text-white text-lg">Code Lens ML</div>
+          <div className="text-sm text-white mt-1">Tensor Flow</div>
         </div>
       )
     },
