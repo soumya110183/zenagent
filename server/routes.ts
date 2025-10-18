@@ -64,6 +64,25 @@ const uploadImage = multer({
   }
 });
 
+const uploadExcel = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit for Excel files
+  },
+  fileFilter: (req, file, cb) => {
+    const isExcel = file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                    file.mimetype === 'application/vnd.ms-excel' ||
+                    file.originalname.endsWith('.xlsx') ||
+                    file.originalname.endsWith('.xls');
+    
+    if (isExcel) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only Excel files (.xlsx, .xls) are allowed'));
+    }
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Session middleware
@@ -1034,6 +1053,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error deleting custom pattern:', error);
       res.status(500).json({ error: 'Failed to delete custom pattern' });
+    }
+  });
+
+  // Excel Field Mapping and Scanning API
+  app.post('/api/projects/:id/excel-mapping', requireAuth, uploadExcel.single('excelFile'), async (req, res) => {
+    try {
+      const { id } = req.params;
+      const project = await storage.getProject(id);
+      
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ error: 'No Excel file uploaded' });
+      }
+
+      const fs = await import('fs');
+      const path = await import('path');
+      const { exec } = await import('child_process');
+      const { promisify } = await import('util');
+      const execPromise = promisify(exec);
+
+      // Save Excel file temporarily
+      const tempDir = os.tmpdir();
+      const excelPath = path.join(tempDir, `excel_${Date.now()}_${req.file.originalname}`);
+      fs.writeFileSync(excelPath, req.file.buffer);
+
+      try {
+        // Get source files from project
+        const sourceFiles = await storage.getSourceFilesByProject(id);
+        const sourceFilesData = sourceFiles.map(sf => ({
+          relativePath: sf.relativePath,
+          content: sf.content
+        }));
+
+        // Call Python scanner
+        const pythonScript = path.join(process.cwd(), 'server/python/excel_field_scanner.py');
+        const sourceFilesJson = JSON.stringify(sourceFilesData).replace(/'/g, "\\'");
+        
+        const { stdout } = await execPromise(
+          `python3 "${pythonScript}" "${excelPath}" '${sourceFilesJson}'`,
+          { maxBuffer: 10 * 1024 * 1024 } // 10MB buffer
+        );
+
+        const result = JSON.parse(stdout);
+
+        if (!result.success) {
+          throw new Error(result.error || 'Scanner failed');
+        }
+
+        // Save mapping to database
+        const mapping = await storage.saveExcelMapping({
+          projectId: id,
+          fileName: req.file.originalname,
+          mappingData: result.mappings,
+          scanResults: result.results,
+          totalFields: result.results.totalFields,
+          matchedFields: result.results.matchedFields,
+          status: 'completed'
+        });
+
+        // Clean up temp file
+        fs.unlinkSync(excelPath);
+
+        res.json({
+          success: true,
+          mapping,
+          results: result.results
+        });
+
+      } catch (scanError) {
+        // Clean up on error
+        if (fs.existsSync(excelPath)) {
+          fs.unlinkSync(excelPath);
+        }
+        throw scanError;
+      }
+
+    } catch (error) {
+      console.error('Error processing Excel mapping:', error);
+      res.status(500).json({ error: 'Failed to process Excel file' });
+    }
+  });
+
+  // Get Excel mappings for a project
+  app.get('/api/projects/:id/excel-mappings', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const mappings = await storage.getExcelMappings(id);
+      
+      res.json({
+        success: true,
+        mappings
+      });
+    } catch (error) {
+      console.error('Error getting Excel mappings:', error);
+      res.status(500).json({ error: 'Failed to get Excel mappings' });
+    }
+  });
+
+  // Get ML-based field suggestions
+  app.post('/api/projects/:id/field-suggestions', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { excelFields } = req.body;
+
+      if (!excelFields || !Array.isArray(excelFields)) {
+        return res.status(400).json({ error: 'Excel fields array required' });
+      }
+
+      // Get source files and extract field names
+      const sourceFiles = await storage.getSourceFilesByProject(id);
+      const codebaseFields: string[] = [];
+
+      // Extract field names from source code
+      sourceFiles.forEach(sf => {
+        const content = sf.content;
+        // Simple regex to find potential field references
+        const fieldMatches = content.matchAll(/(?:@Column|private|public|protected)\s+\w+\s+(\w+)/g);
+        for (const match of fieldMatches) {
+          codebaseFields.push(match[1]);
+        }
+      });
+
+      const path = await import('path');
+      const { exec } = await import('child_process');
+      const { promisify } = await import('util');
+      const execPromise = promisify(exec);
+
+      // Call ML matcher
+      const pythonScript = path.join(process.cwd(), 'server/python/field_matcher_ml.py');
+      const excelFieldsJson = JSON.stringify(excelFields).replace(/'/g, "\\'");
+      const codebaseFieldsJson = JSON.stringify(codebaseFields).replace(/'/g, "\\'");
+
+      const { stdout } = await execPromise(
+        `python3 "${pythonScript}" '${excelFieldsJson}' '${codebaseFieldsJson}'`,
+        { maxBuffer: 10 * 1024 * 1024 }
+      );
+
+      const result = JSON.parse(stdout);
+
+      if (!result.success) {
+        throw new Error(result.error || 'ML matcher failed');
+      }
+
+      res.json({
+        success: true,
+        suggestions: result.results
+      });
+
+    } catch (error) {
+      console.error('Error generating field suggestions:', error);
+      res.status(500).json({ error: 'Failed to generate suggestions' });
     }
   });
 

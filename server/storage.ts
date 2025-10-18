@@ -3,6 +3,7 @@ import {
   projects,
   sourceFiles,
   customDemographicPatterns,
+  excelFieldMappings,
   type User,
   type InsertUser,
   type Project,
@@ -11,6 +12,8 @@ import {
   type InsertSourceFile,
   type CustomDemographicPattern,
   type InsertCustomDemographicPattern,
+  type ExcelFieldMapping,
+  type InsertExcelFieldMapping,
   type AIModelConfig,
 } from "@shared/schema";
 import { db } from "./db";
@@ -50,6 +53,11 @@ export interface IStorage {
   createCustomPattern(pattern: InsertCustomDemographicPattern): Promise<CustomDemographicPattern>;
   getCustomPatterns(): Promise<CustomDemographicPattern[]>;
   deleteCustomPattern(id: string): Promise<boolean>;
+  
+  // Excel field mappings
+  saveExcelMapping(mapping: Omit<InsertExcelFieldMapping, 'id' | 'uploadedAt'>): Promise<ExcelFieldMapping>;
+  getExcelMappings(projectId: string): Promise<ExcelFieldMapping[]>;
+  getSourceFilesByProject(projectId: string): Promise<SourceFile[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -178,6 +186,20 @@ export class DatabaseStorage implements IStorage {
   async deleteCustomPattern(id: string): Promise<boolean> {
     const result = await db.delete(customDemographicPatterns).where(eq(customDemographicPatterns.id, id));
     return result.rowCount > 0;
+  }
+
+  // Excel field mappings
+  async saveExcelMapping(mapping: Omit<InsertExcelFieldMapping, 'id' | 'uploadedAt'>): Promise<ExcelFieldMapping> {
+    const [newMapping] = await db.insert(excelFieldMappings).values(mapping).returning();
+    return newMapping;
+  }
+
+  async getExcelMappings(projectId: string): Promise<ExcelFieldMapping[]> {
+    return await db.select().from(excelFieldMappings).where(eq(excelFieldMappings.projectId, projectId));
+  }
+
+  async getSourceFilesByProject(projectId: string): Promise<SourceFile[]> {
+    return await db.select().from(sourceFiles).where(eq(sourceFiles.projectId, projectId));
   }
 }
 
