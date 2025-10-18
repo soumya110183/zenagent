@@ -83,6 +83,21 @@ export const customDemographicPatterns = pgTable("custom_demographic_patterns", 
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Excel field mapping table
+export const excelFieldMappings = pgTable("excel_field_mappings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  projectId: varchar("project_id").notNull(),
+  fileName: text("file_name").notNull(),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
+  mappingData: jsonb("mapping_data").notNull(), // Array of {tableName, fieldName}
+  scanResults: jsonb("scan_results"), // Results of scanning with match details
+  totalFields: integer("total_fields").notNull().default(0),
+  matchedFields: integer("matched_fields").default(0),
+  status: text("status").default("uploaded"), // 'uploaded' | 'scanning' | 'completed'
+}, (table) => [
+  index("idx_excel_mappings_project_id").on(table.projectId),
+]);
+
 // Types for TypeScript
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
@@ -96,6 +111,9 @@ export type InsertSourceFile = typeof sourceFiles.$inferInsert;
 
 export type CustomDemographicPattern = typeof customDemographicPatterns.$inferSelect;
 export type InsertCustomDemographicPattern = typeof customDemographicPatterns.$inferInsert;
+
+export type ExcelFieldMapping = typeof excelFieldMappings.$inferSelect;
+export type InsertExcelFieldMapping = typeof excelFieldMappings.$inferInsert;
 
 // Zod schemas for validation
 export const insertUserSchema = createInsertSchema(users).omit({
