@@ -23,8 +23,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <Upload className={iconStyle} />
           <div>
-            <div className="font-bold">Upload Repository</div>
-            <div className="text-xs text-gray-600">ZIP file or GitHub URL</div>
+            <div className="font-bold text-white">Upload Repository</div>
+            <div className="text-xs text-white opacity-90">ZIP file or GitHub URL</div>
           </div>
         </div>
       )
@@ -48,8 +48,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <FileSearch className={iconStyle} />
           <div>
-            <div className="font-bold">AST Parsing</div>
-            <div className="text-xs text-gray-600">Tree-sitter extracts structure</div>
+            <div className="font-bold text-white">AST Parsing</div>
+            <div className="text-xs text-white opacity-90">Tree-sitter extracts structure</div>
           </div>
         </div>
       )
@@ -73,8 +73,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <GitBranch className={iconStyle} />
           <div>
-            <div className="font-bold">Diagram Generation</div>
-            <div className="text-xs text-gray-600">Flow, UML, Component diagrams</div>
+            <div className="font-bold text-white">Diagram Generation</div>
+            <div className="text-xs text-white opacity-90">Flow, UML, Component diagrams</div>
           </div>
         </div>
       )
@@ -98,8 +98,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <Search className={iconStyle} />
           <div>
-            <div className="font-bold">Demographic Scanning</div>
-            <div className="text-xs text-gray-600">PII/PHI pattern detection</div>
+            <div className="font-bold text-white">Demographic Scanning</div>
+            <div className="text-xs text-white opacity-90">PII/PHI pattern detection</div>
           </div>
         </div>
       )
@@ -123,8 +123,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <Brain className={iconStyle} />
           <div>
-            <div className="font-bold">LLM Analysis</div>
-            <div className="text-xs text-gray-600">GPT-4o insights & recommendations</div>
+            <div className="font-bold text-white">LLM Analysis</div>
+            <div className="text-xs text-white opacity-90">GPT-4o insights & recommendations</div>
           </div>
         </div>
       )
@@ -148,8 +148,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <Shield className={iconStyle} />
           <div>
-            <div className="font-bold">Quality Analysis</div>
-            <div className="text-xs text-gray-600">Code quality & change impact</div>
+            <div className="font-bold text-white">Quality Analysis</div>
+            <div className="text-xs text-white opacity-90">Code quality & change impact</div>
           </div>
         </div>
       )
@@ -174,8 +174,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <FileText className={iconStyle} />
           <div>
-            <div className="font-bold">Report Export</div>
-            <div className="text-xs text-gray-600">PDF/DOC with findings</div>
+            <div className="font-bold text-gray-900">Report Export</div>
+            <div className="text-xs text-gray-700">PDF/DOC with findings</div>
           </div>
         </div>
       )

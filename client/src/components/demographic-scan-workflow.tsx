@@ -23,8 +23,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <FileSearch className={iconStyle} />
           <div>
-            <div className="font-bold">Source Code Input</div>
-            <div className="text-xs text-gray-600">Parsed code files</div>
+            <div className="font-bold text-white">Source Code Input</div>
+            <div className="text-xs text-white opacity-90">Parsed code files</div>
           </div>
         </div>
       )
@@ -48,8 +48,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <Database className={iconStyle} />
           <div>
-            <div className="font-bold">Pattern Library</div>
-            <div className="text-xs text-gray-600">39 regex patterns + custom</div>
+            <div className="font-bold text-white">Pattern Library</div>
+            <div className="text-xs text-white opacity-90">39 regex patterns + custom</div>
           </div>
         </div>
       )
@@ -73,8 +73,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <Search className={iconStyle} />
           <div>
-            <div className="font-bold">Pattern Matching</div>
-            <div className="text-xs text-gray-600">Scan for PII/PHI fields</div>
+            <div className="font-bold text-white">Pattern Matching</div>
+            <div className="text-xs text-white opacity-90">Scan for PII/PHI fields</div>
           </div>
         </div>
       )
@@ -98,8 +98,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <AlertTriangle className={iconStyle} />
           <div>
-            <div className="font-bold">Detection Results</div>
-            <div className="text-xs text-gray-600">Found demographic fields</div>
+            <div className="font-bold text-white">Detection Results</div>
+            <div className="text-xs text-white opacity-90">Found demographic fields</div>
           </div>
         </div>
       )
@@ -123,8 +123,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <BarChart3 className={iconStyle} />
           <div>
-            <div className="font-bold">Categorization</div>
-            <div className="text-xs text-gray-600">Group by category & severity</div>
+            <div className="font-bold text-white">Categorization</div>
+            <div className="text-xs text-white opacity-90">Group by category & severity</div>
           </div>
         </div>
       )
@@ -149,8 +149,8 @@ const initialNodes: Node[] = [
         <div className="flex items-center gap-2 px-4 py-2">
           <FileText className={iconStyle} />
           <div>
-            <div className="font-bold">Compliance Report</div>
-            <div className="text-xs text-gray-600">PDF with detailed findings</div>
+            <div className="font-bold text-gray-900">Compliance Report</div>
+            <div className="text-xs text-gray-700">PDF with detailed findings</div>
           </div>
         </div>
       )
