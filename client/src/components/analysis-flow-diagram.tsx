@@ -10,7 +10,7 @@ import ReactFlow, {
   BackgroundVariant,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Upload, FileSearch, GitBranch, Brain, Shield, FileText, Code2 } from 'lucide-react';
+import { Upload, FileSearch, GitBranch, Brain, Shield, FileText, Search } from 'lucide-react';
 
 const iconStyle = "w-5 h-5";
 
@@ -79,7 +79,7 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 400, y: 50 },
+    position: { x: 350, y: 50 },
     style: { 
       background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
       color: 'white',
@@ -96,17 +96,17 @@ const initialNodes: Node[] = [
     data: { 
       label: (
         <div className="flex items-center gap-2 px-4 py-2">
-          <Brain className={iconStyle} />
+          <Search className={iconStyle} />
           <div>
-            <div className="font-bold">LLM Analysis</div>
-            <div className="text-xs text-gray-600">GPT-4o insights & recommendations</div>
+            <div className="font-bold">Demographic Scanning</div>
+            <div className="text-xs text-gray-600">PII/PHI pattern detection</div>
           </div>
         </div>
       )
     },
-    position: { x: 400, y: 180 },
+    position: { x: 350, y: 180 },
     style: { 
-      background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
@@ -121,6 +121,31 @@ const initialNodes: Node[] = [
     data: { 
       label: (
         <div className="flex items-center gap-2 px-4 py-2">
+          <Brain className={iconStyle} />
+          <div>
+            <div className="font-bold">LLM Analysis</div>
+            <div className="text-xs text-gray-600">GPT-4o insights & recommendations</div>
+          </div>
+        </div>
+      )
+    },
+    position: { x: 650, y: 50 },
+    style: { 
+      background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      color: 'white',
+      border: 'none',
+      borderRadius: '12px',
+      padding: '10px',
+      width: 250,
+      fontSize: '14px',
+      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+    },
+  },
+  {
+    id: '6',
+    data: { 
+      label: (
+        <div className="flex items-center gap-2 px-4 py-2">
           <Shield className={iconStyle} />
           <div>
             <div className="font-bold">Quality Analysis</div>
@@ -129,7 +154,7 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 750, y: 50 },
+    position: { x: 650, y: 180 },
     style: { 
       background: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
       color: 'white',
@@ -142,7 +167,7 @@ const initialNodes: Node[] = [
     },
   },
   {
-    id: '6',
+    id: '7',
     type: 'output',
     data: { 
       label: (
@@ -155,7 +180,7 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 750, y: 180 },
+    position: { x: 950, y: 115 },
     style: { 
       background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
       color: '#1a202c',
@@ -185,7 +210,6 @@ const initialEdges: Edge[] = [
     animated: true,
     style: { stroke: '#f093fb', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#f093fb' },
-    label: 'AST Data',
   },
   { 
     id: 'e2-4', 
@@ -194,31 +218,38 @@ const initialEdges: Edge[] = [
     animated: true,
     style: { stroke: '#f093fb', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#f093fb' },
-    label: 'Code Metadata',
-  },
-  { 
-    id: 'e3-5', 
-    source: '3', 
-    target: '5',
-    animated: true,
-    style: { stroke: '#fa709a', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#fa709a' },
   },
   { 
     id: 'e4-5', 
     source: '4', 
     target: '5',
     animated: true,
-    style: { stroke: '#4facfe', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#4facfe' },
+    style: { stroke: '#667eea', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#667eea' },
   },
   { 
     id: 'e5-6', 
     source: '5', 
     target: '6',
     animated: true,
+    style: { stroke: '#4facfe', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#4facfe' },
+  },
+  { 
+    id: 'e6-7', 
+    source: '6', 
+    target: '7',
+    animated: true,
     style: { stroke: '#30cfd0', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#30cfd0' },
+  },
+  { 
+    id: 'e3-7', 
+    source: '3', 
+    target: '7',
+    animated: true,
+    style: { stroke: '#fa709a', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#fa709a' },
   },
 ];
 
