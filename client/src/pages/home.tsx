@@ -33,6 +33,7 @@ import ibmLogo from "@assets/ibm_1754703124415.png";
 import javaLogo from "@assets/image_1760901920604.png";
 import csharpLogo from "@assets/image_1760901951527.png";
 import kotlinLogo from "@assets/image_1760902052334.png";
+import codeLensIcon from "@assets/image_1760903680870.png";
 
 type AppState = 'upload' | 'processing' | 'results';
 type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'csharp' | 'kotlin' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
@@ -363,8 +364,8 @@ export default function Home() {
             {/* Language Project Types */}
             <div className="mb-12">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Code2 className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center p-1.5">
+                  <img src={codeLensIcon} alt="Code Lens" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">Code Lens - AI Acclerator</h3>
