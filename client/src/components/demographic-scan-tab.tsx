@@ -500,16 +500,58 @@ function ExcelFieldMappingTab({ projectId }: ExcelFieldMappingTabProps) {
 
   const mlSuggestionsMutation = useMutation({
     mutationFn: async (mappingId: string) => {
-      return apiRequest('POST', `/api/projects/${projectId}/excel-mapping/${mappingId}/ml-suggestions`) as Promise<any>;
+      // Show processing modal and initialize ML-specific steps
+      setShowProcessingModal(true);
+      const steps = [
+        { step: 'Initializing Code Lens ML engine', status: 'running' as const },
+        { step: 'Loading unmatched fields dataset', status: 'pending' as const },
+        { step: 'Applying Lookup Table matching (95%+ confidence)', status: 'pending' as const },
+        { step: 'Running Acronym Detection (90%+ confidence)', status: 'pending' as const },
+        { step: 'Executing Levenshtein similarity analysis', status: 'pending' as const },
+        { step: 'Token-based similarity matching (60-95% confidence)', status: 'pending' as const },
+        { step: 'Compiling ML suggestions report', status: 'pending' as const },
+      ];
+      setProcessingSteps(steps);
+      
+      // Simulate step progression
+      const updateStep = (index: number) => {
+        setProcessingSteps(prev => prev.map((s, i) => ({
+          ...s,
+          status: i < index ? 'complete' : i === index ? 'running' : 'pending'
+        })));
+      };
+      
+      setTimeout(() => updateStep(1), 400);
+      setTimeout(() => updateStep(2), 800);
+      setTimeout(() => updateStep(3), 1200);
+      setTimeout(() => updateStep(4), 1600);
+      setTimeout(() => updateStep(5), 2000);
+      
+      const result = await apiRequest('POST', `/api/projects/${projectId}/excel-mapping/${mappingId}/ml-suggestions`);
+      
+      setTimeout(() => updateStep(6), 400);
+      
+      // Mark all complete
+      setTimeout(() => {
+        setProcessingSteps(prev => prev.map(s => ({ ...s, status: 'complete' as const })));
+      }, 800);
+      
+      return result;
     },
     onSuccess: (data: any) => {
       setMlSuggestions(data.suggestions);
-      toast({
-        title: 'ML Suggestions Generated',
-        description: `Found ${Object.keys(data.suggestions || {}).length} field suggestions using Code Lens ML`,
-      });
+      
+      // Close modal after a short delay
+      setTimeout(() => {
+        setShowProcessingModal(false);
+        toast({
+          title: 'ML Suggestions Generated',
+          description: `Found ${Object.keys(data.suggestions || {}).length} field suggestions using Code Lens ML`,
+        });
+      }, 1500);
     },
     onError: (error: Error) => {
+      setShowProcessingModal(false);
       toast({
         title: 'ML Suggestions Failed',
         description: error.message,
