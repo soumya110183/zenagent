@@ -155,8 +155,10 @@ export default function TechnologyFlow() {
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 ml-6">
                   <li>• Java (Spring Boot, JPA, MVC)</li>
                   <li>• Python (Django, Flask)</li>
-                  <li>• PySpark (DataFrame analysis)</li>
+                  <li>• PySpark (DataFrame, Job Flows)</li>
                   <li>• Mainframe (COBOL, JCL)</li>
+                  <li>• C# (.NET, ASP.NET Core)</li>
+                  <li>• Kotlin (Android, JVM)</li>
                 </ul>
               </div>
             </CardContent>
@@ -211,13 +213,15 @@ export default function TechnologyFlow() {
               <div className="space-y-2">
                 <h4 className="font-semibold text-sm flex items-center gap-2">
                   <Shield className="w-4 h-4 text-cyan-500" />
-                  Enterprise Tools
+                  Code Lens ML & Scanning
                 </h4>
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 ml-6">
-                  <li>• IBM Doclinq PDF processing</li>
-                  <li>• Confluence integration</li>
-                  <li>• Swagger API documentation</li>
-                  <li>• Demographic scanning & compliance</li>
+                  <li>• Pure Python/NumPy ML (no TensorFlow)</li>
+                  <li>• 39 regex patterns (5 categories)</li>
+                  <li>• Excel field mapping (exact match)</li>
+                  <li>• Levenshtein & token similarity</li>
+                  <li>• Lookup table (95%+ confidence)</li>
+                  <li>• Acronym detection (90%+ confidence)</li>
                 </ul>
               </div>
             </CardContent>
@@ -280,7 +284,7 @@ export default function TechnologyFlow() {
                 <div className="flex-1">
                   <h4 className="font-semibold text-sm mb-1">Upload Sources</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Users upload ZIP files (up to 50MB) or provide GitHub repository URLs. The system validates file formats and supports Java, Python, PySpark, and Mainframe projects.
+                    Users upload ZIP files (up to 50MB) or provide GitHub repository URLs. The system validates file formats and supports Java, Python, PySpark, Mainframe, C#, and Kotlin projects with automatic language detection.
                   </p>
                 </div>
               </div>
@@ -302,7 +306,7 @@ export default function TechnologyFlow() {
                 <div className="flex-1">
                   <h4 className="font-semibold text-sm mb-1">Language Detection</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    System automatically detects project type and routes to appropriate analyzer (Java, Python, PySpark, or Mainframe).
+                    System automatically detects project type based on file extensions and routes to appropriate analyzer: Java (.java), Python (.py), PySpark (.scala), Mainframe (.cbl, .jcl), C# (.cs), or Kotlin (.kt).
                   </p>
                 </div>
               </div>
@@ -392,9 +396,9 @@ export default function TechnologyFlow() {
                   <ArrowRight className="w-4 h-4 text-purple-600" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-sm mb-1">Demographic Scanning</h4>
+                  <h4 className="font-semibold text-sm mb-1">Code Lens - Demographic Scanning</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Scans actual source code with 39 regex patterns across 5 categories (Names, Emails, Phones, Government IDs, Financial) to identify sensitive data fields.
+                    Two scanning modes: (1) Regex Scan - 39 pre-defined patterns across 5 categories (Names, Personal Info, Addresses, Phones, Emails), and (2) Excel Field Mapping - upload Excel with table_name + field_name columns for exact matching. Optional Code Lens ML provides suggestions for unmatched fields using Lookup Table (95%), Acronym Detection (90%), and Levenshtein similarity (60-95%).
                   </p>
                 </div>
               </div>
@@ -484,20 +488,9 @@ export default function TechnologyFlow() {
                   <ArrowRight className="w-4 h-4 text-cyan-600" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-sm mb-1">ZenVector Agent</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Uses ChromaDB for code similarity detection, semantic search across codebases, and demographic data analysis with sentence transformers.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="mt-1 rounded-full bg-cyan-100 p-2">
-                  <ArrowRight className="w-4 h-4 text-cyan-600" />
-                </div>
-                <div className="flex-1">
                   <h4 className="font-semibold text-sm mb-1">Knowledge Agent</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Document intelligence with Confluence scraping, IBM Doclinq PDF processing, Q&A interface, and persistent knowledge base with LangChain orchestration.
+                    Document intelligence with Confluence scraping, IBM Doclinq PDF processing, intelligent Q&A interface, and persistent knowledge base using LangChain for document processing and LangGraph for workflow orchestration.
                   </p>
                 </div>
               </div>
@@ -506,9 +499,31 @@ export default function TechnologyFlow() {
                   <ArrowRight className="w-4 h-4 text-cyan-600" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-sm mb-1">Real-time Processing</h4>
+                  <h4 className="font-semibold text-sm mb-1">Code Conversion Agent</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    WebSocket connections for live analysis updates, progress indicators during processing, and streaming AI responses with Langfuse observability.
+                    Multi-language code transformation agent supporting conversion between Java, Python, PySpark, Mainframe, C#, and Kotlin. Uses AST-based syntax conversion and framework migration support while preserving code quality.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="mt-1 rounded-full bg-cyan-100 p-2">
+                  <ArrowRight className="w-4 h-4 text-cyan-600" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-sm mb-1">Validator & Responsible AI Agent</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Comprehensive validation covering security vulnerability detection, privacy compliance (GDPR, CCPA), AI ethics and bias detection, fairness assessment, code quality metrics, and responsible AI deployment validation.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="mt-1 rounded-full bg-cyan-100 p-2">
+                  <ArrowRight className="w-4 h-4 text-cyan-600" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-sm mb-1">Real-time Processing & Backend Visibility</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Interactive processing modals show backend operations step-by-step. Excel scanning displays: file upload → validation → parsing → codebase matching → report generation. ML suggestions show: engine initialization → dataset loading → lookup table → acronym detection → Levenshtein analysis → token similarity → report compilation.
                   </p>
                 </div>
               </div>
