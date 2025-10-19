@@ -30,6 +30,8 @@ import agentLogo from "@assets/agent_1754854183020.png";
 import pythonLogo from "@assets/pyth_1754703124415.png";
 import pysparkLogo from "@assets/pyspark-lang_1754703714412.png";
 import ibmLogo from "@assets/ibm_1754703124415.png";
+import javaLogo from "@assets/image_1760901920604.png";
+import csharpLogo from "@assets/image_1760901951527.png";
 
 type AppState = 'upload' | 'processing' | 'results';
 type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'csharp' | 'kotlin' | 'responsible-ai' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
@@ -160,7 +162,7 @@ export default function Home() {
       id: 'java' as ProjectType,
       name: 'Java',
       description: 'Comprehensive analysis of Java applications including Spring Boot frameworks, Maven/Gradle builds, and enterprise patterns',
-      logoSrc: agentLogo,
+      logoSrc: javaLogo,
       borderColor: 'border-primary',
       bgColor: 'bg-primary/5',
       hoverBgColor: 'hover:bg-primary/10',
@@ -228,7 +230,7 @@ export default function Home() {
       id: 'csharp' as ProjectType,
       name: 'C#',
       description: 'Comprehensive analysis of C# applications including .NET Core, ASP.NET, Entity Framework, and enterprise patterns',
-      logoSrc: agentLogo,
+      logoSrc: csharpLogo,
       borderColor: 'border-purple-600',
       bgColor: 'bg-purple-50',
       hoverBgColor: 'hover:bg-purple-100',
