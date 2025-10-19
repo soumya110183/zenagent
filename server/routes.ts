@@ -441,6 +441,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get ML Documentation
+  app.get("/api/ml-documentation", async (req, res) => {
+    try {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      
+      const readmePath = path.join(process.cwd(), 'server', 'python', 'README_TENSORFLOW_MODEL.md');
+      const markdownContent = await fs.readFile(readmePath, 'utf-8');
+      
+      // Convert markdown to HTML (simple conversion)
+      let htmlContent = markdownContent
+        // Headers
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        // Bold
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Code blocks
+        .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code class="language-$1">$2</code></pre>')
+        // Inline code
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // Lists
+        .replace(/^\d+\.\s+(.*$)/gim, '<li>$1</li>')
+        .replace(/^\-\s+(.*$)/gim, '<li>$1</li>')
+        .replace(/^✓\s+(.*$)/gim, '<li>✓ $1</li>')
+        // Links
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+        // Paragraphs
+        .replace(/\n\n/g, '</p><p>')
+        // Tables
+        .replace(/\|(.*)\|/g, (match, content) => {
+          const cells = content.split('|').map((c: string) => c.trim());
+          return '<tr>' + cells.map((cell: string) => `<td>${cell}</td>`).join('') + '</tr>';
+        });
+      
+      htmlContent = `<p>${htmlContent}</p>`;
+      
+      res.json({ content: htmlContent });
+    } catch (error) {
+      console.error('Error reading ML documentation:', error);
+      res.status(500).json({ error: 'Failed to load documentation' });
+    }
+  });
+
   // Get Swagger documentation for a project
   app.get("/api/projects/:id/swagger", async (req, res) => {
     try {

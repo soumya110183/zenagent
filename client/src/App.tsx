@@ -20,6 +20,7 @@ import ReadmePage from "@/pages/readme";
 import KnowledgeAgent from "@/pages/knowledge-agent";
 import ZenVectorAgent from "@/pages/zenvector-agent";
 import TechnologyFlow from "@/pages/technology-flow";
+import MLDocumentation from "@/pages/ml-documentation";
 
 import Layout from "@/components/layout";
 
@@ -103,6 +104,13 @@ function Router() {
                 {() => (
                   <Layout>
                     <ZenVectorAgent />
+                  </Layout>
+                )}
+              </Route>
+              <Route path="/ml-documentation">
+                {() => (
+                  <Layout>
+                    <MLDocumentation />
                   </Layout>
                 )}
               </Route>
