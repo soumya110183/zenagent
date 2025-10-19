@@ -4,7 +4,7 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["freefont_ttf", "freetype", "glibcLocales", "graphviz", "python311", "python311Packages.pip", "rapidfuzz-cpp", "xdg-utils"]
+packages = ["freefont_ttf", "freetype", "gcc", "glibcLocales", "graphviz", "libcxx", "python311", "python311Packages.pip", "rapidfuzz-cpp", "xdg-utils"]
 
 [deployment]
 deploymentTarget = "gce"

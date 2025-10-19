@@ -7,7 +7,6 @@ Scans source code files for exact matches of table.field combinations from Excel
 import sys
 import json
 import re
-import pandas as pd
 from pathlib import Path
 from typing import List, Dict, Any, Tuple
 import openpyxl
@@ -21,48 +20,54 @@ class ExcelFieldScanner:
     def parse_excel(self) -> List[Dict[str, str]]:
         """Parse Excel file and extract table name and field name columns"""
         try:
-            # Read Excel file with pandas
-            df = pd.read_excel(self.excel_path, engine='openpyxl')
+            # Read Excel file with openpyxl
+            workbook = openpyxl.load_workbook(self.excel_path, read_only=True, data_only=True)
+            sheet = workbook.active
             
-            # Ensure we have the required columns (case-insensitive)
-            columns = [col.lower().strip() for col in df.columns]
+            # Get header row (first row)
+            headers = []
+            for cell in sheet[1]:
+                headers.append(cell.value if cell.value else "")
             
-            # Find table and field columns (exact or contains match)
-            table_col = None
-            field_col = None
+            # Find table and field columns (case-insensitive)
+            table_col_idx = None
+            field_col_idx = None
             
             # First try exact match
-            for col in df.columns:
-                if col.strip().lower() == 'table_name':
-                    table_col = col
-                if col.strip().lower() == 'field_name':
-                    field_col = col
+            for idx, header in enumerate(headers):
+                header_lower = str(header).lower().strip()
+                if header_lower == 'table_name':
+                    table_col_idx = idx
+                if header_lower == 'field_name':
+                    field_col_idx = idx
             
             # If not found, try contains match
-            if not table_col or not field_col:
-                for col in df.columns:
-                    col_lower = col.lower().strip()
-                    if 'table' in col_lower and not table_col:
-                        table_col = col
-                    if 'field' in col_lower and not field_col:
-                        field_col = col
+            if table_col_idx is None or field_col_idx is None:
+                for idx, header in enumerate(headers):
+                    header_lower = str(header).lower().strip()
+                    if 'table' in header_lower and table_col_idx is None:
+                        table_col_idx = idx
+                    if 'field' in header_lower and field_col_idx is None:
+                        field_col_idx = idx
                     
-            if not table_col or not field_col:
+            if table_col_idx is None or field_col_idx is None:
                 raise ValueError("Excel must have columns containing 'table' and 'field' in their names")
             
-            # Extract mappings
+            # Extract mappings (skip header row)
             mappings = []
-            for _, row in df.iterrows():
-                table_name = str(row[table_col]).strip() if pd.notna(row[table_col]) else ""
-                field_name = str(row[field_col]).strip() if pd.notna(row[field_col]) else ""
-                
-                if table_name and field_name:
-                    mappings.append({
-                        "tableName": table_name,
-                        "fieldName": field_name,
-                        "combined": f"{table_name}.{field_name}"
-                    })
+            for row in sheet.iter_rows(min_row=2, values_only=True):
+                if len(row) > max(table_col_idx, field_col_idx):
+                    table_name = str(row[table_col_idx]).strip() if row[table_col_idx] else ""
+                    field_name = str(row[field_col_idx]).strip() if row[field_col_idx] else ""
+                    
+                    if table_name and field_name and table_name != "None" and field_name != "None":
+                        mappings.append({
+                            "tableName": table_name,
+                            "fieldName": field_name,
+                            "combined": f"{table_name}.{field_name}"
+                        })
             
+            workbook.close()
             self.field_mappings = mappings
             return mappings
             
