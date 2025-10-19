@@ -380,17 +380,18 @@ export default function Home() {
                     Enterprise Application Code Scan AI ML Utilities
                   </h2>
                   <p className="text-blue-100 text-sm mb-3">
-                    Transform your codebase understanding with 11 specialized AI agents covering multi-language analysis, 
-                    vector database intelligence, and enterprise-grade document processing. Each agent provides unique 
-                    capabilities for comprehensive application intelligence and code analysis.
+                    Advanced multi-language code analysis utilities supporting Java, Python, PySpark, Mainframe, C#, and Kotlin. 
+                    Leverage AI/ML capabilities for comprehensive application intelligence, architectural insights, and automated 
+                    code scanning across enterprise frameworks and technologies.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="outline" className="text-xs text-emerald-300 border-emerald-300 bg-emerald-900/20">Java & Spring Boot</Badge>
                     <Badge variant="outline" className="text-xs text-blue-300 border-blue-300 bg-blue-800/30">Python & Django</Badge>
                     <Badge variant="outline" className="text-xs text-orange-300 border-orange-300 bg-orange-900/20">PySpark & Big Data</Badge>
                     <Badge variant="outline" className="text-xs text-purple-300 border-purple-300 bg-purple-900/20">Mainframe & COBOL</Badge>
+                    <Badge variant="outline" className="text-xs text-indigo-300 border-indigo-300 bg-indigo-900/20">C# & .NET</Badge>
+                    <Badge variant="outline" className="text-xs text-violet-300 border-violet-300 bg-violet-900/20">Kotlin & Android</Badge>
                     <Badge variant="outline" className="text-xs text-cyan-300 border-cyan-300 bg-cyan-900/20">AI/ML Analysis</Badge>
-                    <Badge variant="outline" className="text-xs text-pink-300 border-pink-300 bg-pink-900/20">Generative AI</Badge>
                   </div>
                 </div>
               </div>
