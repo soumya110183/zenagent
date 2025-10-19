@@ -110,6 +110,39 @@ export default function DemographicScanTab({ projectId }: DemographicScanTabProp
     ? Math.round((report.coverage.foundFields.length / (report.coverage.foundFields.length + report.coverage.missingFields.length)) * 100)
     : 0;
 
+  const generateExcelMappingReport = async (mappingId: string) => {
+    try {
+      const response = await fetch(`/api/projects/${projectId}/excel-mapping/${mappingId}/report`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate report');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Excel_Field_Mapping_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: 'Report Generated',
+        description: 'Excel field mapping report has been downloaded',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to generate Excel mapping report',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div className="p-6 bg-white">
       <Tabs defaultValue="scan" className="w-full">
@@ -681,7 +714,19 @@ function ExcelFieldMappingTab({ projectId }: ExcelFieldMappingTabProps) {
           {/* Summary Card */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Scan Summary</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base">Scan Summary</CardTitle>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => generateExcelMappingReport(latestMapping.id)}
+                  className="flex items-center gap-2"
+                  data-testid="button-generate-excel-report"
+                >
+                  <FileText className="w-4 h-4" />
+                  Generate Report
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
