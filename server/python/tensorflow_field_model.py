@@ -287,10 +287,12 @@ class NeuralFieldEmbedding:
         with open(filepath, 'wb') as f:
             pickle.dump(model_data, f)
         
-        print(f"Model saved to {filepath}")
+        import sys
+        print(f"Model saved to {filepath}", file=sys.stderr)
     
     def load_model(self, filepath: str):
         """Load trained model from disk"""
+        import sys
         with open(filepath, 'rb') as f:
             model_data = pickle.load(f)
         
@@ -305,4 +307,4 @@ class NeuralFieldEmbedding:
         self.char_vocab = model_data['char_vocab']
         self.trained = model_data['trained']
         
-        print(f"Model loaded from {filepath}")
+        print(f"Model loaded from {filepath}", file=sys.stderr)
