@@ -378,7 +378,7 @@ export default function AnalysisResults({ project, onNewAnalysis }: AnalysisResu
         <div className="border-b border-border p-4">
           <div className="flex items-center space-x-2">
             <Database className="w-5 h-5 text-orange-600" />
-            <h3 className="text-lg font-semibold">Demographic Scan</h3>
+            <h3 className="text-lg font-semibold">Code Lens - Demographic Scan</h3>
           </div>
         </div>
         <DemographicScanTab projectId={project.id} />
