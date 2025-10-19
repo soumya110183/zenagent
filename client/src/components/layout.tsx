@@ -86,12 +86,6 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
       current: location === '/technology-flow'
     },
     {
-      name: 'Code Lens ML Docs',
-      href: '/ml-documentation',
-      icon: BookOpen,
-      current: location === '/ml-documentation'
-    },
-    {
       name: 'Usage Statistics',
       href: '/usage-statistics',
       icon: BarChart3,
@@ -154,6 +148,19 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
                   </Button>
                 )
               )}
+              
+              {/* Code Lens ML Documentation */}
+              <Link href="/ml-documentation">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-blue-900 bg-white border-white hover:bg-gray-100 hover:text-primary font-medium"
+                  data-testid="button-ml-docs"
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  ML Docs
+                </Button>
+              </Link>
               
               {/* User Profile Dropdown */}
               {user && (

@@ -34,14 +34,6 @@ export default function MLDocumentation() {
     <Layout>
       <div className="container mx-auto px-6 py-8">
         <div className="max-w-5xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-6">
-            <BookOpen className="w-8 h-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Code Lens ML Documentation
-            </h1>
-          </div>
-
           {/* Content Card */}
           <Card className="p-8 bg-white dark:bg-gray-800 shadow-lg">
             {loading && (
