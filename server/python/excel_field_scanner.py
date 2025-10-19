@@ -154,6 +154,15 @@ class ExcelFieldScanner:
             # Field reference in queries
             rf'"{re.escape(field_name)}".*?"{re.escape(table_name)}"',
             rf'{re.escape(table_name)}.*?{re.escape(field_name)}',
+            # Standalone field name matches (like regex scan)
+            # Match field as variable name: private String firstName;
+            rf'\b(private|public|protected|var|let|const|@Column)\s+\w+\s+{re.escape(field_name)}\b',
+            # Match field in camelCase/snake_case: firstName, first_name
+            rf'\b{re.escape(field_name)}\s*[:=]',
+            # Match field as property: this.firstName, self.firstName
+            rf'\b(this|self)\.{re.escape(field_name)}\b',
+            # Match field in getter/setter: getFirstName, setFirstName
+            rf'\b(get|set){re.escape(field_name[0].upper() + field_name[1:])}\b',
         ]
         
         for line_num, line in enumerate(lines, 1):
