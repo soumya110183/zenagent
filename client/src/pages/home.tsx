@@ -382,7 +382,7 @@ export default function Home() {
             <AnalysisFlowDiagram />
           </div>
 
-          {/* Demographic Scanning Workflow */}
+          {/* Code Lens - Demographic Scanning Workflow */}
           <div className="max-w-5xl mx-auto mt-12">
             <div className="text-center mb-6">
               <h3 className="text-xl font-bold text-gray-900 mb-2">
