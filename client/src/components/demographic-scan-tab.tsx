@@ -677,7 +677,7 @@ function ExcelFieldMappingTab({ projectId }: ExcelFieldMappingTabProps) {
               type="file"
               accept=".xlsx,.xls"
               onChange={handleFileSelect}
-              className="flex-1"
+              className="flex-1 border-2 border-green-500 p-3 rounded-md cursor-pointer hover:border-green-600"
               data-testid="input-excel-file"
             />
             <Button
