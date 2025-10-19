@@ -32,7 +32,7 @@ import pysparkLogo from "@assets/pyspark-lang_1754703714412.png";
 import ibmLogo from "@assets/ibm_1754703124415.png";
 
 type AppState = 'upload' | 'processing' | 'results';
-type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'responsible-ai' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
+type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'csharp' | 'kotlin' | 'responsible-ai' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>('upload');
@@ -137,6 +137,8 @@ export default function Home() {
         'pyspark': 'PySpark Agent',
         'mainframe': 'Mainframe Agent', 
         'python': 'Python Agent',
+        'csharp': 'C# Agent',
+        'kotlin': 'Kotlin Agent',
         'responsible-ai': 'Responsible AI Agent',
         'code-lens': 'Code Lens Agent',
         'match-lens': 'Match Lens Agent',
@@ -220,6 +222,40 @@ export default function Home() {
         'Database ORM relationship analysis',
         'Virtual environment configuration review',
         'Code quality and PEP compliance checking'
+      ]
+    },
+    {
+      id: 'csharp' as ProjectType,
+      name: 'C#',
+      description: 'Comprehensive analysis of C# applications including .NET Core, ASP.NET, Entity Framework, and enterprise patterns',
+      logoSrc: agentLogo,
+      borderColor: 'border-purple-600',
+      bgColor: 'bg-purple-50',
+      hoverBgColor: 'hover:bg-purple-100',
+      features: [
+        '.NET Core & ASP.NET framework analysis',
+        'Entity Framework ORM mapping',
+        'MVC/MVVM architecture detection',
+        'NuGet dependency analysis',
+        'Web API and REST endpoint documentation',
+        'LINQ query optimization'
+      ]
+    },
+    {
+      id: 'kotlin' as ProjectType,
+      name: 'Kotlin',
+      description: 'Advanced analysis of Kotlin applications with Android frameworks, coroutines, and JVM ecosystem integration',
+      logoSrc: agentLogo,
+      borderColor: 'border-orange-600',
+      bgColor: 'bg-orange-50',
+      hoverBgColor: 'hover:bg-orange-100',
+      features: [
+        'Kotlin coroutines and flow analysis',
+        'Android framework pattern detection',
+        'Gradle dependency mapping',
+        'Spring Boot Kotlin integration',
+        'Jetpack Compose UI analysis',
+        'Multiplatform project support'
       ]
     }
   ];
