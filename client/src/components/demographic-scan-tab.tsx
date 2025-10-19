@@ -110,39 +110,6 @@ export default function DemographicScanTab({ projectId }: DemographicScanTabProp
     ? Math.round((report.coverage.foundFields.length / (report.coverage.foundFields.length + report.coverage.missingFields.length)) * 100)
     : 0;
 
-  const generateExcelMappingReport = async (mappingId: string) => {
-    try {
-      const response = await fetch(`/api/projects/${projectId}/excel-mapping/${mappingId}/report`, {
-        method: 'GET',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate report');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `Excel_Field_Mapping_Report_${new Date().toISOString().split('T')[0]}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      toast({
-        title: 'Report Generated',
-        description: 'Excel field mapping report has been downloaded',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to generate Excel mapping report',
-        variant: 'destructive',
-      });
-    }
-  };
-
   return (
     <div className="p-6 bg-white">
       <Tabs defaultValue="scan" className="w-full">
@@ -448,7 +415,68 @@ function ExcelFieldMappingTab({ projectId }: ExcelFieldMappingTabProps) {
   const [mlSuggestions, setMlSuggestions] = useState<any>(null);
   const [showProcessingModal, setShowProcessingModal] = useState(false);
   const [processingSteps, setProcessingSteps] = useState<Array<{step: string; status: 'pending' | 'running' | 'complete'}>>([]);
+  const [showReportPreview, setShowReportPreview] = useState(false);
+  const [reportHtml, setReportHtml] = useState<string>('');
+  const [currentMappingId, setCurrentMappingId] = useState<string>('');
   const { toast } = useToast();
+
+  const generateExcelMappingReport = async (mappingId: string) => {
+    try {
+      // Fetch HTML preview
+      const response = await fetch(`/api/projects/${projectId}/excel-mapping/${mappingId}/report-html`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate report preview');
+      }
+
+      const html = await response.text();
+      setReportHtml(html);
+      setCurrentMappingId(mappingId);
+      setShowReportPreview(true);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to generate report preview',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const downloadReport = async (format: 'html' | 'pdf' | 'docx') => {
+    try {
+      const response = await fetch(`/api/projects/${projectId}/excel-mapping/${currentMappingId}/report-download?format=${format}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to download ${format.toUpperCase()} report`);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const extension = format === 'docx' ? 'docx' : format === 'pdf' ? 'pdf' : 'html';
+      link.download = `Excel_Field_Mapping_Report_${new Date().toISOString().split('T')[0]}.${extension}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: 'Download Complete',
+        description: `Report downloaded as ${format.toUpperCase()}`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Download Failed',
+        description: `Failed to download ${format.toUpperCase()} report`,
+        variant: 'destructive',
+      });
+    }
+  };
 
   const { data: mappingsData, isLoading } = useQuery<{ mappings: ExcelMapping[]; success: boolean }>({
     queryKey: ['/api/projects', projectId, 'excel-mappings'],
@@ -921,6 +949,53 @@ function ExcelFieldMappingTab({ projectId }: ExcelFieldMappingTabProps) {
           </AlertDescription>
         </Alert>
       )}
+
+      {/* Report Preview Modal */}
+      <Dialog open={showReportPreview} onOpenChange={setShowReportPreview}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span>Excel Field Mapping Report Preview</span>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => downloadReport('html')}
+                  className="flex items-center gap-2"
+                  data-testid="button-download-html"
+                >
+                  <FileText className="w-4 h-4" />
+                  Save HTML
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => downloadReport('pdf')}
+                  className="flex items-center gap-2"
+                  data-testid="button-download-pdf"
+                >
+                  <FileText className="w-4 h-4" />
+                  Save PDF
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => downloadReport('docx')}
+                  className="flex items-center gap-2"
+                  data-testid="button-download-docx"
+                >
+                  <FileText className="w-4 h-4" />
+                  Save Word
+                </Button>
+              </div>
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className="border rounded-lg p-4 bg-white"
+            dangerouslySetInnerHTML={{ __html: reportHtml }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
