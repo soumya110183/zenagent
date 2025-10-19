@@ -6,6 +6,7 @@ requires-python = ">=3.11"
 dependencies = [
     "graphviz>=0.21",
     "jsonschema>=4.25.1",
+    "keras>=2.15.0",
     "levenshtein>=0.27.1",
     "numpy>=1.26.4",
     "openpyxl>=3.1.5",
@@ -16,7 +17,6 @@ dependencies = [
     "reportlab>=4.4.4",
     "scikit-learn>=1.7.2",
     "sqlglot>=27.27.0",
-    "tensorflow==2.15",
 ]
 
 [[tool.uv.index]]

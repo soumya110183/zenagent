@@ -1,33 +1,67 @@
 #!/usr/bin/env python3
 """
 Field Matcher ML - TensorFlow-based semantic field matching
-Uses custom trained model for intelligent field name matching and suggestions
+Uses custom trained neural network model for intelligent field name matching
+Code Lens ML [TensorFlow Custom Model] - Offline Implementation
 """
 
 import sys
 import json
 import numpy as np
 import re
+import os
 from typing import List, Dict, Any, Tuple
-from Levenshtein import distance as levenshtein_distance
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 import warnings
 warnings.filterwarnings('ignore')
 
+# Import the TensorFlow-style model
+sys.path.insert(0, os.path.dirname(__file__))
+from tensorflow_field_model import NeuralFieldEmbedding
+
+def levenshtein_distance(s1: str, s2: str) -> int:
+    """
+    Pure Python implementation of Levenshtein distance
+    No C++ dependencies required
+    """
+    if len(s1) < len(s2):
+        return levenshtein_distance(s2, s1)
+    
+    if len(s2) == 0:
+        return len(s1)
+    
+    previous_row = range(len(s2) + 1)
+    for i, c1 in enumerate(s1):
+        current_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            # Cost of insertions, deletions, or substitutions
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+    
+    return previous_row[-1]
+
 class FieldMatcherML:
     """
-    ML-based field matcher using TF-IDF and Levenshtein distance
+    ML-based field matcher using TensorFlow-style neural network
     for intelligent field name matching and suggestions
+    100% Offline - No internet connection required
     """
     
     def __init__(self):
-        """Initialize the field matcher"""
-        self.vectorizer = TfidfVectorizer(
-            analyzer='char',
-            ngram_range=(2, 4),
-            lowercase=True
-        )
+        """Initialize the field matcher and load trained model"""
+        # Load pre-trained neural network model
+        model_path = os.path.join(os.path.dirname(__file__), 'models', 'demographic_field_model.pkl')
+        
+        self.neural_model = NeuralFieldEmbedding()
+        
+        if os.path.exists(model_path):
+            self.neural_model.load_model(model_path)
+            self.model_loaded = True
+        else:
+            print(f"Warning: Model not found at {model_path}. Using untrained model.", file=sys.stderr)
+            self.model_loaded = False
         
     def preprocess_field_name(self, field_name: str) -> str:
         """Preprocess field name for better matching"""
@@ -38,32 +72,32 @@ class FieldMatcherML:
     
     def calculate_similarity(self, source_field: str, target_field: str) -> float:
         """
-        Calculate similarity between two field names using multiple methods
+        Calculate similarity between two field names using neural network
         Returns score between 0 and 1
+        
+        Uses TensorFlow-style neural network with learned embeddings
         """
-        # Preprocess both fields
+        # Method 1: Exact match (fast path)
+        if source_field.lower() == target_field.lower():
+            return 1.0
+        
+        # Method 2: Neural network similarity (primary method)
+        if self.model_loaded:
+            neural_sim = self.neural_model.calculate_similarity(source_field, target_field)
+        else:
+            neural_sim = 0.0
+        
+        # Method 3: Levenshtein distance (fallback/boost)
         source = self.preprocess_field_name(source_field)
         target = self.preprocess_field_name(target_field)
         
-        # Method 1: Exact match
-        if source == target or source_field.lower() == target_field.lower():
-            return 1.0
-        
-        # Method 2: Levenshtein distance (normalized)
         max_len = max(len(source), len(target))
         if max_len > 0:
             lev_similarity = 1 - (levenshtein_distance(source, target) / max_len)
         else:
             lev_similarity = 0.0
         
-        # Method 3: TF-IDF cosine similarity
-        try:
-            tfidf_matrix = self.vectorizer.fit_transform([source, target])
-            cosine_sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
-        except:
-            cosine_sim = 0.0
-        
-        # Method 4: Token overlap
+        # Method 4: Token overlap (fallback/boost)
         source_tokens = set(source.split())
         target_tokens = set(target.split())
         if source_tokens or target_tokens:
@@ -71,12 +105,19 @@ class FieldMatcherML:
         else:
             token_overlap = 0.0
         
-        # Weighted combination
-        final_score = (
-            0.3 * lev_similarity +
-            0.4 * cosine_sim +
-            0.3 * token_overlap
-        )
+        # Weighted combination: prioritize neural network
+        if self.model_loaded:
+            final_score = (
+                0.7 * neural_sim +      # 70% neural network
+                0.2 * lev_similarity +   # 20% Levenshtein
+                0.1 * token_overlap      # 10% token overlap
+            )
+        else:
+            # Fallback if model not loaded
+            final_score = (
+                0.6 * lev_similarity +
+                0.4 * token_overlap
+            )
         
         return min(1.0, max(0.0, final_score))
     
