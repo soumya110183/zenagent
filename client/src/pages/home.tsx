@@ -372,7 +372,7 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Code Lens - AMEX Diamond Project Discovery Steps
+              AMEX Diamond Project Discovery Analysis
             </h2>
             <p className="text-gray-600 text-sm">
               End-to-end automated analysis process powered by AI
