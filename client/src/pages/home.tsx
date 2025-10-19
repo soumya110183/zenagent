@@ -35,7 +35,7 @@ import csharpLogo from "@assets/image_1760901951527.png";
 import kotlinLogo from "@assets/image_1760902052334.png";
 
 type AppState = 'upload' | 'processing' | 'results';
-type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'csharp' | 'kotlin' | 'responsible-ai' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
+type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'csharp' | 'kotlin' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>('upload');
@@ -142,14 +142,13 @@ export default function Home() {
         'python': 'Python Agent',
         'csharp': 'C# Agent',
         'kotlin': 'Kotlin Agent',
-        'responsible-ai': 'Responsible AI Agent',
         'code-lens': 'Code Lens Agent',
         'match-lens': 'Match Lens Agent',
-        'validator': 'Validator Agent',
+        'validator': 'Validator & Responsible AI Agent',
         'zenvector': 'ZenVector Agent',
         'knowledge': 'Knowledge Agent',
         'datalens': 'Data Lens Agent',
-        'codeshift': 'Shift Lens Agent'
+        'codeshift': 'Code Conversion Agent'
       };
       
       setSelectedAgentName(agentNames[agentId]);
@@ -284,7 +283,7 @@ export default function Home() {
     },
     {
       id: 'codeshift' as ProjectType,
-      name: 'Shift Lens Agent',
+      name: 'Code Conversion Agent',
       description: 'Multi-language code conversion agent for transforming source code between programming languages while preserving logic',
       logoSrc: agentLogo,
       borderColor: 'border-indigo-500',
@@ -301,36 +300,22 @@ export default function Home() {
     },
     {
       id: 'validator' as ProjectType,
-      name: 'Validator Agent',
-      description: 'Comprehensive code validation covering security vulnerabilities, privacy compliance, and quality assessment',
-      logoSrc: agentLogo,
-      borderColor: 'border-chart-5',
-      bgColor: 'bg-chart-5/5',
-      hoverBgColor: 'hover:bg-chart-5/10',
-      features: [
-        'Security vulnerability detection and assessment',
-        'Privacy compliance and data protection validation',
-        'Code quality metrics and best practices review',
-        'Performance bottleneck identification',
-        'Regulatory compliance verification (GDPR, CCPA)',
-        'Security risk scoring and remediation guidance'
-      ]
-    },
-    {
-      id: 'responsible-ai' as ProjectType,
-      name: 'Responsible AI Agent',
-      description: 'Ethics and bias detection in code analysis with comprehensive AI governance and fairness assessment',
+      name: 'Validator & Responsible AI Agent',
+      description: 'Comprehensive validation covering security vulnerabilities, privacy compliance, ethics, bias detection, and AI governance',
       logoSrc: agentLogo,
       borderColor: 'border-purple-500',
       bgColor: 'bg-purple-50',
       hoverBgColor: 'hover:bg-purple-100',
       features: [
+        'Security vulnerability detection and assessment',
+        'Privacy compliance and data protection validation (GDPR, CCPA)',
         'AI ethics and bias detection in algorithms',
         'Fairness assessment across demographic groups',
+        'Code quality metrics and best practices review',
         'Algorithmic transparency and explainability',
-        'Compliance with AI governance frameworks',
-        'Ethical code review and recommendations',
-        'Responsible AI deployment validation'
+        'Responsible AI deployment and governance validation',
+        'Performance bottleneck identification',
+        'Security risk scoring and remediation guidance'
       ]
     }
   ];
