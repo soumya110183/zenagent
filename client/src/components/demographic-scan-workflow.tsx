@@ -17,7 +17,7 @@ import { FileSearch, Database, Search, AlertTriangle, FileText, BarChart3, Brain
 const iconStyle = "w-5 h-5";
 
 const initialNodes: Node[] = [
-  // PATH 1: REGEX SCAN (Top Row)
+  // PATH 1: REGEX SCAN (Top)
   {
     id: '1',
     type: 'input',
@@ -84,53 +84,8 @@ const initialNodes: Node[] = [
       boxShadow: '0 3px 5px rgba(0,0,0,0.1)'
     },
   },
-  {
-    id: 'llm-1',
-    data: { 
-      label: (
-        <div className="px-3 py-2">
-          <div className="font-bold text-white text-sm">Code Lens ML</div>
-          <div className="text-xs text-white mt-0.5">Traditional ML</div>
-        </div>
-      )
-    },
-    position: { x: 430, y: 20 },
-    style: { 
-      background: '#f97316',
-      color: 'white',
-      border: '2px dashed white',
-      borderRadius: '10px',
-      padding: '8px',
-      width: 140,
-      fontSize: '12px',
-      boxShadow: '0 3px 5px rgba(0,0,0,0.1)'
-    },
-  },
-  {
-    id: 'report-1',
-    type: 'output',
-    data: { 
-      label: (
-        <div className="px-3 py-2">
-          <div className="font-bold text-white text-sm">Report</div>
-          <div className="text-xs text-white mt-0.5">PDF/DOC/HTML</div>
-        </div>
-      )
-    },
-    position: { x: 600, y: 45 },
-    style: { 
-      background: '#10b981',
-      color: 'white',
-      border: 'none',
-      borderRadius: '10px',
-      padding: '8px',
-      width: 140,
-      fontSize: '12px',
-      boxShadow: '0 3px 5px rgba(0,0,0,0.1)'
-    },
-  },
 
-  // PATH 2: EXCEL SCAN (Bottom Row)
+  // PATH 2: EXCEL SCAN (Bottom)
   {
     id: 'source-2',
     type: 'input',
@@ -198,8 +153,10 @@ const initialNodes: Node[] = [
       boxShadow: '0 3px 5px rgba(0,0,0,0.1)'
     },
   },
+
+  // SHARED: Code Lens ML (Center - Optional)
   {
-    id: 'llm-2',
+    id: 'llm-shared',
     data: { 
       label: (
         <div className="px-3 py-2">
@@ -208,7 +165,7 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 430, y: 240 },
+    position: { x: 470, y: 125 },
     style: { 
       background: '#f97316',
       color: 'white',
@@ -220,8 +177,10 @@ const initialNodes: Node[] = [
       boxShadow: '0 3px 5px rgba(0,0,0,0.1)'
     },
   },
+
+  // SHARED: Report (Right side)
   {
-    id: 'report-2',
+    id: 'report-shared',
     type: 'output',
     data: { 
       label: (
@@ -231,7 +190,7 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 600, y: 205 },
+    position: { x: 670, y: 125 },
     style: { 
       background: '#10b981',
       color: 'white',
@@ -246,7 +205,7 @@ const initialNodes: Node[] = [
 ];
 
 const initialEdges: Edge[] = [
-  // ===== PATH 1: REGEX SCAN (Top Row) =====
+  // ===== REGEX SCAN PATH =====
   // Inputs → Regex Scan
   { 
     id: 'e1-3', 
@@ -264,35 +223,8 @@ const initialEdges: Edge[] = [
     style: { stroke: '#3b82f6', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
-  // Regex Scan → Direct to Report
-  { 
-    id: 'e3-r1', 
-    source: '3', 
-    target: 'report-1',
-    animated: true,
-    style: { stroke: '#10b981', strokeWidth: 3 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
-  },
-  // Regex Scan → Optional Code Lens ML
-  { 
-    id: 'e3-llm1', 
-    source: '3', 
-    target: 'llm-1',
-    animated: true,
-    style: { stroke: '#f97316', strokeWidth: 1.5, strokeDasharray: '4,4' },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#f97316' },
-  },
-  // Optional Code Lens ML → Report
-  { 
-    id: 'ellm1-r1', 
-    source: 'llm-1', 
-    target: 'report-1',
-    animated: true,
-    style: { stroke: '#f97316', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#f97316' },
-  },
   
-  // ===== PATH 2: EXCEL SCAN (Bottom Row) =====
+  // ===== EXCEL SCAN PATH =====
   // Inputs → Excel Scan
   { 
     id: 'es2-e2', 
@@ -310,29 +242,57 @@ const initialEdges: Edge[] = [
     style: { stroke: '#3b82f6', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
-  // Excel Scan → Direct to Report
+
+  // ===== CONVERGED PATHS =====
+  // Both scans → Direct to Report (main path)
   { 
-    id: 'e2-r2', 
-    source: 'excel-2', 
-    target: 'report-2',
+    id: 'e3-report', 
+    source: '3', 
+    target: 'report-shared',
     animated: true,
     style: { stroke: '#10b981', strokeWidth: 3 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
   },
-  // Excel Scan → Optional Code Lens ML
   { 
-    id: 'e2-llm2', 
+    id: 'excel-report', 
     source: 'excel-2', 
-    target: 'llm-2',
+    target: 'report-shared',
     animated: true,
+    style: { stroke: '#10b981', strokeWidth: 3 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
+  },
+
+  // Both scans → Optional Code Lens ML (if needed)
+  { 
+    id: 'e3-llm', 
+    source: '3', 
+    target: 'llm-shared',
+    animated: true,
+    label: 'if needed',
+    labelStyle: { fill: '#f97316', fontWeight: 600, fontSize: '11px' },
+    labelBgStyle: { fill: 'white', fillOpacity: 0.9 },
+    labelBgPadding: [4, 4],
     style: { stroke: '#f97316', strokeWidth: 1.5, strokeDasharray: '4,4' },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#f97316' },
   },
-  // Optional Code Lens ML → Report
   { 
-    id: 'ellm2-r2', 
-    source: 'llm-2', 
-    target: 'report-2',
+    id: 'excel-llm', 
+    source: 'excel-2', 
+    target: 'llm-shared',
+    animated: true,
+    label: 'if needed',
+    labelStyle: { fill: '#f97316', fontWeight: 600, fontSize: '11px' },
+    labelBgStyle: { fill: 'white', fillOpacity: 0.9 },
+    labelBgPadding: [4, 4],
+    style: { stroke: '#f97316', strokeWidth: 1.5, strokeDasharray: '4,4' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#f97316' },
+  },
+
+  // Code Lens ML → Report
+  { 
+    id: 'llm-report', 
+    source: 'llm-shared', 
+    target: 'report-shared',
     animated: true,
     style: { stroke: '#f97316', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#f97316' },
