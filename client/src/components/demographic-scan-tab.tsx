@@ -6,10 +6,16 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Search, FileText, CheckCircle, XCircle, RefreshCw, Users, Settings } from 'lucide-react';
+import { Loader2, Search, FileText, CheckCircle, XCircle, RefreshCw, Users, Settings, Brain, Info } from 'lucide-react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import DemographicPatternsManager from '@/components/demographic-patterns-manager';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface DemographicScanTabProps {
   projectId: string;
@@ -359,6 +365,7 @@ interface ExcelMapping {
 function ExcelFieldMappingTab({ projectId }: ExcelFieldMappingTabProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [mlSuggestions, setMlSuggestions] = useState<any>(null);
   const { toast } = useToast();
 
   const { data: mappingsData, isLoading } = useQuery<{ mappings: ExcelMapping[]; success: boolean }>({
@@ -399,6 +406,26 @@ function ExcelFieldMappingTab({ projectId }: ExcelFieldMappingTabProps) {
         variant: 'destructive',
       });
       setUploadProgress(0);
+    },
+  });
+
+  const mlSuggestionsMutation = useMutation({
+    mutationFn: async (mappingId: string) => {
+      return apiRequest('POST', `/api/projects/${projectId}/excel-mapping/${mappingId}/ml-suggestions`) as Promise<any>;
+    },
+    onSuccess: (data: any) => {
+      setMlSuggestions(data.suggestions);
+      toast({
+        title: 'ML Suggestions Generated',
+        description: `Found ${Object.keys(data.suggestions || {}).length} field suggestions using Code Lens ML`,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'ML Suggestions Failed',
+        description: error.message,
+        variant: 'destructive',
+      });
     },
   });
 
@@ -564,23 +591,91 @@ function ExcelFieldMappingTab({ projectId }: ExcelFieldMappingTabProps) {
           {latestMapping.scanResults && latestMapping.scanResults.unmatchedFields.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <XCircle className="w-5 h-5 text-orange-600" />
-                  Unmatched Fields ({latestMapping.scanResults.unmatchedFields.length})
+                <CardTitle className="text-base flex items-center gap-2 justify-between">
+                  <div className="flex items-center gap-2">
+                    <XCircle className="w-5 h-5 text-orange-600" />
+                    Unmatched Fields ({latestMapping.scanResults.unmatchedFields.length})
+                  </div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => mlSuggestionsMutation.mutate(latestMapping.id)}
+                          disabled={mlSuggestionsMutation.isPending}
+                          className="flex items-center gap-2"
+                          data-testid="button-get-ml-suggestions"
+                        >
+                          {mlSuggestionsMutation.isPending ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Analyzing...
+                            </>
+                          ) : (
+                            <>
+                              <Brain className="w-4 h-4" />
+                              Get ML Suggestions
+                              <Info className="w-3.5 h-3.5 ml-1" />
+                            </>
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-sm">
+                        <div className="space-y-2 text-xs">
+                          <div className="font-bold text-sm">Code Lens ML (Traditional ML)</div>
+                          <div className="space-y-1">
+                            <div><strong>Method 1:</strong> Lookup Table (95% confidence)</div>
+                            <div className="text-muted-foreground pl-2">Uses knowledge base of common field mappings</div>
+                            <div><strong>Method 2:</strong> Acronym Detection (90% confidence)</div>
+                            <div className="text-muted-foreground pl-2">Matches abbreviated field names (e.g., DOB → dateOfBirth)</div>
+                            <div><strong>Method 3:</strong> Similarity Matching (60-95%)</div>
+                            <div className="text-muted-foreground pl-2">Levenshtein distance + token overlap algorithms</div>
+                          </div>
+                          <div className="text-muted-foreground italic mt-2">
+                            100% offline, no external API calls
+                          </div>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {latestMapping.scanResults.unmatchedFields.map((field, idx) => (
-                    <div key={idx} className="p-2 border rounded bg-orange-50">
-                      <div className="text-sm font-medium">
-                        {field.tableName}.{field.fieldName}
+                  {latestMapping.scanResults.unmatchedFields.map((field, idx) => {
+                    const suggestions = mlSuggestions?.[field.combined];
+                    return (
+                      <div key={idx} className="p-3 border rounded bg-orange-50">
+                        <div className="text-sm font-medium mb-1">
+                          {field.tableName}.{field.fieldName}
+                        </div>
+                        {!suggestions ? (
+                          <div className="text-xs text-muted-foreground">
+                            No matches found in codebase
+                          </div>
+                        ) : (
+                          <div className="mt-2 space-y-1">
+                            <div className="text-xs font-semibold text-green-700 flex items-center gap-1">
+                              <Brain className="w-3 h-3" />
+                              ML Suggestions:
+                            </div>
+                            {suggestions.slice(0, 3).map((suggestion: any, sIdx: number) => (
+                              <div key={sIdx} className="flex items-center justify-between bg-white px-2 py-1 rounded text-xs">
+                                <code className="font-mono">{suggestion.field}</code>
+                                <Badge 
+                                  variant={suggestion.confidence >= 0.9 ? "default" : "secondary"}
+                                  className="text-xs"
+                                >
+                                  {Math.round(suggestion.confidence * 100)}% match
+                                </Badge>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        No matches found in codebase
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>

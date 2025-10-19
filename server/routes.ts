@@ -1163,6 +1163,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get ML suggestions for unmatched Excel fields
+  app.post('/api/projects/:projectId/excel-mapping/:mappingId/ml-suggestions', requireAuth, async (req, res) => {
+    try {
+      const { projectId, mappingId } = req.params;
+
+      // Get the Excel mapping
+      const mappings = await storage.getExcelMappings(projectId);
+      const mapping = mappings.find(m => m.id === mappingId);
+
+      if (!mapping || !mapping.scanResults) {
+        return res.status(404).json({ error: 'Mapping not found or not scanned yet' });
+      }
+
+      // Get unmatched fields
+      const unmatchedFields = mapping.scanResults.unmatchedFields || [];
+      if (unmatchedFields.length === 0) {
+        return res.json({
+          success: true,
+          suggestions: {}
+        });
+      }
+
+      // Extract just the field names for ML matching
+      const excelFields = unmatchedFields.map(f => f.combined);
+
+      // Get source files and extract field names from codebase
+      const sourceFiles = await storage.getSourceFilesByProject(projectId);
+      const codebaseFields: string[] = [];
+
+      sourceFiles.forEach(sf => {
+        const content = sf.content;
+        // Extract field names from different patterns
+        const patterns = [
+          /(?:@Column|private|public|protected)\s+\w+\s+(\w+)/g,
+          /(\w+)\s*[:=]\s*\{/g,
+          /(?:const|let|var)\s+(\w+)\s*=/g,
+          /\.(\w+)\s*\(/g
+        ];
+        
+        patterns.forEach(pattern => {
+          const matches = content.matchAll(pattern);
+          for (const match of matches) {
+            if (match[1] && match[1].length > 2) {
+              codebaseFields.push(match[1]);
+            }
+          }
+        });
+      });
+
+      // Remove duplicates
+      const uniqueCodebaseFields = [...new Set(codebaseFields)];
+
+      const path = await import('path');
+      const { exec } = await import('child_process');
+      const { promisify } = await import('util');
+      const execPromise = promisify(exec);
+
+      // Call ML matcher
+      const pythonScript = path.join(process.cwd(), 'server/python/field_matcher_ml.py');
+      const excelFieldsJson = JSON.stringify(excelFields).replace(/'/g, "\\'");
+      const codebaseFieldsJson = JSON.stringify(uniqueCodebaseFields).replace(/'/g, "\\'");
+
+      const { stdout } = await execPromise(
+        `python3 "${pythonScript}" '${excelFieldsJson}' '${codebaseFieldsJson}'`,
+        { maxBuffer: 10 * 1024 * 1024 }
+      );
+
+      const result = JSON.parse(stdout);
+
+      if (!result.success) {
+        throw new Error(result.error || 'ML matcher failed');
+      }
+
+      res.json({
+        success: true,
+        suggestions: result.results
+      });
+
+    } catch (error) {
+      console.error('Error generating ML suggestions for Excel mapping:', error);
+      res.status(500).json({ error: 'Failed to generate ML suggestions' });
+    }
+  });
+
   // Get ML-based field suggestions
   app.post('/api/projects/:id/field-suggestions', requireAuth, async (req, res) => {
     try {
