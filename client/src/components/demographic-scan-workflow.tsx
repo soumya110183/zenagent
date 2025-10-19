@@ -99,7 +99,7 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 320, y: 100 },
+    position: { x: 340, y: 100 },
     style: { 
       background: '#3b82f6',
       color: 'white',
@@ -121,7 +121,7 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 320, y: 250 },
+    position: { x: 340, y: 250 },
     style: { 
       background: '#3b82f6',
       color: 'white',
@@ -134,30 +134,6 @@ const initialNodes: Node[] = [
     },
   },
   
-  // TensorFlow processing (SINGLE - merges both)
-  {
-    id: '4',
-    data: { 
-      label: (
-        <div className="px-4 py-3">
-          <div className="font-bold text-white text-lg">Code Lens ML</div>
-          <div className="text-base text-white mt-1">Tensor Flow</div>
-        </div>
-      )
-    },
-    position: { x: 570, y: 175 },
-    style: { 
-      background: '#f97316',
-      color: 'white',
-      border: 'none',
-      borderRadius: '12px',
-      padding: '10px',
-      width: 220,
-      fontSize: '14px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-    },
-  },
-  
   // Optional LLM processing
   {
     id: '5',
@@ -165,11 +141,11 @@ const initialNodes: Node[] = [
       label: (
         <div className="px-4 py-3">
           <div className="font-bold text-white text-lg">SLM / LLM</div>
-          <div className="text-sm text-white mt-1">Optional AI enhancement</div>
+          <div className="text-sm text-white mt-1">Optional enhancement</div>
         </div>
       )
     },
-    position: { x: 840, y: 100 },
+    position: { x: 630, y: 50 },
     style: { 
       background: '#06b6d4',
       color: 'white',
@@ -194,9 +170,9 @@ const initialNodes: Node[] = [
         </div>
       )
     },
-    position: { x: 840, y: 250 },
+    position: { x: 630, y: 200 },
     style: { 
-      background: '#60a5fa',
+      background: '#10b981',
       color: 'white',
       border: 'none',
       borderRadius: '12px',
@@ -209,7 +185,7 @@ const initialNodes: Node[] = [
 ];
 
 const initialEdges: Edge[] = [
-  // Regex Scan Path
+  // PATH 1: Regex Scan
   { 
     id: 'e1-3', 
     source: '1', 
@@ -226,8 +202,31 @@ const initialEdges: Edge[] = [
     style: { stroke: '#3b82f6', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
+  // Regex Scan → Report
+  { 
+    id: 'e3-6', 
+    source: '3', 
+    target: '6',
+    animated: true,
+    style: { stroke: '#10b981', strokeWidth: 3 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
+  },
+  // Regex Scan → Optional LLM → Report
+  { 
+    id: 'e3-5', 
+    source: '3', 
+    target: '5',
+    animated: true,
+    style: { stroke: '#06b6d4', strokeWidth: 2, strokeDasharray: '5,5' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
+    label: 'optional',
+    labelBgPadding: [8, 4],
+    labelBgBorderRadius: 4,
+    labelBgStyle: { fill: '#cffafe', fillOpacity: 0.9 },
+    labelStyle: { fontSize: '10px', fill: '#0e7490', fontWeight: 600 },
+  },
   
-  // Excel Scan Path  
+  // PATH 2: Excel Field Scan
   { 
     id: 'excel-e1', 
     source: 'excel-1', 
@@ -244,51 +243,31 @@ const initialEdges: Edge[] = [
     style: { stroke: '#3b82f6', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
   },
-  
-  // Both paths merge into TensorFlow ML
-  { 
-    id: 'e3-4', 
-    source: '3', 
-    target: '4',
-    animated: true,
-    style: { stroke: '#06b6d4', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
-  },
+  // Excel Scan → Report
   { 
     id: 'excel-e3', 
     source: 'excel-2', 
-    target: '4',
+    target: '6',
     animated: true,
-    style: { stroke: '#06b6d4', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
+    style: { stroke: '#10b981', strokeWidth: 3 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
   },
-  
-  // TensorFlow ML to optional LLM
+  // Excel Scan → Optional LLM → Report
   { 
-    id: 'e4-5', 
-    source: '4', 
+    id: 'excel-e4', 
+    source: 'excel-2', 
     target: '5',
     animated: true,
     style: { stroke: '#06b6d4', strokeWidth: 2, strokeDasharray: '5,5' },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
-    label: 'if needed',
+    label: 'optional',
     labelBgPadding: [8, 4],
     labelBgBorderRadius: 4,
     labelBgStyle: { fill: '#cffafe', fillOpacity: 0.9 },
-    labelStyle: { fontSize: '10px', fill: '#0e7490' },
+    labelStyle: { fontSize: '10px', fill: '#0e7490', fontWeight: 600 },
   },
   
-  // Direct path from TensorFlow to Report
-  { 
-    id: 'e4-6', 
-    source: '4', 
-    target: '6',
-    animated: true,
-    style: { stroke: '#06b6d4', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
-  },
-  
-  // LLM to Report
+  // Optional LLM → Report
   { 
     id: 'e5-6', 
     source: '5', 
