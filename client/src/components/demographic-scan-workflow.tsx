@@ -89,19 +89,19 @@ const initialNodes: Node[] = [
     data: { 
       label: (
         <div className="px-3 py-2">
-          <div className="font-bold text-white text-sm">LLM</div>
-          <div className="text-xs text-white mt-0.5">Optional</div>
+          <div className="font-bold text-white text-sm">Code Lens ML</div>
+          <div className="text-xs text-white mt-0.5">Traditional ML</div>
         </div>
       )
     },
     position: { x: 430, y: 20 },
     style: { 
-      background: '#06b6d4',
+      background: '#f97316',
       color: 'white',
       border: '2px dashed white',
       borderRadius: '10px',
       padding: '8px',
-      width: 120,
+      width: 140,
       fontSize: '12px',
       boxShadow: '0 3px 5px rgba(0,0,0,0.1)'
     },
@@ -203,19 +203,19 @@ const initialNodes: Node[] = [
     data: { 
       label: (
         <div className="px-3 py-2">
-          <div className="font-bold text-white text-sm">LLM</div>
-          <div className="text-xs text-white mt-0.5">Optional</div>
+          <div className="font-bold text-white text-sm">Code Lens ML</div>
+          <div className="text-xs text-white mt-0.5">Traditional ML</div>
         </div>
       )
     },
     position: { x: 430, y: 240 },
     style: { 
-      background: '#06b6d4',
+      background: '#f97316',
       color: 'white',
       border: '2px dashed white',
       borderRadius: '10px',
       padding: '8px',
-      width: 120,
+      width: 140,
       fontSize: '12px',
       boxShadow: '0 3px 5px rgba(0,0,0,0.1)'
     },
@@ -273,23 +273,23 @@ const initialEdges: Edge[] = [
     style: { stroke: '#10b981', strokeWidth: 3 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
   },
-  // Regex Scan → Optional LLM
+  // Regex Scan → Optional Code Lens ML
   { 
     id: 'e3-llm1', 
     source: '3', 
     target: 'llm-1',
     animated: true,
-    style: { stroke: '#06b6d4', strokeWidth: 1.5, strokeDasharray: '4,4' },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
+    style: { stroke: '#f97316', strokeWidth: 1.5, strokeDasharray: '4,4' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#f97316' },
   },
-  // Optional LLM → Report
+  // Optional Code Lens ML → Report
   { 
     id: 'ellm1-r1', 
     source: 'llm-1', 
     target: 'report-1',
     animated: true,
-    style: { stroke: '#06b6d4', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
+    style: { stroke: '#f97316', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#f97316' },
   },
   
   // ===== PATH 2: EXCEL SCAN (Bottom Row) =====
@@ -319,23 +319,23 @@ const initialEdges: Edge[] = [
     style: { stroke: '#10b981', strokeWidth: 3 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
   },
-  // Excel Scan → Optional LLM
+  // Excel Scan → Optional Code Lens ML
   { 
     id: 'e2-llm2', 
     source: 'excel-2', 
     target: 'llm-2',
     animated: true,
-    style: { stroke: '#06b6d4', strokeWidth: 1.5, strokeDasharray: '4,4' },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
+    style: { stroke: '#f97316', strokeWidth: 1.5, strokeDasharray: '4,4' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#f97316' },
   },
-  // Optional LLM → Report
+  // Optional Code Lens ML → Report
   { 
     id: 'ellm2-r2', 
     source: 'llm-2', 
     target: 'report-2',
     animated: true,
-    style: { stroke: '#06b6d4', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#06b6d4' },
+    style: { stroke: '#f97316', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#f97316' },
   },
 ];
 
