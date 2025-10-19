@@ -83,6 +83,268 @@ const uploadExcel = multer({
   }
 });
 
+function generateExcelMappingHTML(project: any, mapping: any): string {
+  const scanResults = mapping.scanResults || {};
+  const matches = scanResults.matches || [];
+  const unmatchedFields = scanResults.unmatchedFields || [];
+  const matchRate = mapping.totalFields > 0 
+    ? Math.round((mapping.matchedFields / mapping.totalFields) * 100) 
+    : 0;
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Field Mapping Report - ${project.name}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .summary-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .summary-card .value {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .summary-card.total .value { color: #667eea; }
+        .summary-card.matched .value { color: #10b981; }
+        .summary-card.unmatched .value { color: #f97316; }
+        .summary-card.rate .value { color: #3b82f6; }
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title.matched { border-bottom-color: #10b981; color: #10b981; }
+        .section-title.unmatched { border-bottom-color: #f97316; color: #f97316; }
+        .field-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background-color: #f9fafb;
+        }
+        .field-item.matched { border-left: 4px solid #10b981; background-color: #f0fdf4; }
+        .field-item.unmatched { border-left: 4px solid #f97316; background-color: #fff7ed; }
+        .field-header {
+            display: flex;
+            justify-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .field-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .field-name .table { color: #3b82f6; }
+        .field-name .field { color: #8b5cf6; }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge.field-match { background-color: #ddd6fe; color: #7c3aed; }
+        .badge.table-match { background-color: #dbeafe; color: #2563eb; }
+        .badge.total-matches { background-color: #d1fae5; color: #059669; }
+        .location {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .location-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        .location-type {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .location-type.field { background-color: #e9d5ff; color: #7c3aed; }
+        .location-type.table { background-color: #bfdbfe; color: #1e40af; }
+        .location-path {
+            color: #6b7280;
+            font-size: 12px;
+        }
+        .code-block {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+        .footer strong {
+            color: #111827;
+        }
+        @media print {
+            body { background-color: white; }
+            .summary-grid { page-break-inside: avoid; }
+            .field-item { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Excel Field Mapping Report</h1>
+        <p><strong>Project:</strong> ${project.name}</p>
+        <p><strong>Excel File:</strong> ${mapping.fileName}</p>
+        <p><strong>Scan Date:</strong> ${new Date(mapping.uploadedAt).toLocaleString()}</p>
+    </div>
+
+    <div class="summary-grid">
+        <div class="summary-card total">
+            <h3>Total Fields</h3>
+            <div class="value">${mapping.totalFields}</div>
+        </div>
+        <div class="summary-card matched">
+            <h3>Matched</h3>
+            <div class="value">${mapping.matchedFields}</div>
+        </div>
+        <div class="summary-card unmatched">
+            <h3>Unmatched</h3>
+            <div class="value">${mapping.totalFields - mapping.matchedFields}</div>
+        </div>
+        <div class="summary-card rate">
+            <h3>Match Rate</h3>
+            <div class="value">${matchRate}%</div>
+        </div>
+    </div>
+
+    ${matches.length > 0 ? `
+    <div class="section">
+        <div class="section-title matched">
+            ✅ Matched Fields (${matches.length})
+        </div>
+        ${matches.map((match: any) => `
+            <div class="field-item matched">
+                <div class="field-header">
+                    <div class="field-name">
+                        Table: <span class="table">${match.tableName}</span> | 
+                        Field: <span class="field">${match.fieldName}</span>
+                    </div>
+                    <div>
+                        ${match.fieldMatchCount > 0 ? `<span class="badge field-match">Field: ${match.fieldMatchCount}</span>` : ''}
+                        ${match.tableMatchCount > 0 ? `<span class="badge table-match">Table: ${match.tableMatchCount}</span>` : ''}
+                        <span class="badge total-matches">${match.matchCount} total</span>
+                    </div>
+                </div>
+                ${match.locations.slice(0, 5).map((loc: any) => `
+                    <div class="location">
+                        <div class="location-header">
+                            <span class="location-type ${loc.matchType === 'field_name' ? 'field' : 'table'}">
+                                ${loc.matchType === 'field_name' ? '📄 Field Match' : '🗃️ Table Match'}
+                            </span>
+                            <span class="location-path">${loc.filePath}:${loc.lineNumber}</span>
+                        </div>
+                        <div class="code-block">${loc.line}</div>
+                    </div>
+                `).join('')}
+                ${match.matchCount > 5 ? `<p style="margin-top: 10px; color: #6b7280; font-size: 13px;">+${match.matchCount - 5} more matches</p>` : ''}
+            </div>
+        `).join('')}
+    </div>
+    ` : ''}
+
+    ${unmatchedFields.length > 0 ? `
+    <div class="section">
+        <div class="section-title unmatched">
+            ❌ Unmatched Fields (${unmatchedFields.length})
+        </div>
+        ${unmatchedFields.map((field: any) => `
+            <div class="field-item unmatched">
+                <div class="field-name">
+                    Table: <span class="table">${field.tableName}</span> | 
+                    Field: <span class="field">${field.fieldName}</span>
+                </div>
+                <p style="margin-top: 10px; color: #9ca3af; font-size: 13px;">
+                    No matches found in the codebase for this field.
+                </p>
+            </div>
+        `).join('')}
+    </div>
+    ` : ''}
+
+    <div class="footer">
+        <p><strong>Developed by:</strong> Ullas Krishnan, Sr Solution Architect</p>
+        <p>Copyright © Project Diamond Zensar team</p>
+    </div>
+</body>
+</html>
+  `.trim();
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Session middleware
@@ -1313,6 +1575,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error generating field suggestions:', error);
       res.status(500).json({ error: 'Failed to generate suggestions' });
+    }
+  });
+
+  // Excel Field Mapping Report Generation
+  app.get('/api/projects/:id/excel-mapping/:mappingId/report-html', requireAuth, async (req, res) => {
+    try {
+      const { id, mappingId } = req.params;
+      
+      // Get mapping data
+      const mappings = await storage.getExcelMappings(id);
+      const mapping = mappings.find(m => m.id === mappingId);
+      
+      if (!mapping) {
+        return res.status(404).json({ error: 'Mapping not found' });
+      }
+
+      const project = await storage.getProject(id);
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      // Generate HTML report
+      const html = generateExcelMappingHTML(project, mapping);
+      res.setHeader('Content-Type', 'text/html');
+      res.send(html);
+
+    } catch (error) {
+      console.error('Error generating Excel mapping HTML report:', error);
+      res.status(500).json({ error: 'Failed to generate report' });
+    }
+  });
+
+  app.get('/api/projects/:id/excel-mapping/:mappingId/report-download', requireAuth, async (req, res) => {
+    try {
+      const { id, mappingId } = req.params;
+      const { format } = req.query;
+      
+      if (!format || !['html', 'pdf', 'docx'].includes(format as string)) {
+        return res.status(400).json({ error: 'Invalid format. Use html, pdf, or docx' });
+      }
+
+      // Get mapping data
+      const mappings = await storage.getExcelMappings(id);
+      const mapping = mappings.find(m => m.id === mappingId);
+      
+      if (!mapping) {
+        return res.status(404).json({ error: 'Mapping not found' });
+      }
+
+      const project = await storage.getProject(id);
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      // Generate HTML first
+      const html = generateExcelMappingHTML(project, mapping);
+
+      if (format === 'html') {
+        res.setHeader('Content-Type', 'text/html');
+        res.setHeader('Content-Disposition', `attachment; filename="Excel_Field_Mapping_Report_${new Date().toISOString().split('T')[0]}.html"`);
+        res.send(html);
+        return;
+      }
+
+      // For PDF and DOCX, we'll use Python to convert
+      const fs = await import('fs');
+      const path = await import('path');
+      const os = await import('os');
+      const { exec } = await import('child_process');
+      const { promisify } = await import('util');
+      const execPromise = promisify(exec);
+
+      const tempDir = os.tmpdir();
+      const htmlPath = path.join(tempDir, `report_${Date.now()}.html`);
+      const outputPath = path.join(tempDir, `report_${Date.now()}.${format === 'pdf' ? 'pdf' : 'docx'}`);
+
+      // Write HTML to temp file
+      fs.writeFileSync(htmlPath, html);
+
+      try {
+        const pythonScript = path.join(process.cwd(), 'server/python/report_generator.py');
+        await execPromise(
+          `python3 "${pythonScript}" "${htmlPath}" "${outputPath}" "${format}"`,
+          { maxBuffer: 10 * 1024 * 1024 }
+        );
+
+        // Send file
+        const fileBuffer = fs.readFileSync(outputPath);
+        const contentType = format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        const extension = format === 'pdf' ? 'pdf' : 'docx';
+        
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Content-Disposition', `attachment; filename="Excel_Field_Mapping_Report_${new Date().toISOString().split('T')[0]}.${extension}"`);
+        res.send(fileBuffer);
+
+        // Cleanup
+        fs.unlinkSync(htmlPath);
+        fs.unlinkSync(outputPath);
+
+      } catch (conversionError) {
+        // Cleanup on error
+        if (fs.existsSync(htmlPath)) fs.unlinkSync(htmlPath);
+        if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+        throw conversionError;
+      }
+
+    } catch (error) {
+      console.error('Error downloading Excel mapping report:', error);
+      res.status(500).json({ error: 'Failed to download report' });
     }
   });
 
