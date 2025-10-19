@@ -6,6 +6,15 @@ Zengent AI is an enterprise application intelligence platform that analyzes mult
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+### Critical Data Integrity Rules
+**NEVER use mock values, dummy data, or placeholder content.** The system must ONLY display:
+1. **Actual source code analysis results** from user-uploaded projects
+2. **Real demographic scan data** from pattern matching or Excel field mapping
+3. **Authentic AI-generated insights** from LLM analysis
+4. **User-uploaded files and data** 
+
+When no data is available, show appropriate empty state messages like "No analysis data available" or "No demographic fields found" instead of fake/sample data. This ensures users see only real, actionable information from their actual codebases.
+
 ## System Architecture
 
 ### Frontend
