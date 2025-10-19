@@ -245,21 +245,28 @@ class FieldMatcherML:
     
     def suggest_mappings(
         self,
-        excel_fields: List[Dict[str, str]],
+        excel_fields,
         codebase_fields: List[str]
     ) -> Dict[str, Any]:
         """
         Suggest field mappings using ML-based similarity
         
         Args:
-            excel_fields: List of {tableName, fieldName} from Excel
+            excel_fields: List of field names (either strings or {tableName, fieldName} dicts)
             codebase_fields: List of field names found in codebase
             
         Returns:
             Suggested mappings with confidence scores
         """
-        # Extract just the field names from Excel
-        target_field_names = [f"{field['tableName']}.{field['fieldName']}" for field in excel_fields]
+        # Handle both string array and dict array formats
+        target_field_names = []
+        for field in excel_fields:
+            if isinstance(field, dict):
+                # Dictionary format: {tableName, fieldName}
+                target_field_names.append(f"{field['tableName']}.{field['fieldName']}")
+            else:
+                # String format: "table.field"
+                target_field_names.append(str(field))
         
         # Find similar fields
         suggestions = self.find_similar_fields(target_field_names, codebase_fields, threshold=0.6)
