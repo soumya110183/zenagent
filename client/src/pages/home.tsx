@@ -32,6 +32,7 @@ import pysparkLogo from "@assets/pyspark-lang_1754703714412.png";
 import ibmLogo from "@assets/ibm_1754703124415.png";
 import javaLogo from "@assets/image_1760901920604.png";
 import csharpLogo from "@assets/image_1760901951527.png";
+import kotlinLogo from "@assets/image_1760902052334.png";
 
 type AppState = 'upload' | 'processing' | 'results';
 type ProjectType = 'java' | 'pyspark' | 'mainframe' | 'python' | 'csharp' | 'kotlin' | 'responsible-ai' | 'code-lens' | 'match-lens' | 'validator' | 'zenvector' | 'knowledge' | 'datalens' | 'codeshift';
@@ -247,7 +248,7 @@ export default function Home() {
       id: 'kotlin' as ProjectType,
       name: 'Kotlin',
       description: 'Advanced analysis of Kotlin applications with Android frameworks, coroutines, and JVM ecosystem integration',
-      logoSrc: agentLogo,
+      logoSrc: kotlinLogo,
       borderColor: 'border-orange-600',
       bgColor: 'bg-orange-50',
       hoverBgColor: 'hover:bg-orange-100',
