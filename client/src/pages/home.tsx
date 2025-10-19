@@ -149,7 +149,7 @@ export default function Home() {
         'zenvector': 'ZenVector Agent',
         'knowledge': 'Knowledge Agent',
         'datalens': 'Data Lens Agent',
-        'codeshift': 'Codeshift Lens Agent'
+        'codeshift': 'Shift Lens Agent'
       };
       
       setSelectedAgentName(agentNames[agentId]);
@@ -301,7 +301,7 @@ export default function Home() {
     },
     {
       id: 'codeshift' as ProjectType,
-      name: 'Codeshift Lens Agent',
+      name: 'Shift Lens Agent',
       description: 'Multi-language code conversion agent for transforming source code between programming languages while preserving logic',
       logoSrc: agentLogo,
       borderColor: 'border-indigo-500',
