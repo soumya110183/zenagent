@@ -108,7 +108,7 @@ export default function LoginForm() {
               alt="Code Lens AI Agents" 
               className="mx-auto mb-4 w-64 h-auto"
             />
-            <h1 className="text-2xl font-bold text-gray-900">Code Lens AI</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Code Lens AI v2</h1>
           </div>
 
           {/* Login Form */}
@@ -116,7 +116,7 @@ export default function LoginForm() {
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                CODE LENS AI
+                CODE LENS AI v2
               </h1>
               <p className="text-sm text-gray-600">
                 Secure platform access
