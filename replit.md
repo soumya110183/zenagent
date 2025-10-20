@@ -1,7 +1,7 @@
-# Code Lens AI - Enterprise Application Intelligence Platform
+# Code Lens - Enterprise Application Intelligence Platform
 
 ## Overview
-Code Lens AI is an enterprise application intelligence platform that analyzes multi-language project architectures from ZIP uploads and GitHub repositories. It supports Java, Python, PySpark, and Mainframe codebases, extracting and parsing source files to identify architectural patterns, dependencies, and relationships. The platform provides interactive visual diagrams and AI-powered analysis using various LLMs, delivering intelligent insights and recommendations. It includes enterprise features such as Swagger API documentation, demographic field scanning with compliance reporting, and professional PDF report generation with corporate branding. The vision is to provide comprehensive, AI-driven insights into complex enterprise applications to aid development, refactoring, and strategic planning.
+Code Lens is an enterprise application intelligence platform that analyzes multi-language project architectures from ZIP uploads and GitHub repositories. It supports Java, Python, PySpark, and Mainframe codebases, extracting and parsing source files to identify architectural patterns, dependencies, and relationships. The platform provides interactive visual diagrams and AI-powered analysis using various LLMs, delivering intelligent insights and recommendations. It includes enterprise features such as Swagger API documentation, demographic field scanning with compliance reporting, and professional PDF report generation with corporate branding. The vision is to provide comprehensive, AI-driven insights into complex enterprise applications to aid development, refactoring, and strategic planning.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

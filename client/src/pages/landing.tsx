@@ -30,7 +30,7 @@ export default function Landing() {
         <div className="flex-1 flex items-start justify-center pt-6 pb-8">
           <img 
             src={zenagentAgents} 
-            alt="Code Lens AI Agents" 
+            alt="Code Lens Agents" 
             className="max-w-2xl w-full h-auto object-contain"
           />
         </div>
@@ -56,8 +56,8 @@ export default function Landing() {
       <div className="w-96 bg-white flex flex-col justify-center items-center p-8 shadow-2xl">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: 'Eras Bold ITC, Arial Black, sans-serif' }}>Code Lens AI v2</h3>
-            <p className="text-gray-600">Secure platform access</p>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: 'Eras Bold ITC, Arial Black, sans-serif' }}>Code Lens v2</h3>
+            <p className="text-gray-600">Code Analytics Agent</p>
           </div>
           
           <LoginForm onSuccess={handleLoginSuccess} />

@@ -72,7 +72,7 @@ export default function LoginForm() {
           <div className="mb-16">
             <img 
               src={zenagentImage} 
-              alt="Code Lens AI Agents" 
+              alt="Code Lens Agents" 
               className="mx-auto w-full h-auto"
               style={{ maxHeight: '350px' }}
             />
@@ -105,10 +105,10 @@ export default function LoginForm() {
           <div className="lg:hidden text-center mb-8">
             <img 
               src={zenagentImage} 
-              alt="Code Lens AI Agents" 
+              alt="Code Lens Agents" 
               className="mx-auto mb-4 w-64 h-auto"
             />
-            <h1 className="text-2xl font-bold text-gray-900">Code Lens AI v2</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Code Lens v2</h1>
           </div>
 
           {/* Login Form */}
@@ -116,10 +116,10 @@ export default function LoginForm() {
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                CODE LENS AI v2
+                CODE LENS v2
               </h1>
               <p className="text-sm text-gray-600">
-                Secure platform access
+                Code Analytics Agent
               </p>
             </div>
 
