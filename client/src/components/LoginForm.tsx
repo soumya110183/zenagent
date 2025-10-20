@@ -80,13 +80,41 @@ export default function LoginForm() {
           
           {/* Platform Text */}
           <div className="mb-8">
-            <h2 className="text-2xl text-white font-bold mb-4 uppercase tracking-wide">
-              PLATFORM POWERED BY AI AGENTS
+            <h2 className="text-2xl text-white font-bold mb-6 uppercase tracking-wide">
+              CODE LENS v2 FEATURES
             </h2>
-            <p className="text-lg text-white/90 leading-relaxed px-8">
-              Analyze your enterprise applications with powerful AI-driven insights<br />
-              and comprehensive project intelligence for better decision making.
-            </p>
+            <div className="text-left px-12">
+              <ul className="text-white/90 space-y-3 text-base">
+                <li className="flex items-start">
+                  <span className="mr-3 mt-1">•</span>
+                  <span>Multi-language code analysis (Java, Python, PySpark, Mainframe, C#, Kotlin)</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-3 mt-1">•</span>
+                  <span>GitHub repository integration with automatic analysis</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-3 mt-1">•</span>
+                  <span>Demographic field scanning with Excel mapping support</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-3 mt-1">•</span>
+                  <span>AI-powered insights using OpenAI and local LLMs</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-3 mt-1">•</span>
+                  <span>Interactive architecture diagrams and dependency graphs</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-3 mt-1">•</span>
+                  <span>Professional report generation (HTML, PDF, Word)</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-3 mt-1">•</span>
+                  <span>Swagger API documentation auto-generation</span>
+                </li>
+              </ul>
+            </div>
           </div>
           
           {/* Zensar Logo */}
