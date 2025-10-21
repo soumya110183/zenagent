@@ -15,6 +15,7 @@ import os from "os";
 import zenVectorRoutes from "./routes/zenVectorRoutes";
 import knowledgeAgentRoutes from "./routes/knowledgeAgentRoutes";
 import { demographicScanner } from "./services/demographicScanner";
+import { demographicClassAnalyzer } from "./services/demographicClassAnalyzer";
 
 interface AIModelConfig {
   type: 'openai' | 'local';
@@ -1231,6 +1232,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error scanning demographics:', error);
       res.status(500).json({ error: 'Failed to scan demographics' });
+    }
+  });
+
+  // Demographic Class Analysis API
+  app.get('/api/projects/:id/demographic-classes', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const project = await storage.getProject(id);
+      
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      // Get actual source files from database
+      const sourceFiles = await storage.getProjectSourceFiles(id);
+      
+      if (sourceFiles.length === 0) {
+        return res.json({
+          success: true,
+          report: {
+            summary: {
+              totalClasses: 0,
+              totalFunctions: 0,
+              scanDate: new Date().toISOString()
+            },
+            classes: []
+          }
+        });
+      }
+
+      // First, scan for demographic fields
+      const files = sourceFiles.map(sf => ({
+        path: sf.relativePath,
+        content: sf.content
+      }));
+
+      console.log(`[GET demographic-classes] Analyzing ${files.length} source files for project ${id}`);
+      const scanReport = await demographicScanner.scanRepository(files);
+      
+      // Then analyze classes that contain demographic fields
+      const classReport = await demographicClassAnalyzer.analyzeClasses(
+        scanReport.fieldResults,
+        files
+      );
+
+      res.json({
+        success: true,
+        projectId: id,
+        projectName: project.name,
+        report: classReport
+      });
+    } catch (error) {
+      console.error('Error analyzing demographic classes:', error);
+      res.status(500).json({ error: 'Failed to analyze demographic classes' });
     }
   });
 

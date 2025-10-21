@@ -49,12 +49,43 @@ interface ScanReport {
   };
 }
 
+interface ClassInfo {
+  fileName: string;
+  className: string;
+  demographicFields: Array<{
+    fieldName: string;
+    fieldType: string;
+    lineNumber: number;
+  }>;
+  functions: Array<{
+    name: string;
+    description: string;
+    lineNumber: number;
+    usedDemographicFields: string[];
+    signature: string;
+  }>;
+}
+
+interface DemographicClassReport {
+  summary: {
+    totalClasses: number;
+    totalFunctions: number;
+    scanDate: string;
+  };
+  classes: ClassInfo[];
+}
+
 export default function DemographicScanTab({ projectId }: DemographicScanTabProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
 
   const { data: scanData, isLoading: isScanLoading } = useQuery<{ report: ScanReport; success: boolean; excelMapping?: any }>({
     queryKey: ['/api/projects', projectId, 'demographics'],
+    enabled: !!projectId,
+  });
+
+  const { data: classData, isLoading: isClassLoading } = useQuery<{ report: DemographicClassReport; success: boolean }>({
+    queryKey: ['/api/projects', projectId, 'demographic-classes'],
     enabled: !!projectId,
   });
 
@@ -375,98 +406,142 @@ export default function DemographicScanTab({ projectId }: DemographicScanTabProp
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <FileText className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold">Demographic Classes</h3>
+            <h3 className="text-lg font-semibold">Demographic Classes & Functions</h3>
           </div>
         </div>
 
-        {!report ? (
+        {isClassLoading ? (
+          <div className="flex items-center justify-center py-12 bg-white">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : !classData?.report ? (
           <Alert>
             <AlertDescription>
-              No demographic scan has been performed yet. Click "Run Scan" in the Regex Scan tab to analyze this project for demographic fields.
+              No demographic class analysis available. Click "Run Scan" in the Regex Scan tab to analyze this project.
             </AlertDescription>
           </Alert>
-        ) : (() => {
-          // Group results by file (class)
-          const classesByFile = allResults.reduce((acc, result) => {
-            if (!acc[result.file]) {
-              acc[result.file] = [];
-            }
-            acc[result.file].push(result);
-            return acc;
-          }, {} as Record<string, ScanResult[]>);
-
-          const classEntries = Object.entries(classesByFile);
-
-          return classEntries.length === 0 ? (
-            <Alert>
-              <AlertDescription>
-                No classes with demographic fields found in the project.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <div className="space-y-4">
-              {/* Summary Card */}
+        ) : classData.report.classes.length === 0 ? (
+          <Alert>
+            <AlertDescription>
+              No classes with demographic fields and functions found in the project (excluding test files).
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <div className="space-y-4">
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Classes with Demographic Fields</p>
-                      <p className="text-2xl font-bold" data-testid="text-demographic-classes">{classEntries.length}</p>
+                      <p className="text-sm text-muted-foreground">Classes with Demographic Data</p>
+                      <p className="text-2xl font-bold" data-testid="text-demographic-classes">{classData.report.summary.totalClasses}</p>
                     </div>
                     <FileText className="w-8 h-8 text-purple-500 opacity-20" />
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Classes List */}
-              <div className="space-y-4">
-                {classEntries.map(([fileName, results]) => (
-                  <Card key={fileName}>
-                    <CardHeader>
-                      <CardTitle className="text-base flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-primary" />
-                          <span className="font-mono text-sm">{fileName}</span>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Functions Using Demographic Fields</p>
+                      <p className="text-2xl font-bold" data-testid="text-demographic-functions">{classData.report.summary.totalFunctions}</p>
+                    </div>
+                    <Brain className="w-8 h-8 text-blue-500 opacity-20" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Classes List */}
+            <div className="space-y-4">
+              {classData.report.classes.map((classInfo, classIdx) => (
+                <Card key={classIdx}>
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" />
+                        <div>
+                          <div className="font-bold text-primary">{classInfo.className}</div>
+                          <div className="font-mono text-xs text-muted-foreground font-normal">{classInfo.fileName}</div>
                         </div>
-                        <Badge variant="secondary">
-                          {results.length} field{results.length !== 1 ? 's' : ''}
+                      </div>
+                      <div className="flex gap-2">
+                        <Badge variant="outline">
+                          {classInfo.demographicFields.length} field{classInfo.demographicFields.length !== 1 ? 's' : ''}
                         </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {results.map((result, idx) => (
-                          <div 
-                            key={idx}
-                            className="p-3 border rounded-lg hover:bg-muted/50 transition-colors"
-                            data-testid={`class-field-${idx}`}
-                          >
-                            <div className="flex items-start justify-between mb-2">
-                              <div className="flex items-center space-x-2">
-                                <Badge variant="default" className="text-xs">
-                                  {result.fieldType}
-                                </Badge>
-                                <span className="text-xs text-muted-foreground">
-                                  Line {result.line}
-                                </span>
-                              </div>
-                            </div>
-                            <code className="text-xs bg-muted px-2 py-1 rounded block">
-                              {result.context}
-                            </code>
-                            <p className="text-xs text-muted-foreground mt-2">
-                              Pattern: <code className="bg-muted px-1 rounded">{result.matchedPattern}</code>
-                            </p>
+                        <Badge variant="default">
+                          {classInfo.functions.length} function{classInfo.functions.length !== 1 ? 's' : ''}
+                        </Badge>
+                      </div>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Demographic Fields Section */}
+                    <div className="mb-6">
+                      <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        Demographic Fields in this Class
+                      </h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        {classInfo.demographicFields.map((field, idx) => (
+                          <div key={idx} className="flex items-center gap-2 p-2 bg-muted/50 rounded">
+                            <Badge variant="secondary" className="text-xs">
+                              {field.fieldType}
+                            </Badge>
+                            <span className="text-xs font-mono">{field.fieldName}</span>
                           </div>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                    </div>
+
+                    {/* Functions Section */}
+                    <div>
+                      <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <Brain className="w-4 h-4" />
+                        Member Functions Using Demographic Data
+                      </h4>
+                      <div className="space-y-3">
+                        {classInfo.functions.map((func, funcIdx) => (
+                          <div 
+                            key={funcIdx}
+                            className="p-4 border rounded-lg hover:bg-muted/30 transition-colors"
+                            data-testid={`class-function-${funcIdx}`}
+                          >
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <code className="text-sm font-semibold text-primary">{func.name}()</code>
+                                  <span className="text-xs text-muted-foreground">Line {func.lineNumber}</span>
+                                </div>
+                                <p className="text-sm text-muted-foreground mb-2">
+                                  {func.description}
+                                </p>
+                                <code className="text-xs bg-muted px-2 py-1 rounded block mb-2">
+                                  {func.signature}
+                                </code>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-xs text-muted-foreground">Uses fields:</span>
+                                  {func.usedDemographicFields.map((field, fieldIdx) => (
+                                    <Badge key={fieldIdx} variant="outline" className="text-xs">
+                                      {field}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          );
-        })()}
+          </div>
+        )}
       </TabsContent>
 
       <TabsContent value="patterns">
