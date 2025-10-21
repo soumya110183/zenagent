@@ -113,7 +113,7 @@ export default function DemographicScanTab({ projectId }: DemographicScanTabProp
   return (
     <div className="p-6 bg-white">
       <Tabs defaultValue="scan" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
+        <TabsList className="grid w-full grid-cols-4 mb-6">
           <TabsTrigger value="scan" className="flex items-center gap-2">
             <Users className="w-4 h-4" />
             Regex Scan
@@ -121,6 +121,10 @@ export default function DemographicScanTab({ projectId }: DemographicScanTabProp
           <TabsTrigger value="excel" className="flex items-center gap-2">
             <FileText className="w-4 h-4" />
             Excel Field Mapping
+          </TabsTrigger>
+          <TabsTrigger value="demographic-class" className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            Demographic Class
           </TabsTrigger>
           <TabsTrigger value="patterns" className="flex items-center gap-2">
             <Settings className="w-4 h-4" />
@@ -366,6 +370,105 @@ export default function DemographicScanTab({ projectId }: DemographicScanTabProp
         <ExcelFieldMappingTab projectId={projectId} />
       </TabsContent>
 
+      <TabsContent value="demographic-class" className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <FileText className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-semibold">Demographic Classes</h3>
+          </div>
+        </div>
+
+        {!report ? (
+          <Alert>
+            <AlertDescription>
+              No demographic scan has been performed yet. Click "Run Scan" in the Regex Scan tab to analyze this project for demographic fields.
+            </AlertDescription>
+          </Alert>
+        ) : (() => {
+          // Group results by file (class)
+          const classesByFile = allResults.reduce((acc, result) => {
+            if (!acc[result.file]) {
+              acc[result.file] = [];
+            }
+            acc[result.file].push(result);
+            return acc;
+          }, {} as Record<string, ScanResult[]>);
+
+          const classEntries = Object.entries(classesByFile);
+
+          return classEntries.length === 0 ? (
+            <Alert>
+              <AlertDescription>
+                No classes with demographic fields found in the project.
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div className="space-y-4">
+              {/* Summary Card */}
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Classes with Demographic Fields</p>
+                      <p className="text-2xl font-bold" data-testid="text-demographic-classes">{classEntries.length}</p>
+                    </div>
+                    <FileText className="w-8 h-8 text-purple-500 opacity-20" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Classes List */}
+              <div className="space-y-4">
+                {classEntries.map(([fileName, results]) => (
+                  <Card key={fileName}>
+                    <CardHeader>
+                      <CardTitle className="text-base flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-primary" />
+                          <span className="font-mono text-sm">{fileName}</span>
+                        </div>
+                        <Badge variant="secondary">
+                          {results.length} field{results.length !== 1 ? 's' : ''}
+                        </Badge>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {results.map((result, idx) => (
+                          <div 
+                            key={idx}
+                            className="p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                            data-testid={`class-field-${idx}`}
+                          >
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex items-center space-x-2">
+                                <Badge variant="default" className="text-xs">
+                                  {result.fieldType}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  Line {result.line}
+                                </span>
+                              </div>
+                            </div>
+                            <code className="text-xs bg-muted px-2 py-1 rounded block">
+                              {result.context}
+                            </code>
+                            <p className="text-xs text-muted-foreground mt-2">
+                              Pattern: <code className="bg-muted px-1 rounded">{result.matchedPattern}</code>
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+      </TabsContent>
+
       <TabsContent value="patterns">
         <DemographicPatternsManager />
       </TabsContent>
@@ -393,6 +496,8 @@ interface ExcelMapping {
       fieldName: string;
       combined: string;
       matchCount: number;
+      fieldMatchCount: number;
+      tableMatchCount: number;
       locations: Array<{
         filePath: string;
         lineNumber: number;
