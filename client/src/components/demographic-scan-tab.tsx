@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Search, FileText, CheckCircle, XCircle, RefreshCw, Users, Settings, Brain, Info } from 'lucide-react';
+import { Loader2, Search, FileText, CheckCircle, XCircle, RefreshCw, Users, Settings, Brain, Info, AlertCircle } from 'lucide-react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import DemographicPatternsManager from '@/components/demographic-patterns-manager';
@@ -66,13 +66,23 @@ interface ClassInfo {
   }>;
 }
 
+interface OmittedFileInfo {
+  fileName: string;
+  reason: string;
+  demographicFieldCount: number;
+}
+
 interface DemographicClassReport {
   summary: {
     totalClasses: number;
     totalFunctions: number;
     scanDate: string;
+    totalFilesAnalyzed: number;
+    filesWithFunctions: number;
+    filesOmitted: number;
   };
   classes: ClassInfo[];
+  omittedFiles: OmittedFileInfo[];
 }
 
 export default function DemographicScanTab({ projectId }: DemographicScanTabProps) {
@@ -545,6 +555,48 @@ export default function DemographicScanTab({ projectId }: DemographicScanTabProp
                 </Card>
               ))}
             </div>
+
+            {/* Analysis Diagnostic Section */}
+            {classData.report.omittedFiles && classData.report.omittedFiles.length > 0 && (
+              <Card className="mt-6 bg-muted/20">
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-orange-500" />
+                    Analysis Details: Files Excluded from Results
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    The following {classData.report.omittedFiles.length} file{classData.report.omittedFiles.length !== 1 ? 's' : ''} contain{classData.report.omittedFiles.length === 1 ? 's' : ''} demographic fields but {classData.report.omittedFiles.length === 1 ? 'was' : 'were'} excluded because {classData.report.omittedFiles.length === 1 ? 'it lacks' : 'they lack'} business logic functions:
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {classData.report.omittedFiles.map((omitted, idx) => (
+                      <div 
+                        key={idx}
+                        className="p-3 bg-background border rounded-lg flex items-start justify-between"
+                        data-testid={`omitted-file-${idx}`}
+                      >
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <FileText className="w-3 h-3 text-muted-foreground" />
+                            <code className="text-xs font-mono">{omitted.fileName}</code>
+                          </div>
+                          <p className="text-xs text-orange-600 font-medium">{omitted.reason}</p>
+                        </div>
+                        <Badge variant="secondary" className="text-xs">
+                          {omitted.demographicFieldCount} field{omitted.demographicFieldCount !== 1 ? 's' : ''}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border-l-4 border-blue-500 rounded">
+                    <p className="text-xs text-blue-900 dark:text-blue-100">
+                      <strong>Note:</strong> DTOs (Data Transfer Objects), Entities, and Model classes are excluded because they only store data without business logic. Only service/controller classes with actual functions are included in the analysis.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         )}
       </TabsContent>

@@ -24,13 +24,23 @@ export interface ClassInfo {
   functions: FunctionInfo[];
 }
 
+export interface OmittedFileInfo {
+  fileName: string;
+  reason: string;
+  demographicFieldCount: number;
+}
+
 export interface DemographicClassReport {
   summary: {
     totalClasses: number;
     totalFunctions: number;
     scanDate: string;
+    totalFilesAnalyzed: number;
+    filesWithFunctions: number;
+    filesOmitted: number;
   };
   classes: ClassInfo[];
+  omittedFiles: OmittedFileInfo[];
 }
 
 export class DemographicClassAnalyzer {
@@ -61,6 +71,55 @@ export class DemographicClassAnalyzer {
       lowerPath.includes('mock') ||
       lowerPath.includes('stub')
     );
+  }
+
+  /**
+   * Determine why a file was omitted from the results
+   */
+  private determineOmissionReason(filePath: string, content: string): string {
+    const lowerPath = filePath.toLowerCase();
+    const lowerContent = content.toLowerCase();
+    
+    // Check if it's a DTO
+    if (lowerPath.includes('dto') || lowerPath.includes('/dto/')) {
+      return 'DTO (Data Transfer Object) - No business logic functions';
+    }
+    
+    // Check if it's an Entity
+    if (lowerPath.includes('entity') || lowerPath.includes('/entity/') || 
+        lowerPath.includes('model') || lowerPath.includes('/model/')) {
+      // Confirm by checking for JPA annotations or entity markers
+      if (content.includes('@Entity') || content.includes('@Table') || 
+          lowerContent.includes('class') && !this.hasFunctions(content)) {
+        return 'Entity/Model - Data class without business logic';
+      }
+    }
+    
+    // Check if it's a request/response object
+    if (lowerPath.includes('request') || lowerPath.includes('response')) {
+      return 'Request/Response Object - No business logic';
+    }
+    
+    // Check if it's an interface
+    if (content.includes('interface ') && !content.includes('implements')) {
+      return 'Interface - No implementation';
+    }
+    
+    // Default
+    return 'Data class without functions';
+  }
+
+  /**
+   * Check if file has actual function implementations
+   */
+  private hasFunctions(content: string): boolean {
+    // Java/C#/Kotlin method patterns
+    const javaMethodPattern = /(public|private|protected)\s+[\w<>[\],\s]+\s+\w+\s*\([^)]*\)\s*\{/;
+    
+    // Python function patterns
+    const pythonFunctionPattern = /def\s+\w+\s*\([^)]*\):/;
+    
+    return javaMethodPattern.test(content) || pythonFunctionPattern.test(content);
   }
 
   /**
@@ -99,6 +158,9 @@ export class DemographicClassAnalyzer {
 
     console.log('[DemographicClassAnalyzer] Files with demographic fields (after filtering tests):', fileResults.size);
 
+    // Track omitted files
+    const omittedFiles: OmittedFileInfo[] = [];
+
     // Analyze each file with demographic fields
     const fileResultsArray = Array.from(fileResults.entries());
     for (const [filePath, demographicMatches] of fileResultsArray) {
@@ -113,7 +175,13 @@ export class DemographicClassAnalyzer {
         classesMap.set(filePath, classInfo);
         console.log(`[DemographicClassAnalyzer] ✓ Class: ${classInfo.className} (${classInfo.functions.length} functions)`);
       } else {
-        console.log(`[DemographicClassAnalyzer] ✗ No functions found in: ${filePath}`);
+        const reason = this.determineOmissionReason(filePath, sourceFile.content);
+        omittedFiles.push({
+          fileName: filePath,
+          reason,
+          demographicFieldCount: demographicMatches.length
+        });
+        console.log(`[DemographicClassAnalyzer] ✗ No functions found in: ${filePath} (${reason})`);
       }
     }
 
@@ -124,9 +192,13 @@ export class DemographicClassAnalyzer {
       summary: {
         totalClasses: classes.length,
         totalFunctions,
-        scanDate: new Date().toISOString()
+        scanDate: new Date().toISOString(),
+        totalFilesAnalyzed: fileResults.size,
+        filesWithFunctions: classes.length,
+        filesOmitted: omittedFiles.length
       },
-      classes
+      classes,
+      omittedFiles
     };
   }
 
