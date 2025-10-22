@@ -239,16 +239,9 @@ export default function Dashboard({ analysisData, onAIAnalysisComplete }: Dashbo
       {
         id: 'suggestions',
         label: 'Generating Recommendations',
-        description: 'Creating actionable improvement suggestions',
+        description: 'Creating actionable improvement suggestions and finalizing results',
         status: 'pending',
         details: 'Analyzing code quality, performance, and best practices'
-      },
-      {
-        id: 'finalizing',
-        label: 'Finalizing Results',
-        description: 'Compiling and formatting analysis results',
-        status: 'pending',
-        details: 'Preparing comprehensive insights and quality scores'
       }
     ];
     
@@ -296,8 +289,7 @@ export default function Dashboard({ analysisData, onAIAnalysisComplete }: Dashbo
       { step: 3, delay: 3000, details: 'Generating comprehensive project overview' },
       { step: 4, delay: 4000, details: 'Analyzing Spring Boot patterns and dependencies' },
       { step: 5, delay: 5000, details: 'Examining individual module responsibilities' },
-      { step: 6, delay: 6000, details: 'Creating improvement recommendations' },
-      { step: 7, delay: 7000, details: 'Compiling final analysis report' }
+      { step: 6, delay: 6000, details: 'Creating recommendations and finalizing analysis' }
     ];
 
     // Update progress steps
@@ -344,7 +336,7 @@ export default function Dashboard({ analysisData, onAIAnalysisComplete }: Dashbo
           status: 'completed' as const, 
           timestamp: new Date() 
         })));
-        setCurrentStep(7); // Final step index
+        setCurrentStep(6); // Final step index
         
         // Close modal after a brief delay
         setTimeout(() => {
@@ -1022,7 +1014,7 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
             
             <div>
               <h3 className="text-lg font-semibold mb-4">Module Insights</h3>
-              <ScrollArea className="h-64">
+              <ScrollArea className="h-[400px]">
                 {aiAnalysis?.moduleInsights && Object.keys(aiAnalysis.moduleInsights).length > 0 ? (
                   Object.entries(aiAnalysis.moduleInsights).map(([moduleName, insight]) => (
                     <Card key={moduleName} className="mb-4">

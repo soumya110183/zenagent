@@ -10,6 +10,7 @@ export default function FormattedAIContent({ content, variant = 'default' }: For
   if (variant === 'architecture') {
     const lines = content.split('\n').filter(line => line.trim());
     const architectureItems: { label: string; value: string }[] = [];
+    let generalDescriptions: string[] = [];
 
     lines.forEach(line => {
       const trimmed = line.trim();
@@ -26,12 +27,12 @@ export default function FormattedAIContent({ content, variant = 'default' }: For
           architectureItems.push({ label: label.trim(), value });
         }
       } else if (withoutBold && !withoutBold.startsWith('#')) {
-        // Treat as a general description if it doesn't have a colon
-        architectureItems.push({ label: 'Description', value: withoutBold });
+        // Collect general descriptions
+        generalDescriptions.push(withoutBold);
       }
     });
 
-    if (architectureItems.length === 0) {
+    if (architectureItems.length === 0 && generalDescriptions.length === 0) {
       return (
         <div className="text-gray-700 leading-relaxed">
           {content.replace(/\*\*/g, '').replace(/^\d+\.\s*/gm, '')}
@@ -41,6 +42,13 @@ export default function FormattedAIContent({ content, variant = 'default' }: For
 
     return (
       <div className="space-y-3">
+        {generalDescriptions.length > 0 && (
+          <div className="text-sm text-gray-700 leading-relaxed space-y-2 mb-4">
+            {generalDescriptions.map((desc, idx) => (
+              <p key={`desc-${idx}`}>{desc}</p>
+            ))}
+          </div>
+        )}
         {architectureItems.map((item, index) => (
           <div key={index} className="border-l-4 border-blue-400 pl-4 py-2 bg-blue-50/50">
             <div className="text-sm font-semibold text-gray-800 mb-1">{item.label}</div>
