@@ -45,6 +45,84 @@ import {
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 
+// ISO 25010 Software Quality Checklist Data
+const ISO25010_CHECKLIST = [
+  // Maintainability
+  { category: "Maintainability", cwe: "CWE-407", descriptor: "Algorithmic Complexity", description: "Algorithm has inefficient worst-case complexity that can degrade system performance or be exploited by crafted input." },
+  { category: "Maintainability", cwe: "CWE-478", descriptor: "Missing Default Case in Switch Statement", description: "Lack of default case in switch may lead to logical errors." },
+  { category: "Maintainability", cwe: "CWE-480", descriptor: "Use of Incorrect Operator", description: "Wrong operator alters program logic." },
+  { category: "Maintainability", cwe: "CWE-484", descriptor: "Omitted Break Statement in Switch", description: "Missing break executes unintended code blocks." },
+  { category: "Maintainability", cwe: "CWE-561", descriptor: "Dead Code", description: "Contains code that never executes (threshold 5%)." },
+  { category: "Maintainability", cwe: "CWE-570", descriptor: "Expression is Always False", description: "Expression always evaluates to false." },
+  { category: "Maintainability", cwe: "CWE-571", descriptor: "Expression is Always True", description: "Expression always evaluates to true." },
+  { category: "Maintainability", cwe: "CWE-783", descriptor: "Operator Precedence Logic Error", description: "Operator precedence causes incorrect logic." },
+  { category: "Maintainability", cwe: "CWE-1041", descriptor: "Use of Redundant Code (Copy-Paste)", description: "Duplicated code fragments reduce maintainability." },
+  { category: "Maintainability", cwe: "CWE-1045", descriptor: "Parent Class with Virtual Destructor and Child without", description: "Destructor mismatch between parent and child class." },
+  { category: "Maintainability", cwe: "CWE-1047", descriptor: "Modules with Circular Dependencies", description: "Modules depend cyclically on each other." },
+  { category: "Maintainability", cwe: "CWE-1048", descriptor: "Invokable Control Element with Large Fan-out", description: "Function calls too many external components (>5)." },
+  { category: "Maintainability", cwe: "CWE-1051", descriptor: "Initialization with Hard-Coded Network Resource", description: "Hard-coded network identifiers limit reusability." },
+  { category: "Maintainability", cwe: "CWE-1052", descriptor: "Excessive Hard-Coded Literals in Initialization", description: "Too many fixed literals make code inflexible." },
+  { category: "Maintainability", cwe: "CWE-1054", descriptor: "Layer-Skipping Call", description: "Function bypasses designed architectural layers." },
+  { category: "Maintainability", cwe: "CWE-1055", descriptor: "Multiple Inheritance from Concrete Classes", description: "Multiple inheritance increases complexity." },
+  { category: "Maintainability", cwe: "CWE-1062", descriptor: "Parent Class References Child", description: "Breaks encapsulation and modularity." },
+  { category: "Maintainability", cwe: "CWE-1064", descriptor: "Signature with Excessive Parameters", description: "Method has >7 parameters, reducing readability." },
+  { category: "Maintainability", cwe: "CWE-1074", descriptor: "Excessive Inheritance Depth", description: "Deep inheritance (>7 levels) reduces understandability." },
+  { category: "Maintainability", cwe: "CWE-1075", descriptor: "Unconditional Goto outside Switch", description: "Poor structured control flow." },
+  { category: "Maintainability", cwe: "CWE-1079", descriptor: "Parent without Virtual Destructor", description: "Can lead to memory leaks." },
+  { category: "Maintainability", cwe: "CWE-1080", descriptor: "Source File Too Large", description: "File exceeds 1000 lines of code." },
+  { category: "Maintainability", cwe: "CWE-1084", descriptor: "Excessive File/Data Access Operations", description: "Too many file or data accesses (>7)." },
+  { category: "Maintainability", cwe: "CWE-1085", descriptor: "Excessive Commented-Out Code", description: "Commented code exceeds 2%." },
+  { category: "Maintainability", cwe: "CWE-1086", descriptor: "Too Many Child Classes", description: "Class has >10 children." },
+  { category: "Maintainability", cwe: "CWE-1087", descriptor: "Virtual Method without Virtual Destructor", description: "Virtual function lacks destructor match." },
+  { category: "Maintainability", cwe: "CWE-1090", descriptor: "Cross-Class Member Access", description: "Violates encapsulation." },
+  { category: "Maintainability", cwe: "CWE-1095", descriptor: "Loop Condition Updated Inside Loop", description: "Loop modifies control condition." },
+  { category: "Maintainability", cwe: "CWE-1121", descriptor: "Excessive Cyclomatic Complexity", description: "McCabe complexity exceeds 20." },
+  // Performance Efficiency
+  { category: "Performance Efficiency", cwe: "CWE-404", descriptor: "Improper Resource Shutdown", description: "Resource not released correctly." },
+  { category: "Performance Efficiency", cwe: "CWE-401", descriptor: "Memory Leak", description: "Memory not freed after use." },
+  { category: "Performance Efficiency", cwe: "CWE-772", descriptor: "Missing Resource Release", description: "Resource not released after lifetime." },
+  { category: "Performance Efficiency", cwe: "CWE-775", descriptor: "Missing File Handle Release", description: "File descriptor not closed, leading to DoS." },
+  { category: "Performance Efficiency", cwe: "CWE-424", descriptor: "Improper Protection of Alternate Path", description: "Alternate access paths not secured." },
+  { category: "Performance Efficiency", cwe: "CWE-1042", descriptor: "Static Member Outside Singleton", description: "Static element used in non-singleton context." },
+  { category: "Performance Efficiency", cwe: "CWE-1043", descriptor: "Data Element with Too Many Non-Primitive Children", description: "Too many complex child objects (>5)." },
+  { category: "Performance Efficiency", cwe: "CWE-1046", descriptor: "Inefficient String Concatenation", description: "String concatenation instead of buffer object." },
+  { category: "Performance Efficiency", cwe: "CWE-1049", descriptor: "Excessive Joins/Subqueries", description: "Too many joins/subqueries (>5/3)." },
+  { category: "Performance Efficiency", cwe: "CWE-1050", descriptor: "Resource Consumption in Loop", description: "Loop consumes platform resources repeatedly." },
+  { category: "Performance Efficiency", cwe: "CWE-1057", descriptor: "Data Access Outside Data Manager", description: "Data accessed without central manager." },
+  { category: "Performance Efficiency", cwe: "CWE-1060", descriptor: "Too Many Server-Side Queries", description: "Excessive data queries (>5)." },
+  { category: "Performance Efficiency", cwe: "CWE-1067", descriptor: "Sequential Search on Large Table", description: "Query without index (>500 rows)." },
+  { category: "Performance Efficiency", cwe: "CWE-1072", descriptor: "No Connection Pooling", description: "Database access lacks pooling." },
+  { category: "Performance Efficiency", cwe: "CWE-1073", descriptor: "Non-SQL Function with Too Many Data Accesses", description: "Too many direct queries (>2)." },
+  { category: "Performance Efficiency", cwe: "CWE-1089", descriptor: "Large Table with Too Many Indices", description: "Table has >3 indices." },
+  { category: "Performance Efficiency", cwe: "CWE-1091", descriptor: "Object Used Without Destructor", description: "Destructor not invoked." },
+  { category: "Performance Efficiency", cwe: "CWE-1094", descriptor: "Excessive Index Range Scan", description: "Index scan covers too many rows (>10)." },
+  { category: "Performance Efficiency", cwe: "CWE-119", descriptor: "Memory Bounds Violation", description: "Read/write outside buffer." },
+  { category: "Performance Efficiency", cwe: "CWE-120", descriptor: "Buffer Overflow", description: "Input exceeds buffer size." },
+  { category: "Performance Efficiency", cwe: "CWE-125", descriptor: "Out-of-Bounds Read", description: "Reads beyond buffer boundary." },
+  { category: "Performance Efficiency", cwe: "CWE-476", descriptor: "NULL Pointer Dereference", description: "Pointer expected valid but is NULL." },
+  { category: "Performance Efficiency", cwe: "CWE-562", descriptor: "Return of Stack Variable", description: "Returns address of local variable." },
+  { category: "Performance Efficiency", cwe: "CWE-662", descriptor: "Improper Synchronization", description: "Shared resource not properly synchronized." },
+  { category: "Performance Efficiency", cwe: "CWE-833", descriptor: "Deadlock", description: "Threads waiting indefinitely." },
+  { category: "Performance Efficiency", cwe: "CWE-835", descriptor: "Infinite Loop", description: "Loop exit condition unreachable." },
+  { category: "Performance Efficiency", cwe: "CWE-908", descriptor: "Uninitialized Resource", description: "Resource used before initialization." },
+  { category: "Performance Efficiency", cwe: "CWE-703", descriptor: "Improper Exception Handling", description: "Errors not properly managed." },
+  { category: "Performance Efficiency", cwe: "CWE-682", descriptor: "Incorrect Calculation", description: "Miscomputed values affect logic." },
+  { category: "Performance Efficiency", cwe: "CWE-22", descriptor: "Path Traversal", description: "Path manipulation escapes restricted directory." },
+  { category: "Performance Efficiency", cwe: "CWE-77", descriptor: "Command Injection", description: "Unneutralized input used in system command." },
+  { category: "Performance Efficiency", cwe: "CWE-79", descriptor: "Cross-Site Scripting (XSS)", description: "Input reflected in HTML output." },
+  { category: "Performance Efficiency", cwe: "CWE-89", descriptor: "SQL Injection", description: "Improperly escaped SQL statements." },
+  { category: "Performance Efficiency", cwe: "CWE-90", descriptor: "LDAP Injection", description: "Unsafe LDAP query composition." },
+  { category: "Performance Efficiency", cwe: "CWE-91", descriptor: "XML Injection", description: "XML data not properly neutralized." },
+  { category: "Performance Efficiency", cwe: "CWE-502", descriptor: "Deserialization of Untrusted Data", description: "Untrusted input used in object deserialization." },
+  { category: "Performance Efficiency", cwe: "CWE-611", descriptor: "XXE Injection", description: "XML entities access external resources." },
+  { category: "Performance Efficiency", cwe: "CWE-643", descriptor: "XPath Injection", description: "Unchecked dynamic XPath expressions." },
+  { category: "Performance Efficiency", cwe: "CWE-798", descriptor: "Hard-Coded Credentials", description: "Credentials embedded in code." },
+  { category: "Performance Efficiency", cwe: "CWE-789", descriptor: "Uncontrolled Memory Allocation", description: "Unvalidated memory allocation size." },
+  { category: "Performance Efficiency", cwe: "CWE-732", descriptor: "Incorrect Permission Assignment", description: "Improper file or resource permissions." },
+  { category: "Performance Efficiency", cwe: "CWE-778", descriptor: "Insufficient Logging", description: "Missing or incomplete security event logging." },
+  { category: "Performance Efficiency", cwe: "CWE-917", descriptor: "Expression Language Injection", description: "JSP/EL statement with unneutralized input." },
+];
+
 interface QualityMetrics {
   reliability: number;
   security: number;
@@ -104,11 +182,16 @@ export default function QualityMeasure() {
   const [githubUrl, setGithubUrl] = useState('https://github.com/kartik1502/Spring-Boot-Microservices-Banking-Application');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('java');
   const [analysisReport, setAnalysisReport] = useState<QualityAnalysisReport | null>(null);
+  const [iso25010Filter, setIso25010Filter] = useState<string>('all');
   const { toast } = useToast();
 
   const { data: cweRules, isLoading: rulesLoading } = useQuery<CWERule[]>({
     queryKey: ['/api/cwe-rules'],
   });
+
+  const filteredISO25010 = iso25010Filter === 'all'
+    ? ISO25010_CHECKLIST
+    : ISO25010_CHECKLIST.filter(item => item.category === iso25010Filter);
 
   const uploadMutation = useMutation({
     mutationFn: async (data: { file?: File; githubUrl?: string; language: string }) => {
@@ -625,15 +708,122 @@ export default function QualityMeasure() {
         </>
       )}
 
+      {/* ISO 25010 Software Quality Checklist */}
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="w-5 h-5 text-purple-600" />
+            ISO 25010 Software Quality Checklist
+          </CardTitle>
+          <CardDescription>
+            Complete checklist of 74 CWE weaknesses mapped to ISO 25010 quality characteristics (Maintainability & Performance Efficiency)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Summary Stats */}
+            <div className="grid grid-cols-3 gap-4 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Total CWE Items</p>
+                <p className="text-3xl font-bold text-purple-600">{ISO25010_CHECKLIST.length}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Maintainability</p>
+                <p className="text-3xl font-bold text-blue-600">
+                  {ISO25010_CHECKLIST.filter(item => item.category === 'Maintainability').length}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Performance Efficiency</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {ISO25010_CHECKLIST.filter(item => item.category === 'Performance Efficiency').length}
+                </p>
+              </div>
+            </div>
+
+            {/* Filter */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="category-filter">Filter by Category:</Label>
+              <Select value={iso25010Filter} onValueChange={setIso25010Filter}>
+                <SelectTrigger id="category-filter" className="w-64">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories ({ISO25010_CHECKLIST.length})</SelectItem>
+                  <SelectItem value="Maintainability">
+                    Maintainability ({ISO25010_CHECKLIST.filter(item => item.category === 'Maintainability').length})
+                  </SelectItem>
+                  <SelectItem value="Performance Efficiency">
+                    Performance Efficiency ({ISO25010_CHECKLIST.filter(item => item.category === 'Performance Efficiency').length})
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <Badge variant="outline" className="ml-auto">
+                Showing {filteredISO25010.length} of {ISO25010_CHECKLIST.length} items
+              </Badge>
+            </div>
+
+            {/* Table */}
+            <div className="border rounded-lg overflow-hidden">
+              <div className="overflow-x-auto max-h-[600px]">
+                <table className="w-full">
+                  <thead className="bg-gray-100 sticky top-0 z-10">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b">
+                        Category
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b">
+                        CWE #
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b">
+                        Descriptor
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b">
+                        Weakness Description
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredISO25010.map((item, index) => (
+                      <tr key={index} className="hover:bg-gray-50 transition-colors" data-testid={`iso25010-row-${index}`}>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <Badge 
+                            variant={item.category === 'Maintainability' ? 'default' : 'secondary'}
+                            className={item.category === 'Maintainability' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}
+                          >
+                            {item.category}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <Badge variant="outline" className="font-mono">
+                            {item.cwe}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-sm font-semibold text-gray-900">{item.descriptor}</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-sm text-gray-600">{item.description}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* CWE Security Rules Checklist */}
       <Card className="mt-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileCode className="w-5 h-5" />
-            CWE Security Rules Checklist
+            CWE Security Rules Engine (200+ Rules)
           </CardTitle>
           <CardDescription>
-            Comprehensive list of Common Weakness Enumeration (CWE) rules used for security analysis
+            Comprehensive list of Common Weakness Enumeration (CWE) rules used for security vulnerability scanning
           </CardDescription>
         </CardHeader>
         <CardContent>
