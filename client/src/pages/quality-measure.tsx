@@ -85,12 +85,30 @@ interface QualityAnalysisReport {
   scanDate: string;
 }
 
+interface CWERule {
+  id: string;
+  name: string;
+  cweId: string;
+  severity: 'critical' | 'high' | 'medium' | 'low' | 'info';
+  category: string;
+  owasp?: string;
+  description: string;
+  recommendation: string;
+  impact?: string;
+  languages: string[];
+  confidence: 'high' | 'medium' | 'low';
+}
+
 export default function QualityMeasure() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [githubUrl, setGithubUrl] = useState('https://github.com/kartik1502/Spring-Boot-Microservices-Banking-Application');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('java');
   const [analysisReport, setAnalysisReport] = useState<QualityAnalysisReport | null>(null);
   const { toast } = useToast();
+
+  const { data: cweRules, isLoading: rulesLoading } = useQuery<CWERule[]>({
+    queryKey: ['/api/cwe-rules'],
+  });
 
   const uploadMutation = useMutation({
     mutationFn: async (data: { file?: File; githubUrl?: string; language: string }) => {
@@ -606,6 +624,136 @@ export default function QualityMeasure() {
           </Card>
         </>
       )}
+
+      {/* CWE Security Rules Checklist */}
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileCode className="w-5 h-5" />
+            CWE Security Rules Checklist
+          </CardTitle>
+          <CardDescription>
+            Comprehensive list of Common Weakness Enumeration (CWE) rules used for security analysis
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {rulesLoading && (
+            <div className="text-center py-8">
+              <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2 text-blue-600" />
+              <p className="text-gray-600">Loading CWE rules...</p>
+            </div>
+          )}
+
+          {cweRules && (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Total Rules</p>
+                  <p className="text-2xl font-bold text-gray-900">{cweRules.length}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Critical Rules</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {cweRules.filter((r) => r.severity === 'critical').length}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">High Rules</p>
+                  <p className="text-2xl font-bold text-orange-600">
+                    {cweRules.filter((r) => r.severity === 'high').length}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Languages</p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {new Set(cweRules.flatMap((r) => r.languages)).size}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                {cweRules.map((rule) => (
+                  <div key={rule.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge
+                            variant={
+                              rule.severity === 'critical' || rule.severity === 'high'
+                                ? 'destructive'
+                                : rule.severity === 'medium'
+                                ? 'default'
+                                : 'secondary'
+                            }
+                          >
+                            {rule.severity.toUpperCase()}
+                          </Badge>
+                          <Badge variant="outline">{rule.cweId}</Badge>
+                          <Badge variant="outline" className="bg-blue-50">
+                            {rule.category}
+                          </Badge>
+                          {rule.owasp && (
+                            <Badge variant="outline" className="bg-purple-50">
+                              {rule.owasp}
+                            </Badge>
+                          )}
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900">{rule.name}</h3>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div>
+                        <p className="text-sm font-semibold text-gray-700">Description:</p>
+                        <p className="text-sm text-gray-600">{rule.description}</p>
+                      </div>
+
+                      {rule.impact && (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                          <p className="text-sm font-semibold text-red-900 mb-1 flex items-center gap-2">
+                            <AlertTriangle className="h-4 w-4" />
+                            Potential Impact:
+                          </p>
+                          <p className="text-sm text-red-800">{rule.impact}</p>
+                        </div>
+                      )}
+
+                      <div>
+                        <p className="text-sm font-semibold text-gray-700">Recommendation:</p>
+                        <p className="text-sm text-gray-600">{rule.recommendation}</p>
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-wrap pt-2">
+                        <p className="text-sm font-semibold text-gray-700">Languages:</p>
+                        {rule.languages.map((lang) => (
+                          <Badge key={lang} variant="secondary" className="text-xs">
+                            {lang}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-1">
+                        <p className="text-sm font-semibold text-gray-700">Detection Confidence:</p>
+                        <Badge
+                          variant={
+                            rule.confidence === 'high'
+                              ? 'default'
+                              : rule.confidence === 'medium'
+                              ? 'secondary'
+                              : 'outline'
+                          }
+                        >
+                          {rule.confidence.toUpperCase()}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
 
       {/* ISO 5055 Information */}
       <Card className="mt-8 bg-blue-50 border-blue-200">
