@@ -445,6 +445,48 @@ export default function QualityMeasure() {
         </CardContent>
       </Card>
 
+      {/* CWE Information */}
+      <Card className="mb-8 bg-purple-50 border-purple-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="w-5 h-5 text-purple-600" />
+            About CWE (Common Weakness Enumeration)
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-700 mb-4">
+            CWE is a community-developed list of software and hardware weakness types maintained by MITRE. 
+            It serves as a common language for describing software security weaknesses and provides a baseline for weakness identification, mitigation, and prevention efforts.
+          </p>
+          <ul className="space-y-2 text-sm text-gray-700">
+            <li className="flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 mt-0.5 text-purple-600" />
+              <div>
+                <strong>Standardized Taxonomy:</strong> CWE provides a unified, measurable set of software weaknesses that enables more effective discussion, description, selection, and use of software security tools and services
+              </div>
+            </li>
+            <li className="flex items-start gap-2">
+              <FileCode className="w-4 h-4 mt-0.5 text-purple-600" />
+              <div>
+                <strong>Weakness Coverage:</strong> Our scanner covers 200+ CWE rules across multiple programming languages including Java, Python, JavaScript, TypeScript, C#, and PHP
+              </div>
+            </li>
+            <li className="flex items-start gap-2">
+              <Award className="w-4 h-4 mt-0.5 text-purple-600" />
+              <div>
+                <strong>ISO 25010 Mapping:</strong> 74 CWE items are specifically mapped to ISO 25010 quality characteristics for comprehensive quality assessment
+              </div>
+            </li>
+            <li className="flex items-start gap-2">
+              <TrendingUp className="w-4 h-4 mt-0.5 text-purple-600" />
+              <div>
+                <strong>OWASP Integration:</strong> CWE rules are mapped to OWASP Top 10 categories to identify the most critical security risks in web applications
+              </div>
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
       {/* Analysis Results */}
       {analysisReport && (
         <>
