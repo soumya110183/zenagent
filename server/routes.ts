@@ -1672,14 +1672,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
 
         const projectId = await analyzeGithubRepository(validatedData);
-        const project = await storage.getProject(projectId);
         
-        if (!project) {
-          return res.status(500).json({ error: 'Failed to create project from GitHub repository' });
+        // Wait for files to be stored (poll with timeout)
+        const maxWaitTime = 120000; // 2 minutes
+        const pollInterval = 2000; // 2 seconds
+        const startTime = Date.now();
+        let project = null;
+        let files = [];
+        
+        while (Date.now() - startTime < maxWaitTime) {
+          project = await storage.getProject(projectId);
+          
+          if (!project) {
+            return res.status(500).json({ error: 'Failed to create project from GitHub repository' });
+          }
+          
+          // Check if analysis is complete or failed
+          if (project.status === 'failed') {
+            return res.status(400).json({ 
+              error: 'GitHub repository analysis failed. Please check the repository URL and try again.' 
+            });
+          }
+          
+          // Try to get source files
+          files = await storage.getSourceFilesByProject(projectId);
+          
+          if (files.length > 0) {
+            console.log(`[ISO5055] Found ${files.length} source files`);
+            break;
+          }
+          
+          // Wait before next poll
+          await new Promise(resolve => setTimeout(resolve, pollInterval));
+        }
+        
+        if (files.length === 0) {
+          return res.status(400).json({ 
+            error: `No ${language} source files found in the GitHub repository or analysis timed out` 
+          });
         }
 
-        // Get source files
-        const files = await storage.getSourceFilesByProject(projectId);
         sourceFiles = files.map(f => ({
           path: f.relativePath,
           content: f.content
