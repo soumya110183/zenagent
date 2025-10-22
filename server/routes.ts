@@ -1889,6 +1889,178 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Knowledge Agent routes
   app.use('/api/knowledge', knowledgeAgentRoutes);
 
+  // CWE Security Scan routes
+  app.post('/api/projects/:projectId/cwe-scan', requireAuth, async (req, res) => {
+    try {
+      const projectId = req.params.projectId;
+      const project = await storage.getProject(projectId);
+      
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      const scan = await storage.createCWEScan({
+        projectId,
+        scanType: 'full',
+        status: 'running',
+        totalFiles: 0,
+        scannedFiles: 0,
+      });
+
+      res.json({ success: true, scanId: scan.id });
+
+      (async () => {
+        try {
+          const { cweScanner } = await import('./services/cweScanner');
+          const sourceFiles = await storage.getProjectSourceFiles(projectId);
+          
+          await storage.updateCWEScan(scan.id, { totalFiles: sourceFiles.length });
+
+          const files = sourceFiles.map(sf => ({
+            path: sf.relativePath,
+            content: sf.content,
+            language: sf.language || 'java',
+          }));
+
+          const { vulnerabilities, summary } = await cweScanner.scanProject({
+            projectId,
+            files,
+            scanType: 'full',
+          });
+
+          const vulnRecords = vulnerabilities.map(v => ({
+            scanId: scan.id,
+            projectId,
+            cweId: v.cweId,
+            cweName: v.cweName,
+            severity: v.severity,
+            category: v.category,
+            filePath: v.filePath,
+            lineNumber: v.lineNumber,
+            lineEndNumber: v.lineEndNumber,
+            codeSnippet: v.codeSnippet,
+            description: v.description,
+            recommendation: v.recommendation,
+            owasp: v.owasp,
+            confidence: v.confidence,
+          }));
+
+          if (vulnRecords.length > 0) {
+            await storage.createCWEVulnerabilities(vulnRecords);
+          }
+
+          const qualityMetrics = cweScanner.calculateISO25010Quality(vulnerabilities, sourceFiles.length);
+
+          const existingMetric = await storage.getQualityMetricByProject(projectId);
+          if (existingMetric) {
+            await storage.updateQualityMetric(projectId, {
+              scanId: scan.id,
+              security: qualityMetrics.security,
+              overallScore: qualityMetrics.overallScore,
+              securityGrade: qualityMetrics.securityGrade,
+              maintainability: qualityMetrics.maintainability,
+              reliability: qualityMetrics.reliability,
+            });
+          } else {
+            await storage.createQualityMetric({
+              projectId,
+              scanId: scan.id,
+              functionalSuitability: qualityMetrics.functionalSuitability,
+              performanceEfficiency: qualityMetrics.performanceEfficiency,
+              compatibility: qualityMetrics.compatibility,
+              usability: qualityMetrics.usability,
+              reliability: qualityMetrics.reliability,
+              security: qualityMetrics.security,
+              maintainability: qualityMetrics.maintainability,
+              portability: qualityMetrics.portability,
+              overallScore: qualityMetrics.overallScore,
+              securityGrade: qualityMetrics.securityGrade,
+            });
+          }
+
+          await storage.updateCWEScan(scan.id, {
+            status: 'completed',
+            completedAt: new Date(),
+            ...summary,
+            scanResults: JSON.stringify({ vulnerabilities, qualityMetrics }),
+            qualityMetrics: JSON.stringify(qualityMetrics),
+          });
+
+        } catch (error) {
+          console.error('CWE scan error:', error);
+          await storage.updateCWEScan(scan.id, {
+            status: 'failed',
+            completedAt: new Date(),
+            errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          });
+        }
+      })();
+
+    } catch (error) {
+      console.error('Error starting CWE scan:', error);
+      res.status(500).json({ error: 'Failed to start CWE scan' });
+    }
+  });
+
+  app.get('/api/projects/:projectId/cwe-scans', requireAuth, async (req, res) => {
+    try {
+      const projectId = req.params.projectId;
+      const scans = await storage.getCWEScansByProject(projectId);
+      res.json(scans);
+    } catch (error) {
+      console.error('Error fetching CWE scans:', error);
+      res.status(500).json({ error: 'Failed to fetch CWE scans' });
+    }
+  });
+
+  app.get('/api/cwe-scans/:scanId', requireAuth, async (req, res) => {
+    try {
+      const scanId = req.params.scanId;
+      const scan = await storage.getCWEScan(scanId);
+      
+      if (!scan) {
+        return res.status(404).json({ error: 'Scan not found' });
+      }
+
+      const vulnerabilities = await storage.getCWEVulnerabilitiesByScan(scanId);
+      
+      res.json({
+        ...scan,
+        vulnerabilities,
+      });
+    } catch (error) {
+      console.error('Error fetching CWE scan:', error);
+      res.status(500).json({ error: 'Failed to fetch CWE scan' });
+    }
+  });
+
+  app.get('/api/projects/:projectId/quality-metrics', requireAuth, async (req, res) => {
+    try {
+      const projectId = req.params.projectId;
+      const metrics = await storage.getQualityMetricByProject(projectId);
+      
+      if (!metrics) {
+        return res.status(404).json({ error: 'Quality metrics not found' });
+      }
+
+      res.json(metrics);
+    } catch (error) {
+      console.error('Error fetching quality metrics:', error);
+      res.status(500).json({ error: 'Failed to fetch quality metrics' });
+    }
+  });
+
+  app.get('/api/cwe-rules', optionalAuth, async (req, res) => {
+    try {
+      const { cweScanner } = await import('./services/cweScanner');
+      const rules = cweScanner.getAllRules();
+      res.json(rules);
+    } catch (error) {
+      console.error('Error fetching CWE rules:', error);
+      res.status(500).json({ error: 'Failed to fetch CWE rules' });
+    }
+  });
+
   // Initialize custom demographic patterns on server start
   (async () => {
     try {
