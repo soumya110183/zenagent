@@ -454,15 +454,15 @@ export default function QualityMeasure() {
           <h1 className="text-3xl font-bold text-gray-900">Quality Measure</h1>
         </div>
         <p className="text-gray-600">Automated Source Code Quality Measurement</p>
-        <div className="flex gap-2 mt-2">
-          <Badge variant="outline" className="bg-blue-50">
-            ISO/IEC 5055:2021
+        <div className="flex flex-wrap gap-2 mt-2">
+          <Badge variant="outline" className="bg-blue-50 text-blue-800">
+            ISO/IEC 5055:2021 (measurement standard)
           </Badge>
-          <Badge variant="outline" className="bg-purple-50">
-            ISO/IEC 25010
+          <Badge variant="outline" className="bg-purple-50 text-purple-800">
+            ISO/IEC 25010 (quality characteristics)
           </Badge>
-          <Badge variant="outline" className="bg-green-50">
-            CWE-Based Analysis
+          <Badge variant="outline" className="bg-green-50 text-green-800">
+            CWE-Based Analysis (security vulnerabilities)
           </Badge>
         </div>
       </div>
