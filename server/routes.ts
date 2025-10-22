@@ -1636,6 +1636,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ISO 5055 Quality Measure Analysis
+  const iso5055Analyzer = new ISO5055Analyzer();
+
+  app.post('/api/quality-measure/analyze', requireAuth, upload.single('file'), async (req, res) => {
+    try {
+      const { githubUrl, language } = req.body;
+      const file = req.file;
+
+      if (!language) {
+        return res.status(400).json({ error: 'Programming language is required' });
+      }
+
+      if (!file && !githubUrl) {
+        return res.status(400).json({ error: 'Either ZIP file or GitHub URL is required' });
+      }
+
+      let sourceFiles: Array<{ path: string; content: string }> = [];
+      let projectName = 'Unnamed Project';
+
+      if (githubUrl) {
+        // Analyze GitHub repository
+        console.log(`[ISO5055] Analyzing GitHub repository: ${githubUrl}`);
+        
+        if (!isValidGithubUrl(githubUrl)) {
+          return res.status(400).json({ error: 'Invalid GitHub URL format' });
+        }
+
+        const githubAnalysis = await analyzeGithubRepository(githubUrl);
+        
+        if (!githubAnalysis.success || !githubAnalysis.project) {
+          return res.status(500).json({ error: 'Failed to analyze GitHub repository' });
+        }
+
+        // Get source files
+        const files = await storage.getSourceFilesByProject(githubAnalysis.project.id);
+        sourceFiles = files.map(f => ({
+          path: f.relativePath,
+          content: f.content
+        }));
+        projectName = githubAnalysis.project.name;
+      } else if (file) {
+        // Analyze ZIP file
+        console.log(`[ISO5055] Analyzing ZIP file: ${file.originalname}`);
+        const JSZip = (await import('jszip')).default;
+        const zip = new JSZip();
+        const zipData = await zip.loadAsync(file.buffer);
+
+        // Extract source files
+        const filePromises: Promise<{ path: string; content: string }>[] = [];
+        
+        // Helper to check if file is source code
+        const isSourceFile = (path: string, lang: string): boolean => {
+          const extensions: Record<string, string[]> = {
+            java: ['.java'],
+            python: ['.py'],
+            javascript: ['.js', '.ts', '.jsx', '.tsx'],
+            csharp: ['.cs'],
+            cpp: ['.cpp', '.cc', '.cxx', '.h', '.hpp'],
+            kotlin: ['.kt'],
+            go: ['.go'],
+            ruby: ['.rb'],
+            php: ['.php']
+          };
+          
+          const exts = extensions[lang] || [];
+          return exts.some(ext => path.endsWith(ext));
+        };
+
+        zipData.forEach((relativePath, file) => {
+          if (!file.dir && isSourceFile(relativePath, language)) {
+            filePromises.push(
+              file.async('string').then(content => ({
+                path: relativePath,
+                content
+              }))
+            );
+          }
+        });
+
+        sourceFiles = await Promise.all(filePromises);
+        projectName = file.originalname.replace('.zip', '');
+      }
+
+      if (sourceFiles.length === 0) {
+        return res.status(400).json({ 
+          error: `No ${language} source files found in the uploaded project` 
+        });
+      }
+
+      console.log(`[ISO5055] Analyzing ${sourceFiles.length} ${language} files`);
+
+      // Perform ISO 5055 analysis
+      const qualityReport = await iso5055Analyzer.analyzeQuality(
+        sourceFiles,
+        language,
+        projectName
+      );
+
+      res.json({
+        success: true,
+        report: qualityReport
+      });
+
+    } catch (error) {
+      console.error('[ISO5055] Analysis error:', error);
+      res.status(500).json({ 
+        error: 'Failed to analyze code quality',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Excel Field Mapping Report Generation
   app.get('/api/projects/:id/excel-mapping/:mappingId/report-html', requireAuth, async (req, res) => {
     try {
