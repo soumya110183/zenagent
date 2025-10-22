@@ -21,6 +21,7 @@ import KnowledgeAgent from "@/pages/knowledge-agent";
 import ZenVectorAgent from "@/pages/zenvector-agent";
 import TechnologyFlow from "@/pages/technology-flow";
 import QualityMeasure from "@/pages/quality-measure";
+import CWESecurityScan from "@/pages/cwe-security-scan";
 
 import Layout from "@/components/layout";
 
@@ -111,6 +112,13 @@ function Router() {
                 {() => (
                   <Layout>
                     <QualityMeasure />
+                  </Layout>
+                )}
+              </Route>
+              <Route path="/cwe-security-scan">
+                {() => (
+                  <Layout>
+                    <CWESecurityScan />
                   </Layout>
                 )}
               </Route>
