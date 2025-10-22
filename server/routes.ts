@@ -16,6 +16,7 @@ import zenVectorRoutes from "./routes/zenVectorRoutes";
 import knowledgeAgentRoutes from "./routes/knowledgeAgentRoutes";
 import { demographicScanner } from "./services/demographicScanner";
 import { demographicClassAnalyzer } from "./services/demographicClassAnalyzer";
+import { ISO5055Analyzer } from "./services/iso5055Analyzer";
 
 interface AIModelConfig {
   type: 'openai' | 'local';
