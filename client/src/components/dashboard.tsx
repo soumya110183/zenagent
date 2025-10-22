@@ -669,9 +669,32 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
             {/* Component Distribution Bar Chart */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <BarChart3 className="w-5 h-5 mr-2" />
-                  Component Distribution Chart
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <BarChart3 className="w-5 h-5 mr-2" />
+                    Component Distribution Chart
+                  </div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                        <Info className="w-5 h-5" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-sm">How This Chart is Calculated</h4>
+                        <p className="text-xs text-gray-600">
+                          This bar chart displays the total count of each component type found in your codebase during the static analysis phase.
+                        </p>
+                        <div className="space-y-1 text-xs text-gray-600">
+                          <p><strong>Controllers:</strong> Classes with @RestController or @Controller annotations</p>
+                          <p><strong>Services:</strong> Classes with @Service annotation</p>
+                          <p><strong>Repositories:</strong> Classes with @Repository or extending JpaRepository</p>
+                          <p><strong>Entities:</strong> Classes with @Entity annotation</p>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -696,9 +719,30 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
             {/* Component Type Pie Chart */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Activity className="w-5 h-5 mr-2" />
-                  Component Type Distribution
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Activity className="w-5 h-5 mr-2" />
+                    Component Type Distribution
+                  </div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                        <Info className="w-5 h-5" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-sm">How This Chart is Calculated</h4>
+                        <p className="text-xs text-gray-600">
+                          This pie chart shows the percentage distribution of component types in your architecture, helping you understand the composition of your codebase.
+                        </p>
+                        <div className="space-y-1 text-xs text-gray-600">
+                          <p><strong>Calculation:</strong> Each slice represents (Component Count / Total Components) × 100%</p>
+                          <p><strong>Purpose:</strong> Identifies if your architecture is balanced or heavily weighted towards certain layers</p>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -739,9 +783,46 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
           {/* Architecture Quality Radar Chart */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Target className="w-5 h-5 mr-2" />
-                Architecture Quality Metrics
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Target className="w-5 h-5 mr-2" />
+                  Architecture Quality Metrics
+                </div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                      <Info className="w-5 h-5" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-96">
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-sm">How These Metrics are Calculated</h4>
+                      <p className="text-xs text-gray-600 mb-2">
+                        Each axis represents a different quality dimension analyzed by AI, scored 0-100:
+                      </p>
+                      <div className="space-y-2 text-xs text-gray-600">
+                        <div className="bg-blue-50 p-2 rounded">
+                          <p><strong>Code Structure (85):</strong> Package organization, separation of concerns, layered architecture patterns</p>
+                        </div>
+                        <div className="bg-green-50 p-2 rounded">
+                          <p><strong>Design Patterns:</strong> MVC, DI, Repository patterns detected and evaluated by AI</p>
+                        </div>
+                        <div className="bg-purple-50 p-2 rounded">
+                          <p><strong>Code Quality (78):</strong> Method complexity, naming conventions, code maintainability</p>
+                        </div>
+                        <div className="bg-orange-50 p-2 rounded">
+                          <p><strong>Dependencies (88):</strong> Coupling levels, relationship clarity, dependency management</p>
+                        </div>
+                        <div className="bg-pink-50 p-2 rounded">
+                          <p><strong>Maintainability (80):</strong> Ease of modification, extensibility, code readability</p>
+                        </div>
+                        <div className="bg-yellow-50 p-2 rounded">
+                          <p><strong>Testability (75):</strong> Unit test coverage potential, dependency injection usage</p>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -770,18 +851,60 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
             {/* Methods per Class Chart */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Code className="w-5 h-5 mr-2" />
-                  Methods per Component Type
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Code className="w-5 h-5 mr-2" />
+                    Methods per Component Type
+                  </div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                        <Info className="w-5 h-5" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-sm">How This Chart is Calculated</h4>
+                        <p className="text-xs text-gray-600">
+                          This horizontal bar chart shows the estimated average number of methods per component type based on typical architectural patterns.
+                        </p>
+                        <div className="space-y-1 text-xs text-gray-600">
+                          <p><strong>Calculation:</strong> (Total Methods × Expected Distribution) / Component Count</p>
+                          <p><strong>Distribution:</strong> Controllers (30%), Services (40%), Repositories (20%), Entities (10%)</p>
+                          <p><strong>Purpose:</strong> Identifies complexity concentration in different architectural layers</p>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={[
-                    { type: 'Controllers', avgMethods: Math.round((stats.totalMethods / 4) * 0.3) },
-                    { type: 'Services', avgMethods: Math.round((stats.totalMethods / 4) * 0.4) },
-                    { type: 'Repositories', avgMethods: Math.round((stats.totalMethods / 4) * 0.2) },
-                    { type: 'Entities', avgMethods: Math.round((stats.totalMethods / 4) * 0.1) },
+                    { 
+                      type: 'Controllers', 
+                      avgMethods: stats.controllers > 0 
+                        ? Math.round((stats.totalMethods * 0.3) / stats.controllers) 
+                        : 0 
+                    },
+                    { 
+                      type: 'Services', 
+                      avgMethods: stats.services > 0 
+                        ? Math.round((stats.totalMethods * 0.4) / stats.services) 
+                        : 0 
+                    },
+                    { 
+                      type: 'Repositories', 
+                      avgMethods: stats.repositories > 0 
+                        ? Math.round((stats.totalMethods * 0.2) / stats.repositories) 
+                        : 0 
+                    },
+                    { 
+                      type: 'Entities', 
+                      avgMethods: stats.entities > 0 
+                        ? Math.round((stats.totalMethods * 0.1) / stats.entities) 
+                        : 0 
+                    },
                   ]} layout="horizontal">
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" />
@@ -797,9 +920,33 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
             {/* Package Complexity Chart */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Database className="w-5 h-5 mr-2" />
-                  Package & Relationship Metrics
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Database className="w-5 h-5 mr-2" />
+                    Package & Relationship Metrics
+                  </div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                        <Info className="w-5 h-5" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-sm">How This Chart is Calculated</h4>
+                        <p className="text-xs text-gray-600">
+                          This area chart visualizes the overall structure and complexity of your codebase across four key dimensions.
+                        </p>
+                        <div className="space-y-1 text-xs text-gray-600">
+                          <p><strong>Total Classes:</strong> All classes analyzed in the project</p>
+                          <p><strong>Packages:</strong> Number of distinct packages/namespaces</p>
+                          <p><strong>Relationships:</strong> Dependencies and connections between classes</p>
+                          <p><strong>Methods:</strong> Total public/private methods found (normalized for display)</p>
+                          <p className="text-xs text-gray-500 italic mt-1">Higher values indicate more complex project structure</p>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </CardTitle>
               </CardHeader>
               <CardContent>
