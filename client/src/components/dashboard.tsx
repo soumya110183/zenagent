@@ -1006,21 +1006,23 @@ Example: 'Focus on security vulnerabilities and performance bottlenecks' or 'Ana
               <h3 className="text-lg font-semibold mb-4">Project Overview</h3>
               <Card>
                 <CardContent className="p-6">
-                  {aiAnalysis?.projectOverview ? (
-                    <FormattedAIContent content={aiAnalysis.projectOverview} variant="architecture" />
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <p>Generate AI analysis to see project overview</p>
-                    </div>
-                  )}
+                  <ScrollArea className="h-[400px]">
+                    {aiAnalysis?.projectOverview ? (
+                      <FormattedAIContent content={aiAnalysis.projectOverview} variant="architecture" />
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p>Generate AI analysis to see project overview</p>
+                      </div>
+                    )}
+                  </ScrollArea>
                 </CardContent>
               </Card>
             </div>
             
             <div>
               <h3 className="text-lg font-semibold mb-4">Module Insights</h3>
-              <ScrollArea className="h-96">
+              <ScrollArea className="h-64">
                 {aiAnalysis?.moduleInsights && Object.keys(aiAnalysis.moduleInsights).length > 0 ? (
                   Object.entries(aiAnalysis.moduleInsights).map(([moduleName, insight]) => (
                     <Card key={moduleName} className="mb-4">
