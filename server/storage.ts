@@ -4,6 +4,9 @@ import {
   sourceFiles,
   customDemographicPatterns,
   excelFieldMappings,
+  cweScans,
+  cweVulnerabilities,
+  qualityMetrics,
   type User,
   type InsertUser,
   type Project,
@@ -15,6 +18,13 @@ import {
   type ExcelFieldMapping,
   type InsertExcelFieldMapping,
   type AIModelConfig,
+  type CWEScan,
+  type InsertCWEScan,
+  type CWEVulnerability,
+  type InsertCWEVulnerability,
+  type QualityMetric,
+  type InsertQualityMetric,
+  type GithubProject,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
@@ -58,6 +68,23 @@ export interface IStorage {
   saveExcelMapping(mapping: Omit<InsertExcelFieldMapping, 'id' | 'uploadedAt'>): Promise<ExcelFieldMapping>;
   getExcelMappings(projectId: string): Promise<ExcelFieldMapping[]>;
   getSourceFilesByProject(projectId: string): Promise<SourceFile[]>;
+  
+  // CWE Scan operations
+  createCWEScan(scan: InsertCWEScan): Promise<CWEScan>;
+  getCWEScan(id: string): Promise<CWEScan | undefined>;
+  getCWEScansByProject(projectId: string): Promise<CWEScan[]>;
+  updateCWEScan(id: string, updates: Partial<CWEScan>): Promise<CWEScan | undefined>;
+  
+  // CWE Vulnerability operations
+  createCWEVulnerability(vulnerability: InsertCWEVulnerability): Promise<CWEVulnerability>;
+  createCWEVulnerabilities(vulnerabilities: InsertCWEVulnerability[]): Promise<CWEVulnerability[]>;
+  getCWEVulnerabilitiesByScan(scanId: string): Promise<CWEVulnerability[]>;
+  getCWEVulnerabilitiesByProject(projectId: string): Promise<CWEVulnerability[]>;
+  
+  // Quality Metrics operations
+  createQualityMetric(metric: InsertQualityMetric): Promise<QualityMetric>;
+  getQualityMetricByProject(projectId: string): Promise<QualityMetric | undefined>;
+  updateQualityMetric(projectId: string, updates: Partial<QualityMetric>): Promise<QualityMetric | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -200,6 +227,62 @@ export class DatabaseStorage implements IStorage {
 
   async getSourceFilesByProject(projectId: string): Promise<SourceFile[]> {
     return await db.select().from(sourceFiles).where(eq(sourceFiles.projectId, projectId));
+  }
+
+  // CWE Scan operations
+  async createCWEScan(scan: InsertCWEScan): Promise<CWEScan> {
+    const [newScan] = await db.insert(cweScans).values(scan).returning();
+    return newScan;
+  }
+
+  async getCWEScan(id: string): Promise<CWEScan | undefined> {
+    const [scan] = await db.select().from(cweScans).where(eq(cweScans.id, id));
+    return scan;
+  }
+
+  async getCWEScansByProject(projectId: string): Promise<CWEScan[]> {
+    return await db.select().from(cweScans).where(eq(cweScans.projectId, projectId));
+  }
+
+  async updateCWEScan(id: string, updates: Partial<CWEScan>): Promise<CWEScan | undefined> {
+    const [scan] = await db.update(cweScans).set(updates).where(eq(cweScans.id, id)).returning();
+    return scan;
+  }
+
+  // CWE Vulnerability operations
+  async createCWEVulnerability(vulnerability: InsertCWEVulnerability): Promise<CWEVulnerability> {
+    const [newVulnerability] = await db.insert(cweVulnerabilities).values(vulnerability).returning();
+    return newVulnerability;
+  }
+
+  async createCWEVulnerabilities(vulnerabilityList: InsertCWEVulnerability[]): Promise<CWEVulnerability[]> {
+    if (vulnerabilityList.length === 0) return [];
+    const created = await db.insert(cweVulnerabilities).values(vulnerabilityList).returning();
+    return created;
+  }
+
+  async getCWEVulnerabilitiesByScan(scanId: string): Promise<CWEVulnerability[]> {
+    return await db.select().from(cweVulnerabilities).where(eq(cweVulnerabilities.scanId, scanId));
+  }
+
+  async getCWEVulnerabilitiesByProject(projectId: string): Promise<CWEVulnerability[]> {
+    return await db.select().from(cweVulnerabilities).where(eq(cweVulnerabilities.projectId, projectId));
+  }
+
+  // Quality Metrics operations
+  async createQualityMetric(metric: InsertQualityMetric): Promise<QualityMetric> {
+    const [newMetric] = await db.insert(qualityMetrics).values(metric).returning();
+    return newMetric;
+  }
+
+  async getQualityMetricByProject(projectId: string): Promise<QualityMetric | undefined> {
+    const [metric] = await db.select().from(qualityMetrics).where(eq(qualityMetrics.projectId, projectId));
+    return metric;
+  }
+
+  async updateQualityMetric(projectId: string, updates: Partial<QualityMetric>): Promise<QualityMetric | undefined> {
+    const [metric] = await db.update(qualityMetrics).set({ ...updates, updatedAt: new Date() }).where(eq(qualityMetrics.projectId, projectId)).returning();
+    return metric;
   }
 }
 
