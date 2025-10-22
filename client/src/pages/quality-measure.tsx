@@ -468,7 +468,7 @@ export default function QualityMeasure() {
             <li className="flex items-start gap-2">
               <FileCode className="w-4 h-4 mt-0.5 text-purple-600" />
               <div>
-                <strong>Weakness Coverage:</strong> Our scanner covers 200+ CWE rules across multiple programming languages including Java, Python, JavaScript, TypeScript, C#, and PHP
+                <strong>Vulnerability Scanner:</strong> Our active security scanner uses CWE-based rules to detect critical vulnerabilities across multiple programming languages including Java, Python, JavaScript, TypeScript, C#, and PHP
               </div>
             </li>
             <li className="flex items-start gap-2">
@@ -899,58 +899,71 @@ export default function QualityMeasure() {
         </CardContent>
       </Card>
 
-      {/* CWE Security Rules Checklist */}
+      {/* CWE Security Vulnerability Scanner Rules */}
       <Card className="mt-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <FileCode className="w-5 h-5" />
-            CWE Security Rules Engine (200+ Rules)
+            <Shield className="w-5 h-5 text-red-600" />
+            CWE Security Vulnerability Scanner Rules
           </CardTitle>
           <CardDescription>
-            Comprehensive list of Common Weakness Enumeration (CWE) rules used for security vulnerability scanning
+            Active security rules used by our scanner to detect vulnerabilities in your source code across multiple languages
           </CardDescription>
         </CardHeader>
         <CardContent>
           {rulesLoading && (
             <div className="text-center py-8">
               <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2 text-blue-600" />
-              <p className="text-gray-600">Loading CWE rules...</p>
+              <p className="text-gray-600">Loading security scanning rules...</p>
             </div>
           )}
 
           {cweRules && (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6 p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border border-red-200">
                 <div className="text-center">
-                  <p className="text-sm text-gray-600">Total Rules</p>
-                  <p className="text-2xl font-bold text-gray-900">{cweRules.length}</p>
+                  <p className="text-sm text-gray-600">Active Scanner Rules</p>
+                  <p className="text-3xl font-bold text-gray-900">{cweRules.length}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-gray-600">Critical Rules</p>
-                  <p className="text-2xl font-bold text-red-600">
+                  <p className="text-sm text-gray-600">Critical Severity</p>
+                  <p className="text-3xl font-bold text-red-600">
                     {cweRules.filter((r) => r.severity === 'critical').length}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-gray-600">High Rules</p>
-                  <p className="text-2xl font-bold text-orange-600">
+                  <p className="text-sm text-gray-600">High Severity</p>
+                  <p className="text-3xl font-bold text-orange-600">
                     {cweRules.filter((r) => r.severity === 'high').length}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-gray-600">Languages</p>
-                  <p className="text-2xl font-bold text-blue-600">
+                  <p className="text-sm text-gray-600">Medium Severity</p>
+                  <p className="text-3xl font-bold text-yellow-600">
+                    {cweRules.filter((r) => r.severity === 'medium').length}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Languages Supported</p>
+                  <p className="text-3xl font-bold text-blue-600">
                     {new Set(cweRules.flatMap((r) => r.languages)).size}
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-3 max-h-[600px] overflow-y-auto">
-                {cweRules.map((rule) => (
-                  <div key={rule.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex items-start justify-between mb-3">
+              <Alert className="mb-4 bg-blue-50 border-blue-200">
+                <Info className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-sm text-gray-700">
+                  <strong>Scanner Coverage:</strong> These {cweRules.length} security rules actively scan your code for common vulnerabilities including SQL injection, XSS, authentication issues, cryptography weaknesses, and more. Combined with the 74 ISO 25010 quality checks above, you get comprehensive code analysis.
+                </AlertDescription>
+              </Alert>
+
+              <div className="space-y-4 max-h-[700px] overflow-y-auto border rounded-lg p-4 bg-white">
+                {cweRules.map((rule, index) => (
+                  <div key={rule.id} className="border-2 rounded-lg p-5 bg-white hover:shadow-md transition-all" data-testid={`cwe-rule-${index}`}>
+                    <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-2 mb-3">
                           <Badge
                             variant={
                               rule.severity === 'critical' || rule.severity === 'high'
@@ -959,70 +972,73 @@ export default function QualityMeasure() {
                                 ? 'default'
                                 : 'secondary'
                             }
+                            className="text-xs font-bold"
                           >
                             {rule.severity.toUpperCase()}
                           </Badge>
-                          <Badge variant="outline">{rule.cweId}</Badge>
-                          <Badge variant="outline" className="bg-blue-50">
+                          <Badge variant="outline" className="font-mono font-bold text-sm">
+                            {rule.cweId}
+                          </Badge>
+                          <Badge variant="outline" className="bg-blue-50 text-blue-800">
                             {rule.category}
                           </Badge>
                           {rule.owasp && (
-                            <Badge variant="outline" className="bg-purple-50">
+                            <Badge variant="outline" className="bg-purple-50 text-purple-800">
                               {rule.owasp}
                             </Badge>
                           )}
+                          <Badge
+                            variant={rule.confidence === 'high' ? 'default' : rule.confidence === 'medium' ? 'secondary' : 'outline'}
+                            className="ml-auto"
+                          >
+                            {rule.confidence.toUpperCase()} Confidence
+                          </Badge>
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900">{rule.name}</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">{rule.name}</h3>
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Description:</p>
+                    <div className="space-y-3">
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <p className="text-sm font-semibold text-gray-700 mb-1">Description:</p>
                         <p className="text-sm text-gray-600">{rule.description}</p>
                       </div>
 
                       {rule.impact && (
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                          <p className="text-sm font-semibold text-red-900 mb-1 flex items-center gap-2">
-                            <AlertTriangle className="h-4 w-4" />
-                            Potential Impact:
+                        <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+                          <p className="text-sm font-bold text-red-900 mb-2 flex items-center gap-2">
+                            <AlertTriangle className="h-5 w-5" />
+                            Security Impact:
                           </p>
-                          <p className="text-sm text-red-800">{rule.impact}</p>
+                          <p className="text-sm text-red-800 leading-relaxed">{rule.impact}</p>
                         </div>
                       )}
 
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Recommendation:</p>
-                        <p className="text-sm text-gray-600">{rule.recommendation}</p>
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <p className="text-sm font-semibold text-green-900 mb-1 flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4" />
+                          Recommendation:
+                        </p>
+                        <p className="text-sm text-green-800">{rule.recommendation}</p>
                       </div>
 
                       <div className="flex items-center gap-2 flex-wrap pt-2">
-                        <p className="text-sm font-semibold text-gray-700">Languages:</p>
+                        <p className="text-sm font-semibold text-gray-700">Supported Languages:</p>
                         {rule.languages.map((lang) => (
-                          <Badge key={lang} variant="secondary" className="text-xs">
-                            {lang}
+                          <Badge key={lang} variant="secondary" className="text-xs font-semibold">
+                            {lang.toUpperCase()}
                           </Badge>
                         ))}
-                      </div>
-
-                      <div className="flex items-center gap-2 pt-1">
-                        <p className="text-sm font-semibold text-gray-700">Detection Confidence:</p>
-                        <Badge
-                          variant={
-                            rule.confidence === 'high'
-                              ? 'default'
-                              : rule.confidence === 'medium'
-                              ? 'secondary'
-                              : 'outline'
-                          }
-                        >
-                          {rule.confidence.toUpperCase()}
-                        </Badge>
                       </div>
                     </div>
                   </div>
                 ))}
+              </div>
+
+              <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                <p className="text-sm text-gray-700">
+                  <strong className="text-green-800">Total Security Coverage:</strong> {cweRules.length} active vulnerability scanner rules + 74 ISO 25010 quality rules = <strong className="text-blue-800">{cweRules.length + 74} total checks</strong> for comprehensive code analysis
+                </p>
               </div>
             </>
           )}
