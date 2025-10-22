@@ -403,6 +403,48 @@ export default function QualityMeasure() {
         </CardContent>
       </Card>
 
+      {/* ISO 5055 Information */}
+      <Card className="mb-8 bg-blue-50 border-blue-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Info className="w-5 h-5 text-blue-600" />
+            About ISO/IEC 5055
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-700 mb-4">
+            ISO/IEC 5055:2021 is an international standard for automated source code quality measurement. 
+            It defines measures for four key quality characteristics:
+          </p>
+          <ul className="space-y-2 text-sm text-gray-700">
+            <li className="flex items-start gap-2">
+              <Shield className="w-4 h-4 mt-0.5 text-blue-600" />
+              <div>
+                <strong>Reliability:</strong> Measures the capability of software to maintain a specified level of performance
+              </div>
+            </li>
+            <li className="flex items-start gap-2">
+              <Shield className="w-4 h-4 mt-0.5 text-blue-600" />
+              <div>
+                <strong>Security:</strong> Assesses protection against unauthorized access and data breaches
+              </div>
+            </li>
+            <li className="flex items-start gap-2">
+              <Zap className="w-4 h-4 mt-0.5 text-blue-600" />
+              <div>
+                <strong>Performance Efficiency:</strong> Evaluates resource utilization and response time
+              </div>
+            </li>
+            <li className="flex items-start gap-2">
+              <RefreshCw className="w-4 h-4 mt-0.5 text-blue-600" />
+              <div>
+                <strong>Maintainability:</strong> Measures ease of modification and enhancement
+              </div>
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
       {/* Analysis Results */}
       {analysisReport && (
         <>
@@ -942,48 +984,6 @@ export default function QualityMeasure() {
               </div>
             </>
           )}
-        </CardContent>
-      </Card>
-
-      {/* ISO 5055 Information */}
-      <Card className="mt-8 bg-blue-50 border-blue-200">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Info className="w-5 h-5 text-blue-600" />
-            About ISO/IEC 5055
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-gray-700 mb-4">
-            ISO/IEC 5055:2021 is an international standard for automated source code quality measurement. 
-            It defines measures for four key quality characteristics:
-          </p>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li className="flex items-start gap-2">
-              <Shield className="w-4 h-4 mt-0.5 text-blue-600" />
-              <div>
-                <strong>Reliability:</strong> Measures the capability of software to maintain a specified level of performance
-              </div>
-            </li>
-            <li className="flex items-start gap-2">
-              <Shield className="w-4 h-4 mt-0.5 text-blue-600" />
-              <div>
-                <strong>Security:</strong> Assesses protection against unauthorized access and data breaches
-              </div>
-            </li>
-            <li className="flex items-start gap-2">
-              <Zap className="w-4 h-4 mt-0.5 text-blue-600" />
-              <div>
-                <strong>Performance Efficiency:</strong> Evaluates resource utilization and response time
-              </div>
-            </li>
-            <li className="flex items-start gap-2">
-              <RefreshCw className="w-4 h-4 mt-0.5 text-blue-600" />
-              <div>
-                <strong>Maintainability:</strong> Measures ease of modification and enhancement
-              </div>
-            </li>
-          </ul>
         </CardContent>
       </Card>
     </div>
