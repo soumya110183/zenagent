@@ -529,9 +529,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Prepare files for analysis
       const files = sourceFiles.map(file => ({
-        path: file.path,
+        path: file.relativePath,
         content: file.content,
-        language: file.language || 'unknown',
+        language: file.language || 'java', // Default to Java if not specified
       }));
 
       // Analyze data flow
