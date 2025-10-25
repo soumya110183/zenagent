@@ -239,31 +239,31 @@ export default function DataFlow() {
           },
         },
         {
-          selector: 'node[type="controller"]',
+          selector: 'node[type = "controller"]',
           style: {
             'background-color': '#3b82f6',
           },
         },
         {
-          selector: 'node[type="service"]',
+          selector: 'node[type = "service"]',
           style: {
             'background-color': '#10b981',
           },
         },
         {
-          selector: 'node[type="repository"]',
+          selector: 'node[type = "repository"]',
           style: {
             'background-color': '#8b5cf6',
           },
         },
         {
-          selector: 'node[type="entity"]',
+          selector: 'node[type = "entity"]',
           style: {
             'background-color': '#f59e0b',
           },
         },
         {
-          selector: 'node[type="util"]',
+          selector: 'node[type = "util"]',
           style: {
             'background-color': '#6b7280',
           },
