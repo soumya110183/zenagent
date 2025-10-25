@@ -91,35 +91,82 @@ export class DataFieldAnalyzer {
       });
     }
 
-    // Extract field accesses (this.fieldName or objectName.fieldName)
-    const accessPattern = /(?:this|super)\.(\w+)|(\w+)\.(\w+)/g;
+    // Get all field names for this class to detect direct accesses
+    const classFieldNames = new Set<string>();
+    this.fields.forEach((field, fieldId) => {
+      if (fieldId.startsWith(`${className}.`)) {
+        classFieldNames.add(field.name);
+      }
+    });
+
+    // Extract field accesses (this.fieldName, objectName.fieldName, or direct fieldName)
     const methods = this.extractJavaMethods(content);
 
     methods.forEach(method => {
       const methodBody = content.substring(method.startIndex, method.endIndex);
+      
+      // Pattern 1: this.fieldName or super.fieldName or objectName.fieldName
+      const dotAccessPattern = /(?:this|super)\.(\w+)|(\w+)\.(\w+)/g;
       let accessMatch;
 
-      while ((accessMatch = accessPattern.exec(methodBody)) !== null) {
+      while ((accessMatch = dotAccessPattern.exec(methodBody)) !== null) {
         const fieldName = accessMatch[1] || accessMatch[3];
         if (fieldName) {
           const fieldId = `${className}.${fieldName}`;
           const field = this.fields.get(fieldId);
 
           if (field) {
-            // Check if it's an assignment or access
             const matchEnd = accessMatch.index + accessMatch[0].length;
             const afterMatch = methodBody.substring(matchEnd, matchEnd + 10);
             
-            // Check if there's a single '=' immediately after (assignment)
-            // Exclude ==, ===, !=, etc. (comparisons)
             if (afterMatch.match(/^\s*=(?!=)/)) {
-              field.assignedBy.push(method.name);
+              if (!field.assignedBy.includes(method.name)) {
+                field.assignedBy.push(method.name);
+              }
             } else {
-              field.accessedBy.push(method.name);
+              if (!field.accessedBy.includes(method.name)) {
+                field.accessedBy.push(method.name);
+              }
             }
           }
         }
       }
+
+      // Pattern 2: Direct field access (bare fieldName without "this.")
+      classFieldNames.forEach(fieldName => {
+        // Match field name as whole word, not part of another identifier
+        const directAccessPattern = new RegExp(`\\b${fieldName}\\b`, 'g');
+        let match;
+
+        while ((match = directAccessPattern.exec(methodBody)) !== null) {
+          const fieldId = `${className}.${fieldName}`;
+          const field = this.fields.get(fieldId);
+
+          if (field) {
+            // Skip if it's part of "this.fieldName" (already caught above)
+            const beforeMatch = methodBody.substring(Math.max(0, match.index - 5), match.index);
+            if (beforeMatch.match(/(?:this|super)\.\s*$/)) {
+              continue;
+            }
+
+            const matchEnd = match.index + match[0].length;
+            const afterMatch = methodBody.substring(matchEnd, matchEnd + 10);
+            
+            if (afterMatch.match(/^\s*=(?!=)/)) {
+              if (!field.assignedBy.includes(method.name)) {
+                field.assignedBy.push(method.name);
+              }
+            } else {
+              // Only count as access if followed by common access patterns
+              if (afterMatch.match(/^[\s.;,)(\[]/) || matchEnd === methodBody.length) {
+                if (!field.accessedBy.includes(method.name)) {
+                  field.accessedBy.push(method.name);
+                }
+              }
+            }
+          }
+        }
+      });
     });
   }
 
