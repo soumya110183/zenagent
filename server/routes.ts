@@ -545,6 +545,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get data field flow analysis for a project
+  app.get("/api/data-field-flow/:projectId", async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      
+      // Get project
+      const project = await storage.getProject(projectId);
+      if (!project) {
+        return res.status(404).json({ message: "Project not found" });
+      }
+
+      // Get source files for the project
+      const sourceFiles = await storage.getProjectSourceFiles(projectId);
+      
+      if (!sourceFiles || sourceFiles.length === 0) {
+        return res.status(404).json({ message: "No source files found for this project" });
+      }
+
+      // Prepare files for analysis
+      const files = sourceFiles.map(file => ({
+        path: file.relativePath,
+        content: file.content,
+        language: file.language || 'java', // Default to Java if not specified
+      }));
+
+      // Analyze data field flow
+      const { DataFieldAnalyzer } = await import('./services/dataFieldAnalyzer');
+      const analyzer = new DataFieldAnalyzer();
+      const fieldFlowResult = await analyzer.analyzeProject(files);
+
+      res.json(fieldFlowResult);
+    } catch (error) {
+      console.error("Error analyzing data field flow:", error);
+      res.status(500).json({ message: "Failed to analyze data field flow" });
+    }
+  });
+
   // Upload and analyze Java project
   app.post("/api/projects/upload", upload.single('zipFile'), async (req, res) => {
     try {
