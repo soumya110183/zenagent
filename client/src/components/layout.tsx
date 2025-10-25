@@ -87,7 +87,7 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
       current: location === '/quality-measure'
     },
     {
-      name: 'Data Flow',
+      name: 'Data Imaging',
       href: '/data-flow',
       icon: Network,
       current: location === '/data-flow'

@@ -53,18 +53,34 @@ interface FunctionCallData {
   };
 }
 
+interface DataFieldFlowData {
+  nodes: CytoscapeNode[];
+  edges: CytoscapeEdge[];
+  stats: {
+    totalFields: number;
+    totalAccesses: number;
+    sharedFields: number;
+  };
+}
+
 export default function DataFlow() {
   const { toast } = useToast();
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
   const [flowStats, setFlowStats] = useState<FunctionCallData['stats'] | null>(null);
+  const [fieldStats, setFieldStats] = useState<DataFieldFlowData['stats'] | null>(null);
   const [githubUrl, setGithubUrl] = useState('');
   const [githubBranch, setGithubBranch] = useState('main');
   const [dragActive, setDragActive] = useState(false);
   const [selectedFunctions, setSelectedFunctions] = useState<Set<string>>(new Set());
   const [allFunctions, setAllFunctions] = useState<Array<{ id: string; label: string; type: string }>>([]);
+  const [selectedFields, setSelectedFields] = useState<Set<string>>(new Set());
+  const [allFields, setAllFields] = useState<Array<{ id: string; label: string; type: string }>>([]);
+  const [activeTab, setActiveTab] = useState<'function-call' | 'data-field'>('function-call');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cyRef = useRef<cytoscape.Core | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const cyFieldRef = useRef<cytoscape.Core | null>(null);
+  const containerFieldRef = useRef<HTMLDivElement>(null);
 
   // Upload mutation
   const uploadMutation = useMutation({
@@ -205,6 +221,23 @@ export default function DataFlow() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch data flow');
+      }
+      return response.json();
+    },
+    enabled: !!selectedProjectId,
+  });
+
+  // Fetch data field flow for selected project
+  const { data: dataFieldFlowData, isLoading: isLoadingFieldFlow, refetch: refetchFieldFlow } = useQuery<DataFieldFlowData>({
+    queryKey: ['/api/data-field-flow', selectedProjectId],
+    queryFn: async () => {
+      if (!selectedProjectId) {
+        throw new Error('No project selected');
+      }
+      const response = await fetch(`/api/data-field-flow/${selectedProjectId}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch data field flow');
       }
       return response.json();
     },
@@ -453,7 +486,7 @@ export default function DataFlow() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3" data-testid="text-page-title">
               <Network className="w-8 h-8 text-blue-600" />
-              Data Flow Analysis
+              Data Imaging
             </h1>
             <p className="text-gray-600 mt-2">
               Visualize function call graphs and data flow patterns in your codebase
