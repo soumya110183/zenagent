@@ -17,6 +17,7 @@ import knowledgeAgentRoutes from "./routes/knowledgeAgentRoutes";
 import { demographicScanner } from "./services/demographicScanner";
 import { demographicClassAnalyzer } from "./services/demographicClassAnalyzer";
 import { ISO5055Analyzer } from "./services/iso5055Analyzer";
+import { DataFlowAnalyzer } from "./services/dataFlowAnalyzer";
 
 interface AIModelConfig {
   type: 'openai' | 'local';
@@ -505,6 +506,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching project:", error);
       res.status(500).json({ message: "Failed to fetch project" });
+    }
+  });
+
+  // Get data flow analysis for a project
+  app.get("/api/data-flow/:projectId", async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      
+      // Get project
+      const project = await storage.getProject(projectId);
+      if (!project) {
+        return res.status(404).json({ message: "Project not found" });
+      }
+
+      // Get source files for the project
+      const sourceFiles = await storage.getProjectSourceFiles(projectId);
+      
+      if (!sourceFiles || sourceFiles.length === 0) {
+        return res.status(404).json({ message: "No source files found for this project" });
+      }
+
+      // Prepare files for analysis
+      const files = sourceFiles.map(file => ({
+        path: file.path,
+        content: file.content,
+        language: file.language || 'unknown',
+      }));
+
+      // Analyze data flow
+      const analyzer = new DataFlowAnalyzer();
+      const dataFlowResult = await analyzer.analyzeProject(files);
+
+      res.json(dataFlowResult);
+    } catch (error) {
+      console.error("Error analyzing data flow:", error);
+      res.status(500).json({ message: "Failed to analyze data flow" });
     }
   });
 
