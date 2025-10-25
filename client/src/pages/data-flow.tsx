@@ -180,6 +180,8 @@ export default function DataFlow() {
             clearInterval(pollInterval);
             refetch();
             refetchFieldFlow();
+            refetchImpact();
+            refetchDepGraph();
             toast({
               title: "Analysis Complete",
               description: "Data flow visualization is ready!",
@@ -247,6 +249,8 @@ export default function DataFlow() {
             clearInterval(pollInterval);
             refetch();
             refetchFieldFlow();
+            refetchImpact();
+            refetchDepGraph();
             toast({
               title: "Analysis Complete",
               description: "Data flow visualization is ready!",
