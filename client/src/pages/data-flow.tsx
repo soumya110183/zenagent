@@ -1099,7 +1099,7 @@ export default function DataFlow() {
         )}
 
         {/* Field Filter */}
-        {allFields.length > 0 && (
+        {dataFieldFlowData && dataFieldFlowData.nodes.length > 0 && (
           <Card data-testid="card-field-filter">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -1178,7 +1178,7 @@ export default function DataFlow() {
         )}
 
         {/* Data Field Flow Diagram */}
-        {allFields.length > 0 && (
+        {dataFieldFlowData && dataFieldFlowData.nodes.length > 0 && (
           <Card data-testid="card-field-flow-diagram">
             <CardHeader>
               <div className="flex items-center justify-between">
