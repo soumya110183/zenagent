@@ -341,19 +341,6 @@ export default function TeamBehind() {
                   </div>
                 </div>
               </div>
-              
-              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-                <div className="flex items-start space-x-4">
-                  <div className="w-24 h-24 bg-gray-100 border-2 border-red-400 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-gray-400" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-lg mb-1">Pavan K Loka</h3>
-                    <p className="text-blue-600 font-medium mb-1">Sr Technical Specialist</p>
-                    <p className="text-gray-600 text-sm">AS (AD/AMS)</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>
