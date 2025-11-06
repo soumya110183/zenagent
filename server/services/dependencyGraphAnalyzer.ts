@@ -177,11 +177,13 @@ export class DependencyGraphAnalyzer {
     const cyclicDeps = this.detectCyclicDependencies(nodes, edges);
     const isolatedComponents = this.countIsolatedComponents(nodes, edges);
 
+    const fileCount = nodes.filter(n => n.type === 'file').length;
+    
     return {
       nodes,
       edges,
       stats: {
-        totalFiles: parsedFiles.length,
+        totalFiles: fileCount,
         totalFunctions: functionCount,
         totalDependencies: edges.filter(e => e.type === 'calls').length,
         avgComplexity: Math.round(avgComplexity * 10) / 10,
@@ -230,10 +232,16 @@ export class DependencyGraphAnalyzer {
     nodes: DependencyNode[]
   ) {
     const fileDependencies = new Map<string, Set<string>>();
+    
+    // Get set of node IDs for quick lookup
+    const nodeIds = new Set(nodes.map(n => n.id));
 
     // Analyze imports/includes in each file
     for (const file of parsedFiles) {
       const fileId = `file::${file.fileName}`;
+      
+      // Skip if this file is not in the filtered nodes
+      if (!nodeIds.has(fileId)) continue;
       
       if (!fileDependencies.has(fileId)) {
         fileDependencies.set(fileId, new Set());
@@ -245,25 +253,32 @@ export class DependencyGraphAnalyzer {
       // Match imports to other files in the project
       for (const otherFile of parsedFiles) {
         if (otherFile.fileName !== file.fileName) {
+          const targetFileId = `file::${otherFile.fileName}`;
+          
+          // Skip if target file is not in the filtered nodes
+          if (!nodeIds.has(targetFileId)) continue;
+          
           const otherFileBaseName = otherFile.fileName.split('/').pop()?.replace(/\.(java|py|js|ts)$/, '');
           
           if (otherFileBaseName && imports.some(imp => imp.includes(otherFileBaseName))) {
-            const targetFileId = `file::${otherFile.fileName}`;
             fileDependencies.get(fileId)!.add(targetFileId);
           }
         }
       }
     }
 
-    // Add file dependency edges
+    // Add file dependency edges (only if both source and target are in filtered nodes)
     fileDependencies.forEach((targets, source) => {
       targets.forEach(target => {
-        edges.push({
-          source,
-          target,
-          type: 'imports',
-          weight: 1
-        });
+        // Double-check both source and target exist in nodes
+        if (nodeIds.has(source) && nodeIds.has(target)) {
+          edges.push({
+            source,
+            target,
+            type: 'imports',
+            weight: 1
+          });
+        }
       });
     });
   }
