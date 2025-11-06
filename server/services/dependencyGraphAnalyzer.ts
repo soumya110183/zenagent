@@ -51,9 +51,39 @@ export class DependencyGraphAnalyzer {
     const inDegreeMap = new Map<string, number>();
     const outDegreeMap = new Map<string, number>();
 
+    // Filter functions if fieldName is provided
+    let relevantFunctionIds = new Set<string>();
+    let relevantFileIds = new Set<string>();
+    
+    if (fieldName) {
+      // Find functions that reference the field
+      for (const file of parsedFiles) {
+        for (const func of file.functions) {
+          const patterns = [
+            new RegExp(`\\b${fieldName}\\b`, 'i'),
+            new RegExp(`get${fieldName}\\(`, 'i'),
+            new RegExp(`set${fieldName}\\(`, 'i'),
+            new RegExp(`\\.${fieldName}\\b`, 'i'),
+          ];
+          
+          const hasFieldReference = patterns.some(pattern => pattern.test(func.body));
+          if (hasFieldReference) {
+            const funcId = `${file.fileName}::${func.name}`;
+            relevantFunctionIds.add(funcId);
+            relevantFileIds.add(`file::${file.fileName}`);
+          }
+        }
+      }
+    }
+
     // Create file nodes and function nodes
     for (const file of parsedFiles) {
       const fileId = `file::${file.fileName}`;
+      
+      // Skip file if filtering and it's not relevant
+      if (fieldName && !relevantFileIds.has(fileId)) {
+        continue;
+      }
       
       // Add file node
       nodes.push({
@@ -68,6 +98,11 @@ export class DependencyGraphAnalyzer {
       // Add function nodes
       for (const func of file.functions) {
         const funcId = `${file.fileName}::${func.name}`;
+        
+        // Skip function if filtering and it's not relevant
+        if (fieldName && !relevantFunctionIds.has(funcId)) {
+          continue;
+        }
         
         nodes.push({
           id: funcId,
@@ -89,13 +124,20 @@ export class DependencyGraphAnalyzer {
     }
 
     // Build function call relationships
+    const nodeIds = new Set(nodes.map(n => n.id));
     for (const file of parsedFiles) {
       for (const func of file.functions) {
         const funcId = `${file.fileName}::${func.name}`;
         
+        // Skip if function is not in filtered nodes
+        if (!nodeIds.has(funcId)) continue;
+        
         // Extract function calls
         const calls = this.extractFunctionCalls(func.body, parsedFiles);
         calls.forEach(calledFunc => {
+          // Only add edge if target is also in filtered nodes
+          if (!nodeIds.has(calledFunc)) return;
+          
           // Add call edge
           edges.push({
             source: funcId,

@@ -49,10 +49,37 @@ export class ImpactAnalyzer {
     const edges: ImpactEdge[] = [];
     const functionImpactScores: Map<string, number> = new Map();
 
-    // Build nodes for all functions
+    // Filter functions if fieldName is provided
+    let relevantFunctionIds = new Set<string>();
+    if (fieldName) {
+      // Find functions that reference the field
+      for (const file of parsedFiles) {
+        const fileContent = files.find(f => f.path.includes(file.fileName))?.content || '';
+        for (const func of file.functions) {
+          const patterns = [
+            new RegExp(`\\b${fieldName}\\b`, 'i'),
+            new RegExp(`get${fieldName}\\(`, 'i'),
+            new RegExp(`set${fieldName}\\(`, 'i'),
+            new RegExp(`\\.${fieldName}\\b`, 'i'),
+          ];
+          
+          const hasFieldReference = patterns.some(pattern => pattern.test(func.body));
+          if (hasFieldReference) {
+            relevantFunctionIds.add(`${file.fileName}::${func.name}`);
+          }
+        }
+      }
+    }
+
+    // Build nodes for all functions (or filtered functions)
     for (const file of parsedFiles) {
       for (const func of file.functions) {
         const funcId = `${file.fileName}::${func.name}`;
+        
+        // Skip if filtering and this function is not relevant
+        if (fieldName && !relevantFunctionIds.has(funcId)) {
+          continue;
+        }
         
         // Calculate impact score (how many functions would be affected)
         const upstreamCount = this.functionCalledByMap.get(funcId)?.size || 0;
@@ -71,14 +98,21 @@ export class ImpactAnalyzer {
       }
     }
 
-    // Build edges from call relationships
+    // Build edges from call relationships (filtered if necessary)
+    const nodeIds = new Set(nodes.map(n => n.id));
     this.functionCallMap.forEach((targets, source) => {
+      // Skip if source is not in filtered nodes
+      if (!nodeIds.has(source)) return;
+      
       targets.forEach(target => {
-        edges.push({
-          source,
-          target,
-          type: 'calls'
-        });
+        // Only add edge if both source and target are in filtered nodes
+        if (nodeIds.has(target)) {
+          edges.push({
+            source,
+            target,
+            type: 'calls'
+          });
+        }
       });
     });
 
