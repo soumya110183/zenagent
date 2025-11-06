@@ -472,26 +472,31 @@ export default function DataFlow() {
   useEffect(() => {
     if (!cyRef.current) return;
 
-    // Show/hide nodes based on selection
-    cyRef.current.nodes().forEach((node) => {
-      const nodeId = node.data('id');
-      if (selectedFunctions.has(nodeId)) {
-        node.style('display', 'element');
-      } else {
-        node.style('display', 'none');
-      }
-    });
+    try {
+      // Show/hide nodes based on selection
+      cyRef.current.nodes().forEach((node) => {
+        const nodeId = node.data('id');
+        if (selectedFunctions.has(nodeId)) {
+          node.style('display', 'element');
+        } else {
+          node.style('display', 'none');
+        }
+      });
 
-    // Hide edges if source or target is hidden
-    cyRef.current.edges().forEach((edge) => {
-      const source = edge.data('source');
-      const target = edge.data('target');
-      if (selectedFunctions.has(source) && selectedFunctions.has(target)) {
-        edge.style('display', 'element');
-      } else {
-        edge.style('display', 'none');
-      }
-    });
+      // Hide edges if source or target is hidden
+      cyRef.current.edges().forEach((edge) => {
+        const source = edge.data('source');
+        const target = edge.data('target');
+        if (selectedFunctions.has(source) && selectedFunctions.has(target)) {
+          edge.style('display', 'element');
+        } else {
+          edge.style('display', 'none');
+        }
+      });
+    } catch (error) {
+      // Ignore errors during graph recreation
+      console.debug('Graph visibility update skipped during recreation');
+    }
   }, [selectedFunctions]);
 
   // Initialize data field flow Cytoscape graph
@@ -601,26 +606,31 @@ export default function DataFlow() {
   useEffect(() => {
     if (!cyFieldRef.current) return;
 
-    // Show/hide nodes based on selection
-    cyFieldRef.current.nodes().forEach((node) => {
-      const nodeId = node.data('id');
-      if (selectedFields.has(nodeId)) {
-        node.style('display', 'element');
-      } else {
-        node.style('display', 'none');
-      }
-    });
+    try {
+      // Show/hide nodes based on selection
+      cyFieldRef.current.nodes().forEach((node) => {
+        const nodeId = node.data('id');
+        if (selectedFields.has(nodeId)) {
+          node.style('display', 'element');
+        } else {
+          node.style('display', 'none');
+        }
+      });
 
-    // Hide edges if source or target is hidden
-    cyFieldRef.current.edges().forEach((edge) => {
-      const source = edge.data('source');
-      const target = edge.data('target');
-      if (selectedFields.has(source) && selectedFields.has(target)) {
-        edge.style('display', 'element');
-      } else {
-        edge.style('display', 'none');
-      }
-    });
+      // Hide edges if source or target is hidden
+      cyFieldRef.current.edges().forEach((edge) => {
+        const source = edge.data('source');
+        const target = edge.data('target');
+        if (selectedFields.has(source) && selectedFields.has(target)) {
+          edge.style('display', 'element');
+        } else {
+          edge.style('display', 'none');
+        }
+      });
+    } catch (error) {
+      // Ignore errors during graph recreation
+      console.debug('Graph visibility update skipped during recreation');
+    }
   }, [selectedFields]);
 
   // Initialize Impact Analysis Cytoscape graph
@@ -713,24 +723,29 @@ export default function DataFlow() {
   useEffect(() => {
     if (!cyImpactRef.current) return;
 
-    cyImpactRef.current.nodes().forEach((node) => {
-      const nodeId = node.data('id');
-      if (selectedImpactFunctions.has(nodeId)) {
-        node.style('display', 'element');
-      } else {
-        node.style('display', 'none');
-      }
-    });
+    try {
+      cyImpactRef.current.nodes().forEach((node) => {
+        const nodeId = node.data('id');
+        if (selectedImpactFunctions.has(nodeId)) {
+          node.style('display', 'element');
+        } else {
+          node.style('display', 'none');
+        }
+      });
 
-    cyImpactRef.current.edges().forEach((edge) => {
-      const source = edge.data('source');
-      const target = edge.data('target');
-      if (selectedImpactFunctions.has(source) && selectedImpactFunctions.has(target)) {
-        edge.style('display', 'element');
-      } else {
-        edge.style('display', 'none');
-      }
-    });
+      cyImpactRef.current.edges().forEach((edge) => {
+        const source = edge.data('source');
+        const target = edge.data('target');
+        if (selectedImpactFunctions.has(source) && selectedImpactFunctions.has(target)) {
+          edge.style('display', 'element');
+        } else {
+          edge.style('display', 'none');
+        }
+      });
+    } catch (error) {
+      // Ignore errors during graph recreation
+      console.debug('Graph visibility update skipped during recreation');
+    }
   }, [selectedImpactFunctions]);
 
   // Initialize Dependency Graph Cytoscape graph
@@ -839,24 +854,29 @@ export default function DataFlow() {
   useEffect(() => {
     if (!cyDepRef.current) return;
 
-    cyDepRef.current.nodes().forEach((node) => {
-      const nodeId = node.data('id');
-      if (selectedDepNodes.has(nodeId)) {
-        node.style('display', 'element');
-      } else {
-        node.style('display', 'none');
-      }
-    });
+    try {
+      cyDepRef.current.nodes().forEach((node) => {
+        const nodeId = node.data('id');
+        if (selectedDepNodes.has(nodeId)) {
+          node.style('display', 'element');
+        } else {
+          node.style('display', 'none');
+        }
+      });
 
-    cyDepRef.current.edges().forEach((edge) => {
-      const source = edge.data('source');
-      const target = edge.data('target');
-      if (selectedDepNodes.has(source) && selectedDepNodes.has(target)) {
-        edge.style('display', 'element');
-      } else {
-        edge.style('display', 'none');
-      }
-    });
+      cyDepRef.current.edges().forEach((edge) => {
+        const source = edge.data('source');
+        const target = edge.data('target');
+        if (selectedDepNodes.has(source) && selectedDepNodes.has(target)) {
+          edge.style('display', 'element');
+        } else {
+          edge.style('display', 'none');
+        }
+      });
+    } catch (error) {
+      // Ignore errors during graph recreation
+      console.debug('Graph visibility update skipped during recreation');
+    }
   }, [selectedDepNodes]);
 
   const handleExport = () => {
