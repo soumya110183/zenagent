@@ -41,7 +41,7 @@ export class DataFlowAnalyzer {
   private functions: Map<string, FunctionNode> = new Map();
   private callGraph: Map<string, Set<string>> = new Map();
 
-  async analyzeProject(files: Array<{ path: string; content: string; language: string }>): Promise<DataFlowResult> {
+  async analyzeProject(files: Array<{ path: string; content: string; language: string }>, fieldName?: string): Promise<DataFlowResult> {
     this.functions.clear();
     this.callGraph.clear();
 
@@ -54,7 +54,7 @@ export class DataFlowAnalyzer {
     this.buildCallGraph();
 
     // Convert to Cytoscape format
-    return this.generateFlowData();
+    return this.generateFlowData(files, fieldName);
   }
 
   private extractFunctions(filePath: string, content: string, language: string) {
@@ -331,12 +331,56 @@ export class DataFlowAnalyzer {
     });
   }
 
-  private generateFlowData(): DataFlowResult {
+  private generateFlowData(files: Array<{ path: string; content: string; language: string }>, fieldName?: string): DataFlowResult {
     const nodes: CytoscapeNode[] = [];
     const edges: CytoscapeEdge[] = [];
 
+    // Filter functions if fieldName is provided
+    let filteredFunctions = this.functions;
+    let filteredCallGraph = this.callGraph;
+
+    if (fieldName) {
+      const relevantFunctionKeys = new Set<string>();
+      
+      // Find functions that reference the field
+      this.functions.forEach((func, key) => {
+        const file = files.find(f => f.path === func.file);
+        if (file && file.content) {
+          // Check if the function's content contains the field name
+          const patterns = [
+            new RegExp(`\\b${fieldName}\\b`, 'i'),
+            new RegExp(`get${fieldName}\\(`, 'i'),
+            new RegExp(`set${fieldName}\\(`, 'i'),
+            new RegExp(`\\.${fieldName}\\b`, 'i'),
+          ];
+          
+          const functionContent = file.content.substring(func.startIndex || 0, func.endIndex || file.content.length);
+          const hasFieldReference = patterns.some(pattern => pattern.test(functionContent));
+          
+          if (hasFieldReference) {
+            relevantFunctionKeys.add(key);
+          }
+        }
+      });
+
+      // Filter functions map
+      filteredFunctions = new Map(
+        Array.from(this.functions.entries()).filter(([key]) => relevantFunctionKeys.has(key))
+      );
+
+      // Filter call graph to only include edges between relevant functions
+      filteredCallGraph = new Map(
+        Array.from(this.callGraph.entries())
+          .filter(([source]) => relevantFunctionKeys.has(source))
+          .map(([source, targets]) => [
+            source,
+            new Set(Array.from(targets).filter(target => relevantFunctionKeys.has(target)))
+          ])
+      );
+    }
+
     // Generate nodes in Cytoscape format
-    this.functions.forEach((func, key) => {
+    filteredFunctions.forEach((func, key) => {
       const node: CytoscapeNode = {
         data: {
           id: key,
@@ -349,7 +393,7 @@ export class DataFlowAnalyzer {
 
     // Generate edges in Cytoscape format
     let edgeIndex = 0;
-    this.callGraph.forEach((targets, source) => {
+    filteredCallGraph.forEach((targets, source) => {
       targets.forEach(target => {
         const edge: CytoscapeEdge = {
           data: {
@@ -362,14 +406,95 @@ export class DataFlowAnalyzer {
       });
     });
 
-    // Calculate statistics
-    const stats = this.calculateStats();
+    // Calculate statistics with filtered data
+    const stats = this.calculateStatsForFiltered(filteredFunctions, filteredCallGraph);
 
     return {
       nodes,
       edges,
       stats,
     };
+  }
+
+  private calculateStatsForFiltered(functions: Map<string, FunctionNode>, callGraph: Map<string, Set<string>>) {
+    let totalCalls = 0;
+    callGraph.forEach(targets => {
+      totalCalls += targets.size;
+    });
+
+    // Calculate max call depth using DFS
+    const maxDepth = this.calculateMaxDepthForGraph(callGraph);
+
+    // Detect cyclic dependencies
+    const cyclicDependencies = this.detectCyclesForGraph(callGraph);
+
+    return {
+      totalFunctions: functions.size,
+      totalCalls,
+      maxDepth,
+      cyclicDependencies,
+    };
+  }
+
+  private calculateMaxDepthForGraph(callGraph: Map<string, Set<string>>): number {
+    let maxDepth = 0;
+    const visited = new Set<string>();
+
+    const dfs = (node: string, depth: number) => {
+      if (visited.has(node)) return;
+      visited.add(node);
+      maxDepth = Math.max(maxDepth, depth);
+
+      const targets = callGraph.get(node);
+      if (targets) {
+        targets.forEach(target => dfs(target, depth + 1));
+      }
+      
+      visited.delete(node);
+    };
+
+    callGraph.forEach((_, key) => {
+      dfs(key, 1);
+    });
+
+    return maxDepth;
+  }
+
+  private detectCyclesForGraph(callGraph: Map<string, Set<string>>): number {
+    const visited = new Set<string>();
+    const recursionStack = new Set<string>();
+    let cycleCount = 0;
+
+    const hasCycle = (node: string): boolean => {
+      visited.add(node);
+      recursionStack.add(node);
+
+      const targets = callGraph.get(node);
+      if (targets) {
+        for (const target of targets) {
+          if (!visited.has(target)) {
+            if (hasCycle(target)) {
+              cycleCount++;
+              return true;
+            }
+          } else if (recursionStack.has(target)) {
+            cycleCount++;
+            return true;
+          }
+        }
+      }
+
+      recursionStack.delete(node);
+      return false;
+    };
+
+    callGraph.forEach((_, key) => {
+      if (!visited.has(key)) {
+        hasCycle(key);
+      }
+    });
+
+    return cycleCount;
   }
 
   private calculateNodePositions(): Map<string, { x: number; y: number }> {

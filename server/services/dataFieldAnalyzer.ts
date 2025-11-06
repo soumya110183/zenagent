@@ -40,7 +40,7 @@ export class DataFieldAnalyzer {
   private fields: Map<string, FieldNode> = new Map();
   private accessGraph: Map<string, Set<string>> = new Map();
 
-  async analyzeProject(files: Array<{ path: string; content: string; language: string }>): Promise<DataFieldResult> {
+  async analyzeProject(files: Array<{ path: string; content: string; language: string }>, fieldName?: string): Promise<DataFieldResult> {
     this.fields.clear();
     this.accessGraph.clear();
 
@@ -53,7 +53,7 @@ export class DataFieldAnalyzer {
     this.buildAccessGraph();
 
     // Convert to Cytoscape format
-    return this.generateFieldFlowData();
+    return this.generateFieldFlowData(fieldName);
   }
 
   private extractFields(filePath: string, content: string, language: string) {
@@ -406,12 +406,37 @@ export class DataFieldAnalyzer {
     });
   }
 
-  private generateFieldFlowData(): DataFieldResult {
+  private generateFieldFlowData(fieldName?: string): DataFieldResult {
     const nodes: CytoscapeNode[] = [];
     const edges: CytoscapeEdge[] = [];
 
+    // Filter fields if fieldName is provided
+    let filteredFields = this.fields;
+    let filteredAccessGraph = this.accessGraph;
+
+    if (fieldName) {
+      const relevantFieldIds = new Set<string>();
+      
+      // Find fields matching the fieldName
+      this.fields.forEach((field, fieldId) => {
+        if (field.name.toLowerCase().includes(fieldName.toLowerCase())) {
+          relevantFieldIds.add(fieldId);
+        }
+      });
+
+      // Filter fields map
+      filteredFields = new Map(
+        Array.from(this.fields.entries()).filter(([fieldId]) => relevantFieldIds.has(fieldId))
+      );
+
+      // Filter access graph
+      filteredAccessGraph = new Map(
+        Array.from(this.accessGraph.entries()).filter(([fieldId]) => relevantFieldIds.has(fieldId))
+      );
+    }
+
     // Create nodes for each field
-    this.fields.forEach((field, fieldId) => {
+    filteredFields.forEach((field, fieldId) => {
       const node: CytoscapeNode = {
         data: {
           id: fieldId,
@@ -426,7 +451,7 @@ export class DataFieldAnalyzer {
     const methodNodes = new Set<string>();
     let edgeIndex = 0;
 
-    this.accessGraph.forEach((methods, fieldId) => {
+    filteredAccessGraph.forEach((methods, fieldId) => {
       methods.forEach(methodId => {
         // Create method node if it doesn't exist
         if (!methodNodes.has(methodId)) {
@@ -455,13 +480,13 @@ export class DataFieldAnalyzer {
     });
 
     // Calculate statistics
-    const sharedFields = Array.from(this.fields.values()).filter(
+    const sharedFields = Array.from(filteredFields.values()).filter(
       f => f.accessedBy.length + f.assignedBy.length > 1
     ).length;
 
     const stats = {
-      totalFields: this.fields.size,
-      totalAccesses: Array.from(this.accessGraph.values()).reduce((sum, set) => sum + set.size, 0),
+      totalFields: filteredFields.size,
+      totalAccesses: Array.from(filteredAccessGraph.values()).reduce((sum, set) => sum + set.size, 0),
       sharedFields,
     };
 

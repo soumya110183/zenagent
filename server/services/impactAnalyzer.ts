@@ -41,7 +41,7 @@ export class ImpactAnalyzer {
   private functionCalledByMap: Map<string, Set<string>> = new Map();
   private functions: Map<string, FunctionInfo> = new Map();
 
-  analyze(files: ProjectFile[]): ImpactAnalysisResult {
+  analyze(files: ProjectFile[], fieldName?: string): ImpactAnalysisResult {
     const parsedFiles = this.extractFunctions(files);
     this.buildCallMaps(parsedFiles);
 

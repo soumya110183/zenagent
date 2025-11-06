@@ -135,6 +135,8 @@ export default function DataFlow() {
   const [allImpactFunctions, setAllImpactFunctions] = useState<Array<{ id: string; label: string }>>([]);
   const [selectedDepNodes, setSelectedDepNodes] = useState<Set<string>>(new Set());
   const [allDepNodes, setAllDepNodes] = useState<Array<{ id: string; label: string; type: string }>>([]);
+  const [demographicFieldName, setDemographicFieldName] = useState('');
+  const [isFiltered, setIsFiltered] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cyRef = useRef<cytoscape.Core | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -281,12 +283,15 @@ export default function DataFlow() {
 
   // Fetch data flow for selected project
   const { data: dataFlowData, isLoading: isLoadingFlow, refetch } = useQuery<FunctionCallData>({
-    queryKey: ['/api/data-flow', selectedProjectId],
+    queryKey: ['/api/data-flow', selectedProjectId, isFiltered, demographicFieldName],
     queryFn: async () => {
       if (!selectedProjectId) {
         throw new Error('No project selected');
       }
-      const response = await fetch(`/api/data-flow/${selectedProjectId}`);
+      const url = isFiltered && demographicFieldName 
+        ? `/api/data-flow/${selectedProjectId}?fieldName=${encodeURIComponent(demographicFieldName)}`
+        : `/api/data-flow/${selectedProjectId}`;
+      const response = await fetch(url);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch data flow');
@@ -298,12 +303,15 @@ export default function DataFlow() {
 
   // Fetch data field flow for selected project
   const { data: dataFieldFlowData, isLoading: isLoadingFieldFlow, refetch: refetchFieldFlow } = useQuery<DataFieldFlowData>({
-    queryKey: ['/api/data-field-flow', selectedProjectId],
+    queryKey: ['/api/data-field-flow', selectedProjectId, isFiltered, demographicFieldName],
     queryFn: async () => {
       if (!selectedProjectId) {
         throw new Error('No project selected');
       }
-      const response = await fetch(`/api/data-field-flow/${selectedProjectId}`);
+      const url = isFiltered && demographicFieldName 
+        ? `/api/data-field-flow/${selectedProjectId}?fieldName=${encodeURIComponent(demographicFieldName)}`
+        : `/api/data-field-flow/${selectedProjectId}`;
+      const response = await fetch(url);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch data field flow');
@@ -315,12 +323,15 @@ export default function DataFlow() {
 
   // Fetch impact analysis for selected project
   const { data: impactData, isLoading: isLoadingImpact, refetch: refetchImpact } = useQuery<ImpactAnalysisData>({
-    queryKey: ['/api/impact-analysis', selectedProjectId],
+    queryKey: ['/api/impact-analysis', selectedProjectId, isFiltered, demographicFieldName],
     queryFn: async () => {
       if (!selectedProjectId) {
         throw new Error('No project selected');
       }
-      const response = await fetch(`/api/impact-analysis/${selectedProjectId}`);
+      const url = isFiltered && demographicFieldName 
+        ? `/api/impact-analysis/${selectedProjectId}?fieldName=${encodeURIComponent(demographicFieldName)}`
+        : `/api/impact-analysis/${selectedProjectId}`;
+      const response = await fetch(url);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch impact analysis');
@@ -332,12 +343,15 @@ export default function DataFlow() {
 
   // Fetch dependency graph for selected project
   const { data: depGraphData, isLoading: isLoadingDepGraph, refetch: refetchDepGraph } = useQuery<DependencyGraphData>({
-    queryKey: ['/api/dependency-graph', selectedProjectId],
+    queryKey: ['/api/dependency-graph', selectedProjectId, isFiltered, demographicFieldName],
     queryFn: async () => {
       if (!selectedProjectId) {
         throw new Error('No project selected');
       }
-      const response = await fetch(`/api/dependency-graph/${selectedProjectId}`);
+      const url = isFiltered && demographicFieldName 
+        ? `/api/dependency-graph/${selectedProjectId}?fieldName=${encodeURIComponent(demographicFieldName)}`
+        : `/api/dependency-graph/${selectedProjectId}`;
+      const response = await fetch(url);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch dependency graph');
@@ -1094,6 +1108,198 @@ export default function DataFlow() {
     githubMutation.mutate();
   };
 
+  const handleFilterByField = () => {
+    if (!demographicFieldName.trim()) {
+      toast({
+        title: "Field Name Required",
+        description: "Please enter a demographic field name to filter",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsFiltered(true);
+    refetch();
+    refetchFieldFlow();
+    refetchImpact();
+    refetchDepGraph();
+    toast({
+      title: "Filtering Applied",
+      description: `Showing only data related to field: ${demographicFieldName}`,
+    });
+  };
+
+  const handleShowAll = () => {
+    setIsFiltered(false);
+    setDemographicFieldName('');
+    refetch();
+    refetchFieldFlow();
+    refetchImpact();
+    refetchDepGraph();
+    toast({
+      title: "Filter Removed",
+      description: "Showing all data",
+    });
+  };
+
+  const handleExportHTML = () => {
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Imaging Analysis Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+    h1, h2, h3 { color: #2563eb; }
+    .section { margin-bottom: 30px; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+    .stat-card { background: #f3f4f6; padding: 15px; border-radius: 6px; text-align: center; }
+    .stat-value { font-size: 24px; font-weight: bold; color: #2563eb; }
+    .stat-label { font-size: 14px; color: #6b7280; margin-top: 5px; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+    th { background: #f3f4f6; font-weight: 600; }
+    .filter-info { background: #dbeafe; padding: 10px; border-radius: 6px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Data Imaging Analysis Report</h1>
+  <p>Generated on: ${new Date().toLocaleString()}</p>
+  ${isFiltered ? `<div class="filter-info"><strong>Filtered by field:</strong> ${demographicFieldName}</div>` : ''}
+  
+  ${flowStats ? `
+  <div class="section">
+    <h2>Function Call Graph Statistics</h2>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value">${flowStats.totalFunctions}</div>
+        <div class="stat-label">Total Functions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${flowStats.totalCalls}</div>
+        <div class="stat-label">Function Calls</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${flowStats.maxDepth}</div>
+        <div class="stat-label">Max Call Depth</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${flowStats.cyclicDependencies}</div>
+        <div class="stat-label">Cyclic Dependencies</div>
+      </div>
+    </div>
+  </div>
+  ` : ''}
+  
+  ${fieldStats ? `
+  <div class="section">
+    <h2>Data Field Flow Statistics</h2>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value">${fieldStats.totalFields}</div>
+        <div class="stat-label">Total Fields</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${fieldStats.totalAccesses}</div>
+        <div class="stat-label">Total Accesses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${fieldStats.sharedFields}</div>
+        <div class="stat-label">Shared Fields</div>
+      </div>
+    </div>
+  </div>
+  ` : ''}
+  
+  ${impactStats ? `
+  <div class="section">
+    <h2>Impact Analysis Statistics</h2>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value">${impactStats.totalImpacted}</div>
+        <div class="stat-label">Total Impacted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${impactStats.directUpstream}</div>
+        <div class="stat-label">Direct Upstream</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${impactStats.directDownstream}</div>
+        <div class="stat-label">Direct Downstream</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${impactStats.maxDepth}</div>
+        <div class="stat-label">Max Depth</div>
+      </div>
+    </div>
+    ${impactStats.criticalFunctions.length > 0 ? `
+    <h3>Critical Functions</h3>
+    <table>
+      <thead>
+        <tr><th>Function Name</th></tr>
+      </thead>
+      <tbody>
+        ${impactStats.criticalFunctions.map(func => `<tr><td>${func}</td></tr>`).join('')}
+      </tbody>
+    </table>
+    ` : ''}
+  </div>
+  ` : ''}
+  
+  ${depStats ? `
+  <div class="section">
+    <h2>Dependency Graph Statistics</h2>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value">${depStats.totalFiles}</div>
+        <div class="stat-label">Total Files</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${depStats.totalFunctions}</div>
+        <div class="stat-label">Total Functions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${depStats.totalDependencies}</div>
+        <div class="stat-label">Total Dependencies</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${depStats.avgComplexity.toFixed(2)}</div>
+        <div class="stat-label">Avg Complexity</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${depStats.cyclicDependencies}</div>
+        <div class="stat-label">Cyclic Dependencies</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${depStats.isolatedComponents}</div>
+        <div class="stat-label">Isolated Components</div>
+      </div>
+    </div>
+  </div>
+  ` : ''}
+  
+  <div class="section">
+    <p><em>This report was generated by Zengent AI Data Imaging platform.</em></p>
+  </div>
+</body>
+</html>
+    `;
+    
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `data-imaging-report-${isFiltered ? demographicFieldName + '-' : ''}${new Date().getTime()}.html`;
+    link.click();
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Export Successful",
+      description: "HTML report has been downloaded",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-6">
       <div className="max-w-full mx-auto space-y-6">
@@ -1225,6 +1431,68 @@ export default function DataFlow() {
               </TabsContent>
 
             </Tabs>
+          </CardContent>
+        </Card>
+
+        {/* Demographic Field Filter */}
+        <Card data-testid="card-demographic-filter">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Filter className="w-5 h-5 mr-2" />
+              Demographic Field Filter
+            </CardTitle>
+            <CardDescription>
+              Filter analysis by specific demographic field name or view all data
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col md:flex-row gap-4 items-end">
+              <div className="flex-1 space-y-2">
+                <Label htmlFor="demographic-field">Demographic Field Name</Label>
+                <Input
+                  id="demographic-field"
+                  type="text"
+                  placeholder="e.g., email, phoneNumber, ssn"
+                  value={demographicFieldName}
+                  onChange={(e) => setDemographicFieldName(e.target.value)}
+                  data-testid="input-demographic-field"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleFilterByField}
+                  disabled={!demographicFieldName.trim()}
+                  variant={isFiltered ? "default" : "outline"}
+                  data-testid="button-filter-by-field"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  Filter by Field
+                </Button>
+                <Button
+                  onClick={handleShowAll}
+                  variant={!isFiltered ? "default" : "outline"}
+                  data-testid="button-show-all"
+                >
+                  Show All
+                </Button>
+                <Button
+                  onClick={handleExportHTML}
+                  variant="secondary"
+                  data-testid="button-export-html"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Export HTML
+                </Button>
+              </div>
+            </div>
+            {isFiltered && (
+              <Alert className="mt-4 bg-blue-50 border-blue-200">
+                <Filter className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-800">
+                  Currently filtering by field: <strong>{demographicFieldName}</strong>
+                </AlertDescription>
+              </Alert>
+            )}
           </CardContent>
         </Card>
 

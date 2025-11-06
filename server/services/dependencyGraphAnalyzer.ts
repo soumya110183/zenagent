@@ -43,7 +43,7 @@ export interface DependencyGraphResult {
 export class DependencyGraphAnalyzer {
   private functions: Map<string, FunctionInfo> = new Map();
 
-  analyze(files: ProjectFile[]): DependencyGraphResult {
+  analyze(files: ProjectFile[], fieldName?: string): DependencyGraphResult {
     const parsedFiles = this.extractFunctions(files);
     const nodes: DependencyNode[] = [];
     const edges: DependencyEdge[] = [];

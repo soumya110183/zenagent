@@ -515,6 +515,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/data-flow/:projectId", async (req, res) => {
     try {
       const { projectId } = req.params;
+      const { fieldName } = req.query;
       
       // Get project
       const project = await storage.getProject(projectId);
@@ -538,7 +539,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Analyze data flow
       const analyzer = new DataFlowAnalyzer();
-      const dataFlowResult = await analyzer.analyzeProject(files);
+      const dataFlowResult = await analyzer.analyzeProject(files, fieldName as string | undefined);
 
       res.json(dataFlowResult);
     } catch (error) {
@@ -551,6 +552,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/data-field-flow/:projectId", async (req, res) => {
     try {
       const { projectId } = req.params;
+      const { fieldName } = req.query;
       
       // Get project
       const project = await storage.getProject(projectId);
@@ -575,7 +577,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Analyze data field flow
       const { DataFieldAnalyzer } = await import('./services/dataFieldAnalyzer');
       const analyzer = new DataFieldAnalyzer();
-      const fieldFlowResult = await analyzer.analyzeProject(files);
+      const fieldFlowResult = await analyzer.analyzeProject(files, fieldName as string | undefined);
 
       res.json(fieldFlowResult);
     } catch (error) {
@@ -588,6 +590,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/impact-analysis/:projectId", async (req, res) => {
     try {
       const { projectId } = req.params;
+      const { fieldName } = req.query;
       
       // Get project
       const project = await storage.getProject(projectId);
@@ -611,7 +614,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Analyze impact
       const analyzer = new ImpactAnalyzer();
-      const impactResult = analyzer.analyze(files);
+      const impactResult = analyzer.analyze(files, fieldName as string | undefined);
 
       res.json(impactResult);
     } catch (error) {
@@ -624,6 +627,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/dependency-graph/:projectId", async (req, res) => {
     try {
       const { projectId } = req.params;
+      const { fieldName } = req.query;
       
       // Get project
       const project = await storage.getProject(projectId);
@@ -647,7 +651,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Analyze dependencies
       const analyzer = new DependencyGraphAnalyzer();
-      const dependencyResult = analyzer.analyze(files);
+      const dependencyResult = analyzer.analyze(files, fieldName as string | undefined);
 
       res.json(dependencyResult);
     } catch (error) {
