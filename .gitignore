@@ -1,6 +1,45 @@
-node_modules
-dist
-.DS_Store
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+build/
+.vite/
 server/public
-vite.config.ts.*
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Temporary files
+tmp/
+temp/
+uploads/
 *.tar.gz
+
+# Database
+*.db
+*.sqlite
+
+# Vite
+vite.config.ts.*
+
+# Railway
+.railway/
