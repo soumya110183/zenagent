@@ -360,75 +360,75 @@ export default function InnersourceDocsPage() {
             </CardContent>
           </Card>
 
-          {/* AI-Powered Migration Planning */}
+          {/* Comprehensive Analysis Reports */}
           <Card>
             <CardHeader className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-green-600" />
-                POD→POA Migration Intelligence
+                <BarChart3 className="h-5 w-5 text-green-600" />
+                Comprehensive Analysis Reports
               </CardTitle>
-              <CardDescription>AI-driven migration path recommendations and planning</CardDescription>
+              <CardDescription>Detailed technical analysis and documentation reports</CardDescription>
             </CardHeader>
             <CardContent className="pt-6 space-y-4">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="border rounded-lg p-4">
                   <Brain className="h-6 w-6 text-green-600 mb-2" />
-                  <h4 className="font-semibold mb-2">AI Strategy</h4>
+                  <h4 className="font-semibold mb-2">AI-Powered Insights</h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li>• Multi-model AI support (GPT-4o, Ollama)</li>
-                    <li>• Custom prompt input</li>
-                    <li>• Strategic pattern recommendations</li>
-                    <li>• AI reasoning explanations</li>
+                    <li>• Project overview and summary</li>
+                    <li>• Architecture analysis and patterns</li>
+                    <li>• Code quality assessment</li>
+                    <li>• Actionable recommendations</li>
                   </ul>
                 </div>
                 <div className="border rounded-lg p-4">
-                  <Cloud className="h-6 w-6 text-green-600 mb-2" />
-                  <h4 className="font-semibold mb-2">POA Architecture</h4>
+                  <Network className="h-6 w-6 text-green-600 mb-2" />
+                  <h4 className="font-semibold mb-2">Dependency Mapping</h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li>• Microservices decomposition</li>
-                    <li>• Cloud-native patterns (AWS/Azure/GCP)</li>
-                    <li>• Serverless recommendations</li>
-                    <li>• Event-driven architecture</li>
+                    <li>• Complete dependency graphs</li>
+                    <li>• Component relationship visualization</li>
+                    <li>• Call chain analysis</li>
+                    <li>• Cyclic dependency detection</li>
                   </ul>
                 </div>
                 <div className="border rounded-lg p-4">
-                  <Settings className="h-6 w-6 text-green-600 mb-2" />
-                  <h4 className="font-semibold mb-2">Tech Stack</h4>
+                  <FileText className="h-6 w-6 text-green-600 mb-2" />
+                  <h4 className="font-semibold mb-2">API Documentation</h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li>• Language upgrade paths</li>
-                    <li>• Framework migration suggestions</li>
-                    <li>• Database modernization</li>
-                    <li>• Cloud platform mappings</li>
+                    <li>• Swagger/OpenAPI specifications</li>
+                    <li>• REST endpoint documentation</li>
+                    <li>• Request/response schemas</li>
+                    <li>• Authentication methods</li>
                   </ul>
                 </div>
                 <div className="border rounded-lg p-4">
-                  <Workflow className="h-6 w-6 text-green-600 mb-2" />
-                  <h4 className="font-semibold mb-2">Phased Roadmap</h4>
+                  <Code className="h-6 w-6 text-green-600 mb-2" />
+                  <h4 className="font-semibold mb-2">Code Documentation</h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li>• Multi-phase migration plans</li>
-                    <li>• Service prioritization</li>
-                    <li>• Effort estimation (person-months)</li>
-                    <li>• Dependency-aware sequencing</li>
+                    <li>• Class and method documentation</li>
+                    <li>• Code complexity metrics</li>
+                    <li>• Function signatures and parameters</li>
+                    <li>• Usage examples</li>
                   </ul>
                 </div>
                 <div className="border rounded-lg p-4">
-                  <FileCode className="h-6 w-6 text-green-600 mb-2" />
-                  <h4 className="font-semibold mb-2">Code Transformations</h4>
+                  <Database className="h-6 w-6 text-green-600 mb-2" />
+                  <h4 className="font-semibold mb-2">Data Model Documentation</h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li>• Before/after code snippets</li>
-                    <li>• SSN encryption examples</li>
-                    <li>• Credit card tokenization</li>
-                    <li>• Security enhancements</li>
+                    <li>• Entity relationship diagrams</li>
+                    <li>• Database schema documentation</li>
+                    <li>• Field descriptions and constraints</li>
+                    <li>• Data flow diagrams</li>
                   </ul>
                 </div>
                 <div className="border rounded-lg p-4">
-                  <DollarSign className="h-6 w-6 text-green-600 mb-2" />
-                  <h4 className="font-semibold mb-2">Cost Analysis</h4>
+                  <Award className="h-6 w-6 text-green-600 mb-2" />
+                  <h4 className="font-semibold mb-2">Quality Reports</h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li>• POD operating cost estimation</li>
-                    <li>• POA projected costs</li>
-                    <li>• Migration investment calculation</li>
-                    <li>• ROI break-even analysis</li>
+                    <li>• ISO-5055 compliance scores</li>
+                    <li>• Technical debt metrics</li>
+                    <li>• Code coverage analysis</li>
+                    <li>• Best practice adherence</li>
                   </ul>
                 </div>
               </div>
@@ -663,11 +663,11 @@ export default function InnersourceDocsPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-indigo-600">
-                  <TrendingUp className="h-5 w-5" />
-                  <h4 className="font-semibold">Migration Planning</h4>
+                  <BarChart3 className="h-5 w-5" />
+                  <h4 className="font-semibold">Complete Analysis</h4>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  AI-powered migration roadmaps help teams plan modernization from legacy to cloud-native systems.
+                  Comprehensive code analysis reports with quality metrics, dependencies, and architecture documentation.
                 </p>
               </div>
             </div>
