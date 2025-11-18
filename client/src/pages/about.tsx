@@ -16,11 +16,6 @@ import {
   Database,
   Lock
 } from "lucide-react";
-import ullasPhoto from "@assets/ullas_1754848831242.png";
-import kaushikPhoto from "@assets/kaushik_1754851074835.png";
-import sameerPhoto from "@assets/sameer_1754894004666.png";
-import piyushPhoto from "@assets/piyush_1754876944912.jpg";
-import hrushikeshPhoto from "@assets/hri_1754851135645.png";
 
 
 export default function TeamBehind() {
@@ -267,120 +262,34 @@ export default function TeamBehind() {
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-                <div className="flex items-start space-x-4">
-                  <img 
-                    src={kaushikPhoto} 
-                    alt="Kaushik Saha" 
-                    className="w-24 h-32 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-lg mb-1">Kaushik Saha</h3>
-                    <p className="text-blue-600 font-medium mb-1">Distinguished Engineer</p>
-                    <p className="text-gray-600 text-sm">AES Digital Engineering</p>
-                  </div>
-                </div>
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Kaushik Saha</h3>
+                <p className="text-blue-600 font-medium mb-1">Distinguished Engineer</p>
+                <p className="text-gray-600 text-sm">AES Digital Engineering</p>
               </div>
               
-              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-                <div className="flex items-start space-x-4">
-                  <img 
-                    src={sameerPhoto} 
-                    alt="Sameer Kumar Sharma" 
-                    className="w-24 h-32 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-lg mb-1">Sameer Kumar Sharma</h3>
-                    <p className="text-blue-600 font-medium mb-1">Sr Engineering Manager</p>
-                    <p className="text-gray-600 text-sm">AES Delivery</p>
-                  </div>
-                </div>
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Sameer Kumar Sharma</h3>
+                <p className="text-blue-600 font-medium mb-1">Sr Engineering Manager</p>
+                <p className="text-gray-600 text-sm">AES Delivery</p>
               </div>
               
-              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-                <div className="flex items-start space-x-4">
-                  <img 
-                    src={piyushPhoto} 
-                    alt="Piyush Gupta" 
-                    className="w-24 h-32 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-lg mb-1">Piyush Gupta</h3>
-                    <p className="text-blue-600 font-medium mb-1">Sr Solution Architect</p>
-                    <p className="text-gray-600 text-sm">AS (AD/AMS)</p>
-                  </div>
-                </div>
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Piyush Gupta</h3>
+                <p className="text-blue-600 font-medium mb-1">Sr Solution Architect</p>
+                <p className="text-gray-600 text-sm">AS (AD/AMS)</p>
               </div>
               
-              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-                <div className="flex items-start space-x-4">
-                  <img 
-                    src={ullasPhoto} 
-                    alt="Ullas Krishnan" 
-                    className="w-24 h-32 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-lg mb-1">Ullas Krishnan</h3>
-                    <p className="text-blue-600 font-medium mb-1">Sr Solution Architect</p>
-                    <p className="text-gray-600 text-sm">AES Cloud Strategy & Operations</p>
-                  </div>
-                </div>
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Ullas Krishnan</h3>
+                <p className="text-blue-600 font-medium mb-1">Sr Solution Architect</p>
+                <p className="text-gray-600 text-sm">AES Cloud Strategy & Operations</p>
               </div>
               
-              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-                <div className="flex items-start space-x-4">
-                  <img 
-                    src={hrushikeshPhoto} 
-                    alt="Hrushikesh Nalwade" 
-                    className="w-24 h-32 rounded-lg object-cover border-2 border-blue-400 flex-shrink-0"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-lg mb-1">Hrushikesh Nalwade</h3>
-                    <p className="text-blue-600 font-medium mb-1">Sr Technical Specialist</p>
-                    <p className="text-gray-600 text-sm">AES Digital Engineering</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Primary Developer Section */}
-        <Card className="mb-8 border-2 border-blue-500">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
-            <CardTitle className="flex items-center">
-              <Code className="h-6 w-6 text-blue-600 mr-2" />
-              Primary Developer
-            </CardTitle>
-            <CardDescription>
-              Lead architect and developer of the CodeLens platform
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="flex items-start space-x-6">
-              <img 
-                src={ullasPhoto} 
-                alt="Ullas Krishnan" 
-                className="w-32 h-40 rounded-lg object-cover border-4 border-blue-500 flex-shrink-0 shadow-lg"
-              />
-              <div className="flex-1">
-                <div className="mb-4">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Ullas Krishnan</h3>
-                  <p className="text-lg text-blue-600 font-semibold mb-1">Sr. Solution Architect</p>
-                  <p className="text-gray-600 mb-4">AES Cloud Strategy & Operations</p>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
-                  <p className="text-gray-800 leading-relaxed">
-                    <strong className="text-blue-700">End-to-end design and development</strong> of the CodeLens platform, 
-                    including architecture, AI logic, data processing, UI integration, and report generation.
-                  </p>
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-700">Platform Architecture</Badge>
-                  <Badge variant="secondary" className="bg-green-100 text-green-700">AI Integration</Badge>
-                  <Badge variant="secondary" className="bg-purple-100 text-purple-700">Full-Stack Development</Badge>
-                  <Badge variant="secondary" className="bg-orange-100 text-orange-700">Report Generation</Badge>
-                </div>
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Hrushikesh Nalwade</h3>
+                <p className="text-blue-600 font-medium mb-1">Sr Technical Specialist</p>
+                <p className="text-gray-600 text-sm">AES Digital Engineering</p>
               </div>
             </div>
           </CardContent>
