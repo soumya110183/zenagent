@@ -787,7 +787,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get demographic scan data
-      const demographicReport = await storage.getDemographicReport(id);
+      let demographicReport: any = null;
+      try {
+        const sourceFiles = await storage.getProjectSourceFiles(id);
+        if (sourceFiles.length > 0) {
+          const files = sourceFiles.map(sf => ({
+            path: sf.relativePath,
+            content: sf.content
+          }));
+          demographicReport = await demographicScanner.scanRepository(files);
+        }
+      } catch (error) {
+        console.error('Error scanning demographics for migration plan:', error);
+      }
       
       // Get quality metrics
       const qualityMetric = await storage.getQualityMetricByProject(id);
