@@ -25,6 +25,7 @@ import QualityMeasure from "@/pages/quality-measure";
 import DataFlow from "@/pages/data-flow";
 import CWESecurityScan from "@/pages/cwe-security-scan";
 import FeaturesPage from "@/pages/features";
+import InnersourceDocsPage from "@/pages/innersource-docs";
 
 import Layout from "@/components/layout";
 
@@ -143,6 +144,13 @@ function Router() {
                 {() => (
                   <Layout>
                     <FeaturesPage />
+                  </Layout>
+                )}
+              </Route>
+              <Route path="/innersource-docs">
+                {() => (
+                  <Layout>
+                    <InnersourceDocsPage />
                   </Layout>
                 )}
               </Route>
