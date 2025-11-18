@@ -283,12 +283,18 @@ export default function TeamBehind() {
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
                 <h3 className="font-semibold text-gray-900 text-lg mb-2">Ullas Krishnan</h3>
                 <p className="text-blue-600 font-medium mb-1">Sr Solution Architect</p>
-                <p className="text-gray-600 text-sm">AES Cloud Strategy & Operations</p>
+                <p className="text-gray-600 text-sm">AI Innovation and Cloud Specialist</p>
               </div>
               
               <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
                 <h3 className="font-semibold text-gray-900 text-lg mb-2">Hrushikesh Nalwade</h3>
                 <p className="text-blue-600 font-medium mb-1">Sr Technical Specialist</p>
+                <p className="text-gray-600 text-sm">AES Digital Engineering</p>
+              </div>
+              
+              <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">Pavan Loka</h3>
+                <p className="text-blue-600 font-medium mb-1">Mainframe Expert</p>
                 <p className="text-gray-600 text-sm">AES Digital Engineering</p>
               </div>
             </div>
