@@ -117,7 +117,7 @@ export default function Layout({ children, showAIConfig, onAIConfigToggle, aiCon
       current: location === '/about'
     },
     {
-      name: 'Platform Features',
+      name: 'Automated Dependency Mapping Tool',
       href: '/features',
       icon: FileText,
       current: location === '/features'
