@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { 
   Search, 
@@ -20,18 +21,69 @@ import {
   Brain,
   Workflow,
   Package,
-  Settings
+  Settings,
+  Download
 } from "lucide-react";
 
 export default function FeaturesPage() {
+  const exportToHTML = () => {
+    const content = document.getElementById('features-content');
+    if (!content) return;
+    
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Dependency Mapping Tool - Code Lens</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        h1, h2, h3 { color: #2563eb; }
+        .badge { display: inline-block; padding: 4px 12px; background: #e2e8f0; border-radius: 4px; margin: 4px; }
+        .card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .card-header { border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
+        ul { list-style-type: none; padding-left: 0; }
+        li:before { content: "✓ "; color: #10b981; font-weight: bold; }
+    </style>
+</head>
+<body>
+    ${content.innerHTML}
+</body>
+</html>
+    `;
+    
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'automated-dependency-mapping-tool.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <div className="container mx-auto p-6 space-y-8">
+      <div className="container mx-auto p-6 space-y-8" id="features-content">
         {/* Header */}
         <div className="text-center space-y-4 py-8">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Code Lens Platform Features
-          </h1>
+          <div className="flex items-center justify-center gap-4">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Automated Dependency Mapping Tool
+            </h1>
+            <Button 
+              onClick={exportToHTML}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+              data-testid="button-export-html"
+            >
+              <Download className="h-4 w-4" />
+              Export HTML
+            </Button>
+          </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Enterprise Application Intelligence Platform for POD→POA Migration Analysis
           </p>
