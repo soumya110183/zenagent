@@ -2,29 +2,22 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
-// Validate required environment variables for production
+// Validate optional environment variables
 function validateEnvironment() {
-  const requiredEnvVars = ['DATABASE_URL'];
-  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-  
-  if (missingVars.length > 0) {
-    console.error(`Missing required environment variables: ${missingVars.join(', ')}`);
-    process.exit(1);
-  }
-
   // Warn about missing optional variables
-  const optionalVars = ['SESSION_SECRET', 'OPENAI_API_KEY'];
+  const optionalVars = ['DATABASE_URL', 'SESSION_SECRET', 'OPENAI_API_KEY'];
   const missingOptional = optionalVars.filter(varName => !process.env[varName]);
   
   if (missingOptional.length > 0) {
-    console.warn(`Missing optional environment variables: ${missingOptional.join(', ')}`);
+    console.warn(`⚠️  Missing optional environment variables: ${missingOptional.join(', ')}`);
+    if (!process.env.DATABASE_URL) {
+      console.warn('   Using in-memory storage (data will be lost on restart)');
+    }
   }
 }
 
-// Only validate in production
-if (process.env.NODE_ENV === 'production') {
-  validateEnvironment();
-}
+// Validate environment in both development and production
+validateEnvironment();
 
 const app = express();
 app.use(express.json({ limit: '100mb' }));
