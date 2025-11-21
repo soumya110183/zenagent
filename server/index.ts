@@ -70,7 +70,8 @@ app.use((req, res, next) => {
 
   // Safe Windows host + port
   const port = parseInt(process.env.PORT || "5000", 10);
-  const host = process.env.HOST || "127.0.0.1"; // avoid Windows ENOTSUP
+  const host = "0.0.0.0";
+ // avoid Windows ENOTSUP
 
   server
     .listen({ port, host }, () => {
