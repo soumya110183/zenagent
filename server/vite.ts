@@ -69,17 +69,17 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app) {
+  // Resolve real path after esbuild bundling
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 
-  // Correct client build path → dist/public
+  // The frontend build lives in: dist/public
   const clientPath = path.join(__dirname, "../public");
 
   console.log("Serving static from:", clientPath);
 
   app.use(express.static(clientPath));
 
-  // Always serve index.html for SPA routes
   app.get("*", (req, res) => {
     res.sendFile(path.join(clientPath, "index.html"));
   });
